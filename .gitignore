@@ -23,6 +23,7 @@ go.work
 .env
 /local
 /go
+/log
 dai-writer
 *~
 *.bak

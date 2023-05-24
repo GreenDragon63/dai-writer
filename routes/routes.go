@@ -8,6 +8,7 @@ import (
 )
 
 func AddPublics(router *gin.Engine) {
+	router.Static("/static", "static/")
 	router.LoadHTMLGlob("views/*")
 	router.GET("/", controllers.GetIndex)
 	router.POST("/login", auth.Login)
@@ -17,5 +18,6 @@ func AddPrivates(router *gin.Engine) {
 	privates := router.Group("/private", auth.GetCurrentUser())
 	{
 		privates.GET("/character/:id", controllers.GetCharacter)
+		privates.POST("/upload", controllers.PostCharacter)
 	}
 }
