@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JSON Form</title>
+</head>
+<body>
+    <h1>JSON Form</h1>
+
+    <form id="jsonForm" method="POST" action="/private/character/2">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea><br>
+
+        <label for="personality">Personality:</label>
+        <input type="text" id="personality" name="personality" required><br>
+
+        <label for="first_mes">First Message:</label>
+        <textarea id="first_mes" name="first_mes" required></textarea><br>
+
+        <label for="mes_example">Message Example:</label>
+        <textarea id="mes_example" name="mes_example" required></textarea><br>
+
+        <label for="scenario">Scenario:</label>
+        <textarea id="scenario" name="scenario" required></textarea><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.getElementById("jsonForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            var form = e.target;
+            var formData = new FormData(form);
+            var jsonObject = {};
+
+            for (var [key, value] of formData.entries()) {
+                jsonObject[key] = value;
+            }
+
+            var jsonData = JSON.stringify(jsonObject);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", form.action, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    alert("POST request sent successfully!");
+                    form.reset();
+                }
+            };
+
+            xhr.send(jsonData);
+        });
+    </script>
+</body>
+</html>
+

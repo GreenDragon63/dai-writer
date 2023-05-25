@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"strconv"
-	"strings"
 )
 
 type Character struct {
@@ -20,6 +19,7 @@ type Character struct {
 
 func LoadCharacter(u *auth.User, id int) (Character, error) {
 	var chara Character
+
 	path := "characters/" + strconv.Itoa(u.Id) + "/" + strconv.Itoa(id) + ".json"
 	file, err := os.Open(path)
 	if err != nil {
@@ -40,29 +40,11 @@ func LoadCharacter(u *auth.User, id int) (Character, error) {
 
 func UploadCharacterPath(u *auth.User) string {
 	var id int = 0
-	path := "characters/" + strconv.Itoa(u.Id) + "/"
-	err := os.MkdirAll(path, 0755)
-	if err != nil {
-		log.Println(err.Error())
+
+	id = GetId("characters/", u.Id)
+	if id == 0 {
 		return ""
 	}
-	files, err := os.ReadDir(path)
-	if err != nil {
-		log.Println(err.Error())
-		return ""
-	}
-	for _, file := range files {
-		f := strings.Split(file.Name(), ".")
-		i, err := strconv.Atoi(f[0])
-		if err != nil {
-			log.Println(err.Error())
-			return ""
-		}
-		if i > id {
-			id = i
-		}
-	}
-	id++
 	return "characters/" + strconv.Itoa(u.Id) + "/" + strconv.Itoa(id) + ".png"
 }
 

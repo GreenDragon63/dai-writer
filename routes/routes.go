@@ -18,6 +18,7 @@ func AddPrivates(router *gin.Engine) {
 	privates := router.Group("/private", auth.GetCurrentUser())
 	{
 		privates.GET("/character/:id", controllers.GetCharacter)
-		privates.POST("/upload", controllers.PostCharacter)
+		privates.POST("/character/:id", controllers.PostCharacter)
+		privates.POST("/upload", controllers.UploadCharacter)
 	}
 }
