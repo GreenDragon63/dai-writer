@@ -24,6 +24,11 @@ go.work
 /local
 /go
 /log
+/characters
+/books
+/scenes
+/lines
+/chats
 dai-writer
 *~
 *.bak
