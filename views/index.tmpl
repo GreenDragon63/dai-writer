@@ -1,12 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{.title}}</title>
-</head>
-<body>
 {{template "header" .}}
-    <h1>{{.title}}</h1>
-    <p>Test template.</p>
-</body>
-</html>
-
+        <div class="element">
+            <div class="image-container">
+                <img src="/static/img/placeholder.svg" alt="Image">
+            </div>
+            <div class="content">
+                <div>
+                    <p>Name</p>
+                </div>
+                <div>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer dictum ante nec magna congue, non mattis sem volutpat. Suspendisse potenti. Duis auctor consectetur mauris eget consequat. Vivamus faucibus consequat mi, vel ultrices neque efficitur id. Mauris nec feugiat sapien. Etiam non volutpat velit. Fusce nec turpis sit amet mauris varius mattis ut et nisi. Aenean maximus lorem ut nunc finibus, eget tristique libero tincidunt. Quisque sed faucibus orci, non rhoncus tortor.<p>
+                    <p>Sed id neque nibh. In euismod bibendum dolor, a aliquet dui fermentum a. Proin aliquam neque vitae turpis semper, a consequat sapien scelerisque. Nulla facilisi. Mauris nec mi leo. Proin lobortis, justo nec tincidunt placerat, felis sem semper ipsum, a efficitur purus felis at ante. Maecenas at mauris eget tortor tincidunt suscipit vel nec ante. Etiam auctor, tortor et dictum fermentum, velit nulla scelerisque lacus, sed lacinia mauris purus id quam. Curabitur varius vestibulum dui id iaculis. Integer sed elementum neque.</p>
+                </div>
+                <div class="buttons buttons-center">
+                    <button><i class="fa-solid fa-chevron-up"></i></button>
+                    <button><i class="fa-solid fa-chevron-down"></i></button>
+                </div>
+            </div>
+            <div class="buttons buttons-right">
+                <button><i class="fa-solid fa-rotate"></i></button>
+                <button><i class="fa-solid fa-pen-to-square"></i></button>
+                <button><i class="fa-regular fa-eye"></i></button>
+            </div>
+        </div>
+        <input type="text" class="custom-input">
+        <select class="custom-select">
+            <option value="option1">Chara 1</option>
+            <option value="option2">Chara 2</option>
+          </select>
+        <button class="custom-button">Generate the next line</button>
+        <button class="custom-button">Add an empty line </button>
+{{template "footer" .}}

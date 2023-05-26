@@ -1,3 +1,38 @@
 {{define "header"}}
-Test Header : {{.title}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{.title}}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/fontawesome.css" >
+</head>
+<body>
+    <div id="menu-container">
+        <button class="menu-item">
+            <img src="/static/img/placeholder.svg" alt="Search">
+            <span>Search</span>
+        </button>
+        <button class="menu-item">
+            <img src="/static/img/placeholder.svg" alt="Characters">
+            <span>Characters</span>
+        </button>
+        <button class="menu-item">
+            <img src="/static/img/placeholder.svg" alt="Books">
+            <span>Books</span>
+        </button>
+        <button class="menu-item">
+            <img src="/static/img/placeholder.svg" alt="Scenes">
+            <span>Scenes</span>
+        </button>
+        <button class="menu-item">
+            <img src="/static/img/placeholder.svg" alt="R books">
+            <span>R books</span>
+        </button>
+        <button class="menu-item">
+            <img src="/static/img/placeholder.svg" alt="Untamed">
+            <span>Untamed</span>
+        </button>
+    </div>
+    <div id="container">
 {{end}}

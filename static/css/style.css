@@ -1,0 +1,165 @@
+:root {
+    --body-color: #111111;
+    --back-color: #333333;
+    --border-color: #666666;
+    --text-color: #cccccc;
+}
+
+body {
+    background-color: var(--body-color);
+    font-size: 20px;
+}
+
+#menu-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+#menu-container .menu-item {
+    background-color: var(--body-color);
+    color: var(--text-color);
+    border: none;
+    width: 80px;
+    height: 80px;
+    margin: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#menu-container .menu-item img {
+    max-width: 100%;
+    max-height: 100%;
+    border-radius: 5px;
+}
+
+.menu-item img:hover {
+    transform: scale(1.1);
+}
+
+#menu-container .menu-item span {
+    margin-top: 5px;
+    font-size: 16px;
+}
+
+#container {
+    max-width: 990px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+}
+
+.element {
+    display: flex;
+    justify-content: flex-start;
+    padding: 1%;
+    margin: 1%;
+    background-color: var(--back-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 10px;
+}
+
+.image-container {
+    width: 100px;
+    height: 120px;
+    min-width: 100px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+}
+
+.image-container img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.content {
+   display: flex;
+   flex-direction: column;
+   width: 100%;
+}
+
+.content p {
+    margin-top: 0;
+    margin-left: 2%;
+}
+
+.buttons {
+    display: flex;
+}
+
+.buttons-right {
+    margin-left: auto;
+    height: 20px;
+}
+
+.buttons-center {
+    margin: 0 auto;
+    height: 20px;
+}
+
+.buttons button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 5px;
+    color: var(--text-color);
+    font-size: 20px;
+}
+
+.buttons button:hover {
+    color: var(--border-color);
+}
+
+.custom-button {
+    background-color: var(--back-color);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    color: var(--text-color);;
+    padding: 10px 20px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.custom-button:hover {
+    color: var(--border-color);;
+}
+
+.custom-select {
+    appearance: none;
+    padding: 10px 20px;
+    font-size: 20px;
+    border: 1px solid var(--border-color);
+    background-color: var(--text-color);
+    color: var(--back-color);;
+    cursor: pointer;
+    outline: none;
+}
+
+.custom-select:hover {
+    border-color: var(--text-color);
+    color: var(--back-color);
+}
+
+.custom-select option {
+    background-color: var(--text-color);
+    color: var(--back-color);
+}
+
+.custom-input {
+    padding: 10px 20px;
+    font-size: 20px;
+    border: 1px solid var(--border-color);
+    background-color: var(--text-color);
+    color: var(--back-color);
+    /*outline: none;*/
+}
+
+.custom-input:focus, .custom-input:hover {
+    border-color: var(--text-color);
+}
