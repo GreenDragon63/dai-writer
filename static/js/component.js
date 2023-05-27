@@ -6,7 +6,6 @@ class Component {
         this._callbacks = callbacks;
         for (var key in parameters) {
             this[key] = parameters[key];
-            console.log(key + " : " + this[key]);
         }
         this._element = this._createElementFromHTML(this._template());
         this._element.id = id;
