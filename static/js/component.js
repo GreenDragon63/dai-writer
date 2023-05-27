@@ -31,7 +31,7 @@ class Component {
 
     _addCallbacks() {
         if (!this._inDom) {
-            throw "Componant not in DOM";
+            throw "Component not in DOM";
         }
         for (var key in this._callbacks) {
             var element = document.getElementById(key+"-"+this._id);
