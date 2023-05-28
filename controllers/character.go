@@ -77,11 +77,16 @@ func UploadCharacter(c *gin.Context) {
 
 	file, err := c.FormFile("file")
 
-	err = c.SaveUploadedFile(file, models.UploadCharacterPath(&user))
+	pngFile := models.UploadCharacterPath(&user)
+	err = c.SaveUploadedFile(file, pngFile)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
 		return
 	}
-
+	ok = models.DecodeCharacter(pngFile)
+	if ok != true {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Not a png character card"})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{"message": "ok"})
 }
