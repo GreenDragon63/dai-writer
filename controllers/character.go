@@ -3,6 +3,7 @@ package controllers
 import (
 	"dai-writer/auth"
 	"dai-writer/models"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -53,11 +54,17 @@ func PostCharacter(c *gin.Context) {
 
 	if err := c.BindJSON(&character); err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid character format"})
 		return
 	}
 
-	ok = models.SaveJson("characters/", user.Id, id, c)
+	jsonData, err := ioutil.ReadAll(c.Request.Body)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid character format"})
+		return
+	}
+
+	ok = models.SaveCharacter(&user, id, jsonData)
 	if ok != true {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal server error"})
 		return

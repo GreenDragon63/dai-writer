@@ -41,10 +41,14 @@ func LoadCharacter(u *auth.User, id int) (Character, error) {
 	return chara, nil
 }
 
+func SaveCharacter(u *auth.User, id int, chara []byte) bool {
+	return saveJson("characters/", u.Id, id, chara)
+}
+
 func UploadCharacterPath(u *auth.User) string {
 	var id int = 0
 
-	id = GetId("characters/", u.Id)
+	id = getId("characters/", u.Id)
 	if id == 0 {
 		return ""
 	}

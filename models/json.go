@@ -6,11 +6,9 @@ import (
 	"os"
 	"strconv"
 	"strings"
-
-	"github.com/gin-gonic/gin"
 )
 
-func GetId(prefix string, uid int) int {
+func getId(prefix string, uid int) int {
 	var id int = 0
 
 	path := prefix + strconv.Itoa(uid) + "/"
@@ -42,12 +40,12 @@ func GetId(prefix string, uid int) int {
 	return id
 }
 
-func SaveJson(prefix string, uid int, id int, c *gin.Context) bool {
+func saveJson(prefix string, uid int, id int, jsonData []byte) bool {
 	var final_id int = 0
 	var path string
 
 	if id == 0 {
-		final_id = GetId(prefix, uid)
+		final_id = getId(prefix, uid)
 	} else {
 		final_id = id
 	}
@@ -63,12 +61,6 @@ func SaveJson(prefix string, uid int, id int, c *gin.Context) bool {
 		return false
 	}
 	path = prefix + strconv.Itoa(uid) + "/" + strconv.Itoa(final_id) + ".json"
-
-	jsonData, err := ioutil.ReadAll(c.Request.Body)
-	if err != nil {
-		log.Println(err.Error())
-		return false
-	}
 
 	err = ioutil.WriteFile(path, jsonData, 0644)
 	if err != nil {
