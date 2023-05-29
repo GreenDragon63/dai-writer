@@ -4,7 +4,6 @@ import (
 	"dai-writer/auth"
 	"encoding/base64"
 	"encoding/binary"
-	"encoding/json"
 	"io"
 	"log"
 	"os"
@@ -20,29 +19,16 @@ type Character struct {
 	Scenario    string `json:"scenario"`
 }
 
-func LoadCharacter(u *auth.User, id int) (Character, error) {
-	var chara Character
-
-	path := "characters/" + strconv.Itoa(u.Id) + "/" + strconv.Itoa(id) + ".json"
-	file, err := os.Open(path)
-	if err != nil {
-		log.Println(err.Error())
-		return chara, err
-	}
-	defer file.Close()
-
-	decoder := json.NewDecoder(file)
-
-	err = decoder.Decode(&chara)
-	if err != nil {
-		log.Println(err.Error())
-		return chara, err
-	}
-	return chara, nil
+func LoadCharacter(u *auth.User, id int) (Character, bool) {
+	return loadJson[Character]("characters/", u.Id, id)
 }
 
 func SaveCharacter(u *auth.User, id int, chara []byte) bool {
 	return saveJson("characters/", u.Id, id, chara)
+}
+
+func DeleteCharacter(u *auth.User, id int) bool {
+	return deleteJson("characters/", u.Id, id)
 }
 
 func UploadCharacterPath(u *auth.User) string {

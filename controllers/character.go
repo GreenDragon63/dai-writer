@@ -26,8 +26,8 @@ func GetCharacter(c *gin.Context) {
 		return
 	}
 	user = u.(auth.User)
-	chara, err := models.LoadCharacter(&user, id)
-	if err != nil {
+	chara, ok := models.LoadCharacter(&user, id)
+	if ok != true {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Character not found"})
 		return
 	}
@@ -65,6 +65,31 @@ func PostCharacter(c *gin.Context) {
 	}
 
 	ok = models.SaveCharacter(&user, id, jsonData)
+	if ok != true {
+		c.JSON(http.StatusNotFound, gin.H{"message": "Character not found"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "ok"})
+}
+
+func DeleteCharacter(c *gin.Context) {
+	var user auth.User
+	var id int
+	var ok bool
+
+	u, ok := c.Get("current_user")
+	if ok != true {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+		return
+	}
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Bad parameter"})
+		return
+	}
+	user = u.(auth.User)
+
+	ok = models.DeleteCharacter(&user, id)
 	if ok != true {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal server error"})
 		return

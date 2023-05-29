@@ -1,6 +1,7 @@
 package models
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"os"
@@ -40,6 +41,27 @@ func getId(prefix string, uid int) int {
 	return id
 }
 
+func loadJson[T any](prefix string, uid int, id int) (T, bool) {
+	var data T
+
+	path := prefix + strconv.Itoa(uid) + "/" + strconv.Itoa(id) + ".json"
+	file, err := os.Open(path)
+	if err != nil {
+		log.Println(err.Error())
+		return data, false
+	}
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+
+	err = decoder.Decode(&data)
+	if err != nil {
+		log.Println(err.Error())
+		return data, false
+	}
+	return data, true
+}
+
 func saveJson(prefix string, uid int, id int, jsonData []byte) bool {
 	var final_id int = 0
 	var path string
@@ -68,5 +90,16 @@ func saveJson(prefix string, uid int, id int, jsonData []byte) bool {
 		return false
 	}
 
+	return true
+}
+
+func deleteJson(prefix string, uid int, id int) bool {
+	path := "characters/" + strconv.Itoa(uid) + "/" + strconv.Itoa(id) + ".json"
+	salvage := "characters/" + strconv.Itoa(uid) + "/" + strconv.Itoa(id) + ".json.del"
+	err := os.Rename(path, salvage)
+	if err != nil {
+		log.Println(err.Error())
+		return false
+	}
 	return true
 }
