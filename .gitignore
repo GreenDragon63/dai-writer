@@ -24,7 +24,10 @@ go.work
 /local
 /go
 /log
-/characters
+/Characters
+/Books
+/Scenes
+/Lines
 /books
 /scenes
 /lines
