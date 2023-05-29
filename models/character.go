@@ -10,8 +10,10 @@ import (
 	"strconv"
 )
 
+const prefixCharacter string = "Characters/"
+
 type Character struct {
-	Name        string `json:"name"`
+	Name        string `json:"name" binding:"required"`
 	Description string `json:"description"`
 	Personality string `json:"personality"`
 	First_mes   string `json:"first_mes"`
@@ -20,25 +22,25 @@ type Character struct {
 }
 
 func LoadCharacter(u *auth.User, id int) (Character, bool) {
-	return loadJson[Character]("characters/", u.Id, id)
+	return loadJson[Character](prefixCharacter, u.Id, id)
 }
 
-func SaveCharacter(u *auth.User, id int, chara []byte) bool {
-	return saveJson("characters/", u.Id, id, chara)
+func SaveCharacter(u *auth.User, id int, data []byte) bool {
+	return saveJson(prefixCharacter, u.Id, id, data)
 }
 
 func DeleteCharacter(u *auth.User, id int) bool {
-	return deleteJson("characters/", u.Id, id)
+	return deleteJson(prefixCharacter, u.Id, id)
 }
 
 func UploadCharacterPath(u *auth.User) string {
 	var id int = 0
 
-	id = getId("characters/", u.Id)
+	id = getId(prefixCharacter, u.Id)
 	if id == 0 {
 		return ""
 	}
-	return "characters/" + strconv.Itoa(u.Id) + "/" + strconv.Itoa(id) + ".png"
+	return prefixCharacter + strconv.Itoa(u.Id) + "/" + strconv.Itoa(id) + ".png"
 }
 
 func DecodeCharacter(fileName string) bool {
