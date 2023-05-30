@@ -21,8 +21,8 @@ func LoadLine(u *auth.User, id int) (Line, bool) {
 	return loadJson[Line](prefixLine, u.Id, id)
 }
 
-func SaveLine(u *auth.User, id int, data []byte) bool {
-	return saveJson(prefixLine, u.Id, id, data)
+func SaveLine(u *auth.User, id int, postData Line) bool {
+	return saveJson(prefixLine, u.Id, id, postData)
 }
 
 func DeleteLine(u *auth.User, id int) bool {

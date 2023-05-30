@@ -20,8 +20,8 @@ func LoadBook(u *auth.User, id int) (Book, bool) {
 	return loadJson[Book](prefixBook, u.Id, id)
 }
 
-func SaveBook(u *auth.User, id int, data []byte) bool {
-	return saveJson(prefixBook, u.Id, id, data)
+func SaveBook(u *auth.User, id int, postData Book) bool {
+	return saveJson(prefixBook, u.Id, id, postData)
 }
 
 func DeleteBook(u *auth.User, id int) bool {
