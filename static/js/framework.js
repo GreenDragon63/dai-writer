@@ -57,7 +57,19 @@ class Component {
 
 }
 
-c = new Component("testid", {"param":"test"}, {"button":{"click":() => alert("Working")}});
-c.appendToDom("container");
-c.removeFromDom();
-c.appendToDom("container");
+const EventBus = {
+    register(event, callback) {
+        document.addEventListener(event, (e) => callback(e.detail));
+    },
+    dispatch(event, data) {
+        document.dispatchEvent(new CustomEvent(event, { detail: data }));
+    },
+    remove(event, callback) {
+        document.removeEventListener(event, callback);
+    },
+};
+
+export { Component, EventBus };
+
+//c = new Component("testid", {"param":"test"}, {"button":{"click":() => alert("Working")}});
+

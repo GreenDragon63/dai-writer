@@ -10,6 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func Character(c *gin.Context) {
+	c.HTML(http.StatusOK, "character.tmpl", gin.H{
+		"title": "Character",
+	})
+}
+
 func ListCharacter(c *gin.Context) {
 	var user auth.User
 

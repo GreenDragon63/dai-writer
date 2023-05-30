@@ -12,10 +12,11 @@ func AddPublics(router *gin.Engine) {
 	router.LoadHTMLGlob("views/*")
 	router.GET("/", controllers.GetIndex)
 	router.POST("/login", auth.Login)
+	router.GET("/character/", controllers.Character)
 }
 
 func AddPrivates(router *gin.Engine) {
-	privates := router.Group("/private", auth.GetCurrentUser())
+	privates := router.Group("/api", auth.GetCurrentUser())
 	{
 		privates.GET("/character/", controllers.ListCharacter)
 		privates.GET("/character/:id", controllers.GetCharacter)
