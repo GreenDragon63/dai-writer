@@ -30,7 +30,7 @@ func LoadCharacter(u *auth.User, id int) (Character, bool) {
 }
 
 func SaveCharacter(u *auth.User, id int, postData Character) bool {
-	return saveJson(prefixCharacter, u.Id, id, postData)
+	return saveJson[Character](prefixCharacter, u.Id, id, postData)
 }
 
 func DeleteCharacter(u *auth.User, id int) bool {

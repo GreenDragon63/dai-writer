@@ -23,7 +23,7 @@ func LoadScene(u *auth.User, id int) (Scene, bool) {
 }
 
 func SaveScene(u *auth.User, id int, postData Scene) bool {
-	return saveJson(prefixScene, u.Id, id, postData)
+	return saveJson[Scene](prefixScene, u.Id, id, postData)
 }
 
 func DeleteScene(u *auth.User, id int) bool {

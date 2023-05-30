@@ -22,7 +22,7 @@ func LoadLine(u *auth.User, id int) (Line, bool) {
 }
 
 func SaveLine(u *auth.User, id int, postData Line) bool {
-	return saveJson(prefixLine, u.Id, id, postData)
+	return saveJson[Line](prefixLine, u.Id, id, postData)
 }
 
 func DeleteLine(u *auth.User, id int) bool {
