@@ -96,7 +96,7 @@ func loadJson[T any](prefix string, uid int, id int) (T, bool) {
 	return data, true
 }
 
-func saveJson(prefix string, uid int, id int, jsonData []byte) bool {
+func saveJson[T any](prefix string, uid int, id int, data T) bool {
 	var final_id int = 0
 	var path string
 
@@ -120,6 +120,12 @@ func saveJson(prefix string, uid int, id int, jsonData []byte) bool {
 		return false
 	}
 	path = prefix + strconv.Itoa(uid) + "/" + strconv.Itoa(final_id) + ".json"
+
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		log.Println(err.Error())
+		return false
+	}
 
 	err = ioutil.WriteFile(path, jsonData, 0644)
 	if err != nil {

@@ -3,7 +3,6 @@ package controllers
 import (
 	"dai-writer/auth"
 	"dai-writer/models"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -75,13 +74,7 @@ func PostCharacter(c *gin.Context) {
 		return
 	}
 
-	jsonData, err := ioutil.ReadAll(c.Request.Body)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid character format"})
-		return
-	}
-
-	ok = models.SaveCharacter(&user, id, jsonData)
+	ok = models.SaveCharacter(&user, id, character)
 	if ok != true {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Character not found"})
 		return
