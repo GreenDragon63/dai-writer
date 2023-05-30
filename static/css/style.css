@@ -7,6 +7,7 @@
 
 body {
     background-color: var(--body-color);
+    font-family: "Times New Roman", serif;
     font-size: 20px;
 }
 
@@ -152,14 +153,23 @@ body {
 }
 
 .custom-input {
+    font-family: "Times New Roman", serif;
     padding: 10px 20px;
     font-size: 20px;
     border: 1px solid var(--border-color);
     background-color: var(--text-color);
     color: var(--back-color);
-    /*outline: none;*/
 }
 
 .custom-input:focus, .custom-input:hover {
     border-color: var(--text-color);
+}
+
+.custom-textarea {
+    font-family: "Times New Roman", serif;
+    padding: 10px 20px;
+    font-size: 20px;
+    border: 1px solid var(--border-color);
+    background-color: var(--text-color);
+    color: var(--back-color);
 }
