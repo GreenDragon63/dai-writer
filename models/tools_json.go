@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -41,6 +42,37 @@ func getId(prefix string, uid int) int {
 	return id
 }
 
+func listJson[T any](prefix string, uid int) ([]T, bool) {
+	var data []T
+
+	path := prefix + strconv.Itoa(uid) + "/"
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		log.Println(err.Error())
+		return data, false
+	}
+
+	for _, file := range files {
+		if filepath.Ext(file.Name()) == ".json" {
+			content, err := ioutil.ReadFile(path + file.Name())
+			if err != nil {
+				log.Println(err.Error())
+				return data, false
+			}
+
+			var item T
+			err = json.Unmarshal(content, &item)
+			if err != nil {
+				log.Println(err.Error())
+				return data, false
+			}
+			data = append(data, item)
+		}
+	}
+
+	return data, true
+}
+
 func loadJson[T any](prefix string, uid int, id int) (T, bool) {
 	var data T
 
@@ -48,20 +80,19 @@ func loadJson[T any](prefix string, uid int, id int) (T, bool) {
 	defer um.unlock(uid)
 
 	path := prefix + strconv.Itoa(uid) + "/" + strconv.Itoa(id) + ".json"
-	file, err := os.Open(path)
+
+	content, err := ioutil.ReadFile(path)
 	if err != nil {
 		log.Println(err.Error())
 		return data, false
 	}
-	defer file.Close()
 
-	decoder := json.NewDecoder(file)
-
-	err = decoder.Decode(&data)
+	err = json.Unmarshal(content, &data)
 	if err != nil {
 		log.Println(err.Error())
 		return data, false
 	}
+
 	return data, true
 }
 

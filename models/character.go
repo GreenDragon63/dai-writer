@@ -21,6 +21,10 @@ type Character struct {
 	Scenario    string `json:"scenario"`
 }
 
+func ListCharacter(u *auth.User) ([]Character, bool) {
+	return listJson[Character](prefixCharacter, u.Id)
+}
+
 func LoadCharacter(u *auth.User, id int) (Character, bool) {
 	return loadJson[Character](prefixCharacter, u.Id, id)
 }

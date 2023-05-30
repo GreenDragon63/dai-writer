@@ -11,6 +11,23 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func ListCharacter(c *gin.Context) {
+	var user auth.User
+
+	u, ok := c.Get("current_user")
+	if ok != true {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+		return
+	}
+	user = u.(auth.User)
+	chara, ok := models.ListCharacter(&user)
+	if ok != true {
+		c.JSON(http.StatusNotFound, gin.H{"message": "Character not found"})
+		return
+	}
+	c.JSON(http.StatusOK, chara)
+}
+
 func GetCharacter(c *gin.Context) {
 	var user auth.User
 	var id int

@@ -12,6 +12,10 @@ type Book struct {
 	First_scene int    `json:"first_scene"`
 }
 
+func ListBook(u *auth.User) ([]Book, bool) {
+	return listJson[Book](prefixBook, u.Id)
+}
+
 func LoadBook(u *auth.User, id int) (Book, bool) {
 	return loadJson[Book](prefixBook, u.Id, id)
 }

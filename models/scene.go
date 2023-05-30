@@ -14,6 +14,10 @@ type Scene struct {
 	Next_scene     int    `json:"next_scene" binding:"required"`
 }
 
+func ListScene(u *auth.User) ([]Scene, bool) {
+	return listJson[Scene](prefixScene, u.Id)
+}
+
 func LoadScene(u *auth.User, id int) (Scene, bool) {
 	return loadJson[Scene](prefixScene, u.Id, id)
 }

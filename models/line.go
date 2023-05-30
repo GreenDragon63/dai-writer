@@ -13,6 +13,10 @@ type Line struct {
 	Next_Line     int    `json:"next_Line" binding:"required"`
 }
 
+func ListLine(u *auth.User) ([]Line, bool) {
+	return listJson[Line](prefixLine, u.Id)
+}
+
 func LoadLine(u *auth.User, id int) (Line, bool) {
 	return loadJson[Line](prefixLine, u.Id, id)
 }

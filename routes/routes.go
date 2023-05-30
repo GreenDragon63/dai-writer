@@ -17,6 +17,7 @@ func AddPublics(router *gin.Engine) {
 func AddPrivates(router *gin.Engine) {
 	privates := router.Group("/private", auth.GetCurrentUser())
 	{
+		privates.GET("/character/", controllers.ListCharacter)
 		privates.GET("/character/:id", controllers.GetCharacter)
 		privates.POST("/character/:id", controllers.PostCharacter)
 		privates.DELETE("/character/:id", controllers.DeleteCharacter)
