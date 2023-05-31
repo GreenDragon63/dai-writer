@@ -2,6 +2,7 @@ package models
 
 import (
 	"dai-writer/auth"
+	"strconv"
 )
 
 const prefixScene string = "Scenes/"
@@ -14,18 +15,22 @@ type Scene struct {
 	Next_scene     int    `json:"next_scene" binding:"required"`
 }
 
-func ListScene(u *auth.User) ([]Scene, bool) {
-	return listJson[Scene](prefixScene, u.Id)
+func ListScene(u *auth.User, book int) ([]Scene, bool) {
+	path := prefixScene + strconv.Itoa(book) + "/"
+	return listJson[Scene](path, u.Id)
 }
 
-func LoadScene(u *auth.User, id int) (Scene, bool) {
-	return loadJson[Scene](prefixScene, u.Id, id)
+func LoadScene(u *auth.User, book int, id int) (Scene, bool) {
+	path := prefixScene + strconv.Itoa(book) + "/"
+	return loadJson[Scene](path, u.Id, id)
 }
 
-func SaveScene(u *auth.User, id int, postData Scene) bool {
-	return saveJson[Scene](prefixScene, u.Id, id, postData)
+func SaveScene(u *auth.User, book int, id int, postData Scene) bool {
+	path := prefixScene + strconv.Itoa(book) + "/"
+	return saveJson[Scene](path, u.Id, id, postData)
 }
 
-func DeleteScene(u *auth.User, id int) bool {
-	return deleteJson(prefixScene, u.Id, id)
+func DeleteScene(u *auth.User, book int, id int) bool {
+	path := prefixScene + strconv.Itoa(book) + "/"
+	return deleteJson(path, u.Id, id)
 }

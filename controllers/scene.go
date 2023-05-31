@@ -10,13 +10,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Character(c *gin.Context) {
-	c.HTML(http.StatusOK, "character.tmpl", gin.H{
-		"title": "Character",
+func Scene(c *gin.Context) {
+	c.HTML(http.StatusOK, "Scene.tmpl", gin.H{
+		"title": "Scene",
 	})
 }
 
-func ListCharacter(c *gin.Context) {
+func ListScene(c *gin.Context) {
 	var user auth.User
 
 	u, ok := c.Get("current_user")
@@ -24,16 +24,21 @@ func ListCharacter(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
 		return
 	}
+	book, err := strconv.Atoi(c.Param("book"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Bad parameter"})
+		return
+	}
 	user = u.(auth.User)
-	chara, ok := models.ListCharacter(&user)
+	chara, ok := models.ListScene(&user, book)
 	if ok != true {
-		c.JSON(http.StatusNotFound, gin.H{"message": "Character not found"})
+		c.JSON(http.StatusNotFound, gin.H{"message": "Scene not found"})
 		return
 	}
 	c.JSON(http.StatusOK, chara)
 }
 
-func GetCharacter(c *gin.Context) {
+func GetScene(c *gin.Context) {
 	var user auth.User
 	var id int
 
@@ -47,20 +52,25 @@ func GetCharacter(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Bad parameter"})
 		return
 	}
+	book, err := strconv.Atoi(c.Param("book"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Bad parameter"})
+		return
+	}
 	user = u.(auth.User)
-	chara, ok := models.LoadCharacter(&user, id)
+	chara, ok := models.LoadScene(&user, book, id)
 	if ok != true {
-		c.JSON(http.StatusNotFound, gin.H{"message": "Character not found"})
+		c.JSON(http.StatusNotFound, gin.H{"message": "Scene not found"})
 		return
 	}
 	c.JSON(http.StatusOK, chara)
 }
 
-func PostCharacter(c *gin.Context) {
+func PostScene(c *gin.Context) {
 	var user auth.User
 	var id int
 	var ok bool
-	var character models.Character
+	var Scene models.Scene
 
 	u, ok := c.Get("current_user")
 	if ok != true {
@@ -72,22 +82,27 @@ func PostCharacter(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Bad parameter"})
 		return
 	}
-	user = u.(auth.User)
-	if err := c.BindJSON(&character); err != nil {
-		log.Println(err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid character format"})
+	book, err := strconv.Atoi(c.Param("book"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Bad parameter"})
 		return
 	}
+	user = u.(auth.User)
 
-	ok = models.SaveCharacter(&user, id, character)
+	if err := c.BindJSON(&Scene); err != nil {
+		log.Println(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Scene format"})
+		return
+	}
+	ok = models.SaveScene(&user, book, id, Scene)
 	if ok != true {
-		c.JSON(http.StatusNotFound, gin.H{"message": "Character not found"})
+		c.JSON(http.StatusNotFound, gin.H{"message": "Scene not found"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "ok"})
 }
 
-func DeleteCharacter(c *gin.Context) {
+func DeleteScene(c *gin.Context) {
 	var user auth.User
 	var id int
 	var ok bool
@@ -102,34 +117,15 @@ func DeleteCharacter(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Bad parameter"})
 		return
 	}
+	book, err := strconv.Atoi(c.Param("book"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Bad parameter"})
+		return
+	}
 	user = u.(auth.User)
-	ok = models.DeleteCharacter(&user, id)
+	ok = models.DeleteScene(&user, book, id)
 	if ok != true {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal server error"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"message": "ok"})
-}
-
-func UploadCharacter(c *gin.Context) {
-	var user auth.User
-
-	u, ok := c.Get("current_user")
-	if ok != true {
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
-		return
-	}
-	user = u.(auth.User)
-	file, err := c.FormFile("file")
-	pngFile := models.UploadCharacterPath(&user)
-	err = c.SaveUploadedFile(file, pngFile)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
-		return
-	}
-	ok = models.DecodeCharacter(pngFile)
-	if ok != true {
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "Not a png character card"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "ok"})

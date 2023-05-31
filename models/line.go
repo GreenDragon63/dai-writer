@@ -2,6 +2,7 @@ package models
 
 import (
 	"dai-writer/auth"
+	"strconv"
 )
 
 const prefixLine string = "Lines/"
@@ -13,18 +14,22 @@ type Line struct {
 	Next_Line     int    `json:"next_Line" binding:"required"`
 }
 
-func ListLine(u *auth.User) ([]Line, bool) {
-	return listJson[Line](prefixLine, u.Id)
+func ListLine(u *auth.User, book int, scene int) ([]Line, bool) {
+	path := prefixLine + strconv.Itoa(book) + "/" + strconv.Itoa(scene) + "/"
+	return listJson[Line](path, u.Id)
 }
 
-func LoadLine(u *auth.User, id int) (Line, bool) {
-	return loadJson[Line](prefixLine, u.Id, id)
+func LoadLine(u *auth.User, book int, scene int, id int) (Line, bool) {
+	path := prefixLine + strconv.Itoa(book) + "/" + strconv.Itoa(scene) + "/"
+	return loadJson[Line](path, u.Id, id)
 }
 
-func SaveLine(u *auth.User, id int, postData Line) bool {
-	return saveJson[Line](prefixLine, u.Id, id, postData)
+func SaveLine(u *auth.User, book int, scene int, id int, postData Line) bool {
+	path := prefixLine + strconv.Itoa(book) + "/" + strconv.Itoa(scene) + "/"
+	return saveJson[Line](path, u.Id, id, postData)
 }
 
-func DeleteLine(u *auth.User, id int) bool {
-	return deleteJson(prefixLine, u.Id, id)
+func DeleteLine(u *auth.User, book int, scene int, id int) bool {
+	path := prefixLine + strconv.Itoa(book) + "/" + strconv.Itoa(scene) + "/"
+	return deleteJson(path, u.Id, id)
 }

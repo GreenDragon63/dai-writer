@@ -10,13 +10,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Character(c *gin.Context) {
-	c.HTML(http.StatusOK, "character.tmpl", gin.H{
-		"title": "Character",
+func Book(c *gin.Context) {
+	c.HTML(http.StatusOK, "Book.tmpl", gin.H{
+		"title": "Book",
 	})
 }
 
-func ListCharacter(c *gin.Context) {
+func ListBook(c *gin.Context) {
 	var user auth.User
 
 	u, ok := c.Get("current_user")
@@ -25,15 +25,15 @@ func ListCharacter(c *gin.Context) {
 		return
 	}
 	user = u.(auth.User)
-	chara, ok := models.ListCharacter(&user)
+	chara, ok := models.ListBook(&user)
 	if ok != true {
-		c.JSON(http.StatusNotFound, gin.H{"message": "Character not found"})
+		c.JSON(http.StatusNotFound, gin.H{"message": "Book not found"})
 		return
 	}
 	c.JSON(http.StatusOK, chara)
 }
 
-func GetCharacter(c *gin.Context) {
+func GetBook(c *gin.Context) {
 	var user auth.User
 	var id int
 
@@ -48,19 +48,19 @@ func GetCharacter(c *gin.Context) {
 		return
 	}
 	user = u.(auth.User)
-	chara, ok := models.LoadCharacter(&user, id)
+	chara, ok := models.LoadBook(&user, id)
 	if ok != true {
-		c.JSON(http.StatusNotFound, gin.H{"message": "Character not found"})
+		c.JSON(http.StatusNotFound, gin.H{"message": "Book not found"})
 		return
 	}
 	c.JSON(http.StatusOK, chara)
 }
 
-func PostCharacter(c *gin.Context) {
+func PostBook(c *gin.Context) {
 	var user auth.User
 	var id int
 	var ok bool
-	var character models.Character
+	var Book models.Book
 
 	u, ok := c.Get("current_user")
 	if ok != true {
@@ -73,21 +73,20 @@ func PostCharacter(c *gin.Context) {
 		return
 	}
 	user = u.(auth.User)
-	if err := c.BindJSON(&character); err != nil {
+	if err := c.BindJSON(&Book); err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid character format"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Book format"})
 		return
 	}
-
-	ok = models.SaveCharacter(&user, id, character)
+	ok = models.SaveBook(&user, id, Book)
 	if ok != true {
-		c.JSON(http.StatusNotFound, gin.H{"message": "Character not found"})
+		c.JSON(http.StatusNotFound, gin.H{"message": "Book not found"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "ok"})
 }
 
-func DeleteCharacter(c *gin.Context) {
+func DeleteBook(c *gin.Context) {
 	var user auth.User
 	var id int
 	var ok bool
@@ -103,33 +102,9 @@ func DeleteCharacter(c *gin.Context) {
 		return
 	}
 	user = u.(auth.User)
-	ok = models.DeleteCharacter(&user, id)
+	ok = models.DeleteBook(&user, id)
 	if ok != true {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal server error"})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"message": "ok"})
-}
-
-func UploadCharacter(c *gin.Context) {
-	var user auth.User
-
-	u, ok := c.Get("current_user")
-	if ok != true {
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
-		return
-	}
-	user = u.(auth.User)
-	file, err := c.FormFile("file")
-	pngFile := models.UploadCharacterPath(&user)
-	err = c.SaveUploadedFile(file, pngFile)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
-		return
-	}
-	ok = models.DecodeCharacter(pngFile)
-	if ok != true {
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "Not a png character card"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "ok"})
