@@ -1,5 +1,8 @@
 import { SceneComponent } from "./scene-component.js"
 
+
+
+
 fetch("/api" + window.location.pathname)
     .then(response => response.json())
     .then(data => {

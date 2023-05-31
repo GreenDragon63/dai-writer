@@ -8,9 +8,14 @@ import (
 const prefixBook string = "Books/"
 
 type Book struct {
+	Id          int    `json:"id"`
 	Name        string `json:"name" binding:"required"`
 	Description string `json:"description"`
 	First_scene int    `json:"first_scene"`
+}
+
+func (b Book) setId(id int) {
+	b.Id = id
 }
 
 func ListBook(u *auth.User) ([]Book, bool) {

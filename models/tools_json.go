@@ -10,6 +10,10 @@ import (
 	"strings"
 )
 
+type Identifiable interface {
+	setId(id int)
+}
+
 func getId(prefix string) int {
 	var id int = 0
 
@@ -42,7 +46,7 @@ func getId(prefix string) int {
 	return id
 }
 
-func listJson[T any](prefix string, uid int) ([]T, bool) {
+func listJson[T Identifiable](prefix string, uid int) ([]T, bool) {
 	var data []T
 
 	um.lock(uid)
@@ -82,7 +86,7 @@ func listJson[T any](prefix string, uid int) ([]T, bool) {
 	return data, true
 }
 
-func loadJson[T any](prefix string, uid int, id int) (T, bool) {
+func loadJson[T Identifiable](prefix string, uid int, id int) (T, bool) {
 	var data T
 
 	um.lock(uid)
@@ -105,7 +109,7 @@ func loadJson[T any](prefix string, uid int, id int) (T, bool) {
 	return data, true
 }
 
-func saveJson[T any](prefix string, uid int, id int, data T) bool {
+func saveJson[T Identifiable](prefix string, uid int, id int, data T) bool {
 	var final_id int = 0
 	var path string
 
@@ -116,6 +120,7 @@ func saveJson[T any](prefix string, uid int, id int, data T) bool {
 		final_id = getId(prefix)
 	} else {
 		final_id = id
+		data.setId(final_id)
 	}
 
 	if final_id == 0 {

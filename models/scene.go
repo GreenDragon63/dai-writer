@@ -8,11 +8,16 @@ import (
 const prefixScene string = "Scenes/"
 
 type Scene struct {
+	Id             int    `json:"id"`
 	Description    string `json:"description" binding:"required"`
 	Characters     []int  `json:"characters" binding:"required,dive"`
 	First_line     int    `json:"first_line"`
 	Previous_scene int    `json:"previous_scene" binding:"required"`
 	Next_scene     int    `json:"next_scene" binding:"required"`
+}
+
+func (s Scene) setId(id int) {
+	s.Id = id
 }
 
 func ListScene(u *auth.User, book int) ([]Scene, bool) {
