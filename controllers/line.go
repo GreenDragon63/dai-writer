@@ -11,7 +11,7 @@ import (
 )
 
 func Line(c *gin.Context) {
-	c.HTML(http.StatusOK, "Line.tmpl", gin.H{
+	c.HTML(http.StatusOK, "line.tmpl", gin.H{
 		"title": "Line",
 	})
 }

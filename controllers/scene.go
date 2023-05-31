@@ -11,7 +11,7 @@ import (
 )
 
 func Scene(c *gin.Context) {
-	c.HTML(http.StatusOK, "Scene.tmpl", gin.H{
+	c.HTML(http.StatusOK, "scene.tmpl", gin.H{
 		"title": "Scene",
 	})
 }

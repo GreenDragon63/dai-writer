@@ -1,6 +1,6 @@
 import { CharacterComponent } from "./character-component.js"
 
-fetch("/api/character/")
+fetch("/api" + window.location.pathname)
     .then(response => response.json())
     .then(data => {
         var id = 0;

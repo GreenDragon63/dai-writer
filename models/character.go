@@ -22,29 +22,34 @@ type Character struct {
 }
 
 func ListCharacter(u *auth.User) ([]Character, bool) {
-	return listJson[Character](prefixCharacter, u.Id)
+	path := prefixCharacter + strconv.Itoa(u.Id) + "/"
+	return listJson[Character](path, u.Id)
 }
 
 func LoadCharacter(u *auth.User, id int) (Character, bool) {
-	return loadJson[Character](prefixCharacter, u.Id, id)
+	path := prefixCharacter + strconv.Itoa(u.Id) + "/"
+	return loadJson[Character](path, u.Id, id)
 }
 
 func SaveCharacter(u *auth.User, id int, postData Character) bool {
-	return saveJson[Character](prefixCharacter, u.Id, id, postData)
+	path := prefixCharacter + strconv.Itoa(u.Id) + "/"
+	return saveJson[Character](path, u.Id, id, postData)
 }
 
 func DeleteCharacter(u *auth.User, id int) bool {
-	return deleteJson(prefixCharacter, u.Id, id)
+	path := prefixCharacter + strconv.Itoa(u.Id) + "/"
+	return deleteJson(path, u.Id, id)
 }
 
 func UploadCharacterPath(u *auth.User) string {
 	var id int = 0
 
-	id = getId(prefixCharacter, u.Id)
+	path := prefixCharacter + strconv.Itoa(u.Id) + "/"
+	id = getId(path)
 	if id == 0 {
 		return ""
 	}
-	return prefixCharacter + strconv.Itoa(u.Id) + "/" + strconv.Itoa(id) + ".png"
+	return prefixCharacter + strconv.Itoa(id) + ".png"
 }
 
 func DecodeCharacter(fileName string) bool {

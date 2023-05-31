@@ -2,6 +2,7 @@ package models
 
 import (
 	"dai-writer/auth"
+	"strconv"
 )
 
 const prefixBook string = "Books/"
@@ -13,17 +14,21 @@ type Book struct {
 }
 
 func ListBook(u *auth.User) ([]Book, bool) {
-	return listJson[Book](prefixBook, u.Id)
+	path := prefixBook + strconv.Itoa(u.Id) + "/"
+	return listJson[Book](path, u.Id)
 }
 
 func LoadBook(u *auth.User, id int) (Book, bool) {
-	return loadJson[Book](prefixBook, u.Id, id)
+	path := prefixBook + strconv.Itoa(u.Id) + "/"
+	return loadJson[Book](path, u.Id, id)
 }
 
 func SaveBook(u *auth.User, id int, postData Book) bool {
-	return saveJson[Book](prefixBook, u.Id, id, postData)
+	path := prefixBook + strconv.Itoa(u.Id) + "/"
+	return saveJson[Book](path, u.Id, id, postData)
 }
 
 func DeleteBook(u *auth.User, id int) bool {
-	return deleteJson(prefixBook, u.Id, id)
+	path := prefixBook + strconv.Itoa(u.Id) + "/"
+	return deleteJson(path, u.Id, id)
 }

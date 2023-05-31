@@ -10,10 +10,10 @@ import (
 	"strings"
 )
 
-func getId(prefix string, uid int) int {
+func getId(prefix string) int {
 	var id int = 0
 
-	path := prefix + strconv.Itoa(uid) + "/"
+	path := prefix
 	err := os.MkdirAll(path, 0755)
 	if err != nil {
 		log.Println(err.Error())
@@ -45,7 +45,16 @@ func getId(prefix string, uid int) int {
 func listJson[T any](prefix string, uid int) ([]T, bool) {
 	var data []T
 
-	path := prefix + strconv.Itoa(uid) + "/"
+	um.lock(uid)
+	defer um.unlock(uid)
+
+	path := prefix
+	err := os.MkdirAll(path, 0755)
+	if err != nil {
+		log.Println(err.Error())
+		return data, false
+	}
+
 	files, err := ioutil.ReadDir(path)
 	if err != nil {
 		log.Println(err.Error())
@@ -79,7 +88,7 @@ func loadJson[T any](prefix string, uid int, id int) (T, bool) {
 	um.lock(uid)
 	defer um.unlock(uid)
 
-	path := prefix + strconv.Itoa(uid) + "/" + strconv.Itoa(id) + ".json"
+	path := prefix + strconv.Itoa(id) + ".json"
 
 	content, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -104,7 +113,7 @@ func saveJson[T any](prefix string, uid int, id int, data T) bool {
 	defer um.unlock(uid)
 
 	if id == 0 {
-		final_id = getId(prefix, uid)
+		final_id = getId(prefix)
 	} else {
 		final_id = id
 	}
@@ -113,13 +122,13 @@ func saveJson[T any](prefix string, uid int, id int, data T) bool {
 		return false
 	}
 
-	path = prefix + strconv.Itoa(uid) + "/"
+	path = prefix
 	err := os.MkdirAll(path, 0755)
 	if err != nil {
 		log.Println(err.Error())
 		return false
 	}
-	path = prefix + strconv.Itoa(uid) + "/" + strconv.Itoa(final_id) + ".json"
+	path = prefix + "/" + strconv.Itoa(final_id) + ".json"
 
 	jsonData, err := json.Marshal(data)
 	if err != nil {
@@ -140,8 +149,8 @@ func deleteJson(prefix string, uid int, id int) bool {
 	um.lock(uid)
 	defer um.unlock(uid)
 
-	path := "characters/" + strconv.Itoa(uid) + "/" + strconv.Itoa(id) + ".json"
-	salvage := "characters/" + strconv.Itoa(uid) + "/" + strconv.Itoa(id) + ".json.del"
+	path := prefix + "/" + strconv.Itoa(id) + ".json"
+	salvage := prefix + "/" + strconv.Itoa(id) + ".json.del"
 	err := os.Rename(path, salvage)
 	if err != nil {
 		log.Println(err.Error())

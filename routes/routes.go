@@ -13,6 +13,9 @@ func AddPublics(router *gin.Engine) {
 	router.GET("/", controllers.GetIndex)
 	router.POST("/login", auth.Login)
 	router.GET("/character/", controllers.Character)
+	router.GET("/book/", controllers.Book)
+	router.GET("/scene/:book", controllers.Scene)
+	router.GET("/line/:book/:scene", controllers.Line)
 }
 
 func AddPrivates(router *gin.Engine) {

@@ -16,21 +16,21 @@ type Scene struct {
 }
 
 func ListScene(u *auth.User, book int) ([]Scene, bool) {
-	path := prefixScene + strconv.Itoa(book) + "/"
+	path := prefixScene + strconv.Itoa(u.Id) + "/" + strconv.Itoa(book) + "/"
 	return listJson[Scene](path, u.Id)
 }
 
 func LoadScene(u *auth.User, book int, id int) (Scene, bool) {
-	path := prefixScene + strconv.Itoa(book) + "/"
+	path := prefixScene + strconv.Itoa(u.Id) + "/" + strconv.Itoa(book) + "/"
 	return loadJson[Scene](path, u.Id, id)
 }
 
 func SaveScene(u *auth.User, book int, id int, postData Scene) bool {
-	path := prefixScene + strconv.Itoa(book) + "/"
+	path := prefixScene + strconv.Itoa(u.Id) + "/" + strconv.Itoa(book) + "/"
 	return saveJson[Scene](path, u.Id, id, postData)
 }
 
 func DeleteScene(u *auth.User, book int, id int) bool {
-	path := prefixScene + strconv.Itoa(book) + "/"
+	path := prefixScene + strconv.Itoa(u.Id) + "/" + strconv.Itoa(book) + "/"
 	return deleteJson(path, u.Id, id)
 }

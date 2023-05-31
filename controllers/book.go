@@ -11,7 +11,7 @@ import (
 )
 
 func Book(c *gin.Context) {
-	c.HTML(http.StatusOK, "Book.tmpl", gin.H{
+	c.HTML(http.StatusOK, "book.tmpl", gin.H{
 		"title": "Book",
 	})
 }
