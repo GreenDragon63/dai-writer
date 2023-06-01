@@ -4,9 +4,11 @@ import (
 	"dai-writer/auth"
 	"encoding/base64"
 	"encoding/binary"
+	"encoding/json"
 	"io"
 	"log"
 	"os"
+	"path"
 	"strconv"
 )
 
@@ -58,6 +60,8 @@ func UploadCharacterPath(u *auth.User) string {
 }
 
 func DecodeCharacter(fileName string) bool {
+	var chara Character
+
 	file, err := os.Open(fileName)
 	if err != nil {
 		log.Println(err.Error())
@@ -123,8 +127,27 @@ func DecodeCharacter(fileName string) bool {
 				os.Remove(fileName)
 				return false
 			}
+			err = json.Unmarshal(decodedChara, &chara)
+			if err != nil {
+				log.Println("chara chunk founded, but it is not with the good format: " + fileName)
+				os.Remove(fileName)
+				return false
+			}
+			id, err := strconv.Atoi(path.Base(fileName[:len(fileName)-len(".png")]))
+			if err != nil {
+				log.Println("Weird error while decoding the id: " + fileName)
+				os.Remove(fileName)
+				return false
+			}
+			chara.Id = id
+			jsonData, err := json.Marshal(chara)
+			if err != nil {
+				log.Println("Weird error while recoding the character: " + fileName)
+				log.Println(err.Error())
+				return false
+			}
 			jsonFile := fileName[:len(fileName)-len(".png")] + ".json"
-			err = os.WriteFile(jsonFile, decodedChara, 0644)
+			err = os.WriteFile(jsonFile, jsonData, 0644)
 			if err != nil {
 				log.Println(err.Error())
 				os.Remove(fileName)

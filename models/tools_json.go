@@ -92,6 +92,10 @@ func loadJson[T Identifiable](prefix string, uid int, id int) (T, bool) {
 	um.lock(uid)
 	defer um.unlock(uid)
 
+	if id == 0 {
+		id = getId(prefix) - 1
+	}
+
 	path := prefix + strconv.Itoa(id) + ".json"
 
 	content, err := ioutil.ReadFile(path)

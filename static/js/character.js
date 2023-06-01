@@ -18,9 +18,9 @@ document.getElementById("upload-button").addEventListener("click", function(even
     })
     .then(response => {
         if (response.ok) {
-            alert("Upload successful!");
             document.getElementById("upload-card").value = "";
             document.getElementById("fileName").textContent = "Choose File";
+            fetchLast();
         } else {
             alert("Upload failed. Please choose a character card.");
         }
@@ -30,15 +30,27 @@ document.getElementById("upload-button").addEventListener("click", function(even
     });
 });
 
+function fetchLast() {
+    fetch("/api" + window.location.pathname + "0")
+    .then(response => response.json())
+    .then(character => {
+        var characterComponent = new CharacterComponent("char" + character.id, character);
+        characterComponent.prependToDom("container");
+    });
+}
 
-fetch("/api" + window.location.pathname)
+function fetchAll() {
+    fetch("/api" + window.location.pathname)
     .then(response => response.json())
     .then(data => {
-        var id = 0;
+        if (data === null) {
+            return
+        }
         data.forEach(character => {
-            var characterComponent = new CharacterComponent("char" + id, character);
+            var characterComponent = new CharacterComponent("char" + character.id, character);
             characterComponent.prependToDom("container");
-            id++;
         });
     });
+}
 
+fetchAll();
