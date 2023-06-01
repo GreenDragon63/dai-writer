@@ -143,7 +143,6 @@ func DecodeCharacter(fileName string) bool {
 			jsonData, err := json.Marshal(chara)
 			if err != nil {
 				log.Println("Weird error while recoding the character: " + fileName)
-				log.Println(err.Error())
 				return false
 			}
 			jsonFile := fileName[:len(fileName)-len(".png")] + ".json"
