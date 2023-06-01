@@ -45,11 +45,20 @@ body {
     font-size: 16px;
 }
 
-#container {
+#container, #importer {
     max-width: 990px;
     width: 100%;
     margin: 0 auto;
     padding: 0;
+}
+
+.general {
+    padding: 1%;
+    margin: 1%;
+    background-color: var(--back-color);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    border-radius: 10px;
 }
 
 .element {
@@ -117,7 +126,7 @@ body {
     color: var(--border-color);
 }
 
-.custom-button {
+.custom-button, .file-input-label {
     background-color: var(--back-color);
     border: 1px solid var(--border-color);
     border-radius: 5px;
@@ -150,6 +159,10 @@ body {
 .custom-select option {
     background-color: var(--text-color);
     color: var(--back-color);
+}
+
+.file-input {
+    display: none;
 }
 
 .custom-input {
