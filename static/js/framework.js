@@ -50,6 +50,16 @@ class Component {
         this._addCallbacks();
     }
 
+    prependToDom(parent) {
+        var parentElement = document.getElementById(parent);
+        if (this._inDom) {
+          this.removeFromDom();
+        }
+        this._inDom = true;
+        parentElement.insertBefore(this._element, parentElement.firstChild);
+        this._addCallbacks();
+      }
+
     removeFromDom() {
         this._inDom = false;
         this._element.parentNode.removeChild(this._element);

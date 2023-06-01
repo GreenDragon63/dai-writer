@@ -6,7 +6,7 @@ fetch("/api" + window.location.pathname)
         var id = 0;
         data.forEach(character => {
             var characterComponent = new CharacterComponent("char" + id, character);
-            characterComponent.appendToDom("container");
+            characterComponent.prependToDom("container");
             id++;
         });
     });

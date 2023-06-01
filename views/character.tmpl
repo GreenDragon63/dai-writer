@@ -1,2 +1,12 @@
 {{template "header" .}}
+    <div id="importer">
+        <h1>Upload a character card</h1>
+        <form action="/api/upload" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".png">
+            <br><br>
+            <input type="submit" value="Upload">
+        </form>
+    </div>
+    <div id="container">
+    </div>
 {{template "footer" ("character")}}

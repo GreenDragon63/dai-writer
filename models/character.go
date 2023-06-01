@@ -54,7 +54,7 @@ func UploadCharacterPath(u *auth.User) string {
 	if id == 0 {
 		return ""
 	}
-	return prefixCharacter + strconv.Itoa(id) + ".png"
+	return prefixCharacter + strconv.Itoa(u.Id) + "/" + strconv.Itoa(id) + ".png"
 }
 
 func DecodeCharacter(fileName string) bool {
