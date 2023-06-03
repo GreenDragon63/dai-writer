@@ -67,8 +67,8 @@ function save(event) {
 }
 
 
-function handleEye(event) {
-    EventBus.dispatch("eye-click", {id: this.id});
+function handleopen(event) {
+    EventBus.dispatch("open-click", {id: this.id});
 }
 
 function handlePen(event) {
@@ -83,13 +83,13 @@ function cancel(event) {
 
 function createCharacter(character) {
     let id = "char-" + character.id;
-    let eyeId = "eye-" + character.id;
+    let openId = "open-" + character.id;
     let penId = "pen-" + character.id;
     let saveId = "save-" + character.id;
     let cancelId = "cancel-" + character.id;
     let callbacks = {
-        [eyeId]:
-        {"click":handleEye},
+        [openId]:
+        {"click":handleopen},
         [penId]:
         {"click":handlePen},
         [saveId]:

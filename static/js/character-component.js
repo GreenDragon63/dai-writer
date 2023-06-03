@@ -6,16 +6,20 @@ class CharacterComponent extends Component {
         super(id, parameters, callbacks);
         this._displayed = false;
         this._edition = false;
+        this._edited = false;
         this._init();
-        EventBus.register("eye-click", this._handleEye.bind(this));
+        EventBus.register("open-click", this._handleopen.bind(this));
         EventBus.register("pen-click", this._handlePen.bind(this));
         EventBus.register("saved", this._handleSaved.bind(this));
         EventBus.register("canceled", this._handleCanceled.bind(this));
     }
 
-    _handleEye(event) {
-        if (event.id === "eye-"+this.id) {
+    _handleopen(event) {
+        if (event.id === "open-"+this.id) {
             this._displayed = !this._displayed;
+            if (this._edition === true) {
+                this._edition = false;
+            }
             this.render();
         }
     }
@@ -27,6 +31,25 @@ class CharacterComponent extends Component {
                 this._displayed = true;
             }
             this.render();
+            if (this._edition === true) {
+                const formElement = document.getElementById("edit-"+this.id);
+                const formInputs = formElement.querySelectorAll('input, select, textarea');
+
+                formInputs.forEach(input => {
+                    input.addEventListener('input', this._handleInput.bind(this));
+                });
+            }
+        }
+    }
+
+    _handleInput(event) {
+        console.log("input");
+        if (this._edited === false) {
+            this._edited = true;
+            const openButton = document.getElementById("open-"+this.id);
+            openButton.disabled = true;
+            const editButton = document.getElementById("pen-"+this.id);
+            editButton.disabled = true;
         }
     }
 
@@ -34,6 +57,7 @@ class CharacterComponent extends Component {
         if (event.id == this.id) {
             this._refresh();
             this._edition = false;
+            this._edited = false;
             this._displayed = false;    
             this.render();
         }
@@ -42,6 +66,7 @@ class CharacterComponent extends Component {
     _handleCanceled(event) {
         if (event.id == this.id) {
             this._edition = false;
+            this._edited = false;
             this._displayed = false;
             this.render();
         }
@@ -66,7 +91,7 @@ class CharacterComponent extends Component {
                 return `
                 <div class="element">
                     <div class="image-container">
-                        <img src="/static/img/placeholder.svg" alt="Image">
+                        <img src="/api/avatar/${this.id}" alt="Image">
                     </div>
                     <div class="content">
                         <form id="edit-${this.id}" method="POST" action="/api/character/${this.id}">
@@ -90,8 +115,8 @@ class CharacterComponent extends Component {
                         </form>
                     </div>
                     <div class="buttons buttons-right">
-                        <button disabled id="pen-${this.id}"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button disabled id="eye-${this.id}"><i class="fa-regular fa-eye"></i></button>
+                        <button id="pen-${this.id}"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+                        <button id="open-${this.id}"><i class="fa-solid fa-folder-open"></i></button>
                     </div>
                 </div>
                 `
@@ -99,7 +124,7 @@ class CharacterComponent extends Component {
                 return `
                     <div class="element">
                         <div class="image-container">
-                            <img src="/static/img/placeholder.svg" alt="Image">
+                            <img src="/api/avatar/${this.id}" alt="Image">
                         </div>
                         <div class="content">
                             <div>
@@ -117,7 +142,7 @@ class CharacterComponent extends Component {
                         </div>
                         <div class="buttons buttons-right">
                             <button id="pen-${this.id}"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button id="eye-${this.id}"><i class="fa-regular fa-eye"></i></button>
+                            <button id="open-${this.id}"><i class="fa-solid fa-folder-open"></i></button>
                         </div>
                     </div>
                     `
@@ -132,7 +157,7 @@ class CharacterComponent extends Component {
                     </div>
                     <div class="buttons buttons-right">
                         <button id="pen-${this.id}"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button id="eye-${this.id}"><i class="fa-regular fa-eye-slash"></i></button>
+                        <button id="open-${this.id}"><i class="fa-solid fa-folder-closed"></i></button>
                     </div>
                 </div>
                 `   

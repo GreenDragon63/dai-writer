@@ -134,3 +134,28 @@ func UploadCharacter(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "ok"})
 }
+
+func AvatarCharacter(c *gin.Context) {
+	var user auth.User
+	var id int
+	var ok bool
+	var pngFile string
+
+	u, ok := c.Get("current_user")
+	if ok != true {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+		return
+	}
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Bad parameter"})
+		return
+	}
+	user = u.(auth.User)
+	pngFile = models.AvatarCharacterPath(&user, id)
+	if ok != true {
+		c.JSON(http.StatusNotFound, gin.H{"message": "Avatar not found"})
+		return
+	}
+	c.File(pngFile)
+}

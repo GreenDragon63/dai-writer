@@ -59,6 +59,10 @@ func UploadCharacterPath(u *auth.User) string {
 	return prefixCharacter + strconv.Itoa(u.Id) + "/" + strconv.Itoa(id) + ".png"
 }
 
+func AvatarCharacterPath(u *auth.User, id int) string {
+	return prefixCharacter + strconv.Itoa(u.Id) + "/" + strconv.Itoa(id) + ".png"
+}
+
 func DecodeCharacter(fileName string) bool {
 	var chara Character
 
