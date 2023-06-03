@@ -11,6 +11,30 @@ body {
     font-size: 20px;
 }
 
+textarea {
+    resize: vertical;
+}
+
+label {
+    margin-left: 2%;
+}
+
+.mt2 {
+    margin-top: 2%;
+}
+
+.mb2 {
+    margin-bottom: 2%;
+}
+
+.ml2 {
+    margin-left: 2%;
+}
+
+.mr2 {
+    margin-right: 2%;
+}
+
 #menu-container {
     display: flex;
     flex-wrap: wrap;
@@ -126,6 +150,16 @@ body {
     color: var(--border-color);
 }
 
+.buttons button:disabled {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 5px;
+    color: var(--border-color);
+    font-size: 20px;
+}
+
+
 .custom-button, .file-input-label {
     background-color: var(--back-color);
     border: 1px solid var(--border-color);
@@ -142,7 +176,7 @@ body {
 
 .custom-select {
     appearance: none;
-    padding: 10px 20px;
+    padding: 10px;
     font-size: 20px;
     border: 1px solid var(--border-color);
     background-color: var(--text-color);
@@ -166,8 +200,9 @@ body {
 }
 
 .custom-input {
+    margin-left: 2%;
     font-family: "Times New Roman", serif;
-    padding: 10px 20px;
+    padding: 10px;
     font-size: 20px;
     border: 1px solid var(--border-color);
     background-color: var(--text-color);
@@ -179,8 +214,10 @@ body {
 }
 
 .custom-textarea {
+    width: 100%;
+    margin-left: 2%;
     font-family: "Times New Roman", serif;
-    padding: 10px 20px;
+    padding: 10px;
     font-size: 20px;
     border: 1px solid var(--border-color);
     background-color: var(--text-color);

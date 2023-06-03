@@ -36,6 +36,9 @@ class Component {
         }
         for (var key in this._callbacks) {
             var element = document.getElementById(key);
+            if (!element) {
+                continue;
+            }
             for (var event in this._callbacks[key]) {
                 element.addEventListener(event, this._callbacks[key][event]);
             }

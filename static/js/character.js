@@ -1,7 +1,7 @@
 import { CharacterComponent } from "./character-component.js"
 import { EventBus } from "./framework.js";
 
-document.getElementById("upload-button").addEventListener("click", function(event) {
+function upload(event) {
     event.preventDefault();
 
     const fileInput = document.getElementById("upload-card");
@@ -29,18 +29,73 @@ document.getElementById("upload-button").addEventListener("click", function(even
     .catch(error => {
         alert("An error occurred. Please try again.");
     });
-});
+}
+
+function save(event) {
+    event.preventDefault();
+    var id = event.target.id.split("-")[1];
+    var form = document.getElementById("edit-"+id);
+    var formData = new FormData(form);
+
+    var jsonData = {};
+    formData.forEach(function(value, key) {
+        if (key === "id") {
+            jsonData[key] = parseInt(value);
+        } else {
+            jsonData[key] = value;
+        }
+    });
+
+    fetch('/api/character/' + id, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(jsonData)
+    })
+    .then(function(response) {
+        if (response.ok) {
+            EventBus.dispatch("saved", {id: id});
+            return response.json();
+        } else {
+            alert("Save failed.");
+        }
+    })
+    .catch(error => {
+        alert("An error occurred. Please try again.");
+    });
+}
+
 
 function handleEye(event) {
     EventBus.dispatch("eye-click", {id: this.id});
 }
 
+function handlePen(event) {
+    EventBus.dispatch("pen-click", {id: this.id});
+}
+
+function cancel(event) {
+    event.preventDefault();
+    var id = event.target.id.split("-")[1];
+    EventBus.dispatch("canceled", {id: id});
+}
+
 function createCharacter(character) {
     let id = "char-" + character.id;
     let eyeId = "eye-" + character.id;
+    let penId = "pen-" + character.id;
+    let saveId = "save-" + character.id;
+    let cancelId = "cancel-" + character.id;
     let callbacks = {
         [eyeId]:
-        {"click":handleEye}
+        {"click":handleEye},
+        [penId]:
+        {"click":handlePen},
+        [saveId]:
+        {"click":save},
+        [cancelId]:
+        {"click":cancel}
     }
     let characterComponent = new CharacterComponent(id, character, callbacks);
     characterComponent.prependToDom("container");
@@ -67,4 +122,5 @@ function fetchAll() {
     });
 }
 
+document.getElementById("upload-button").addEventListener("click", upload);
 fetchAll();
