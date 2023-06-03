@@ -1,25 +1,27 @@
 class Component {
     // parameters format : {"param":"value", ...}
-    // callbacks format : {"id" : {"event":function}, ...}
+    // bindings format : {"id" : {"event":function}, ...}
     constructor(id, parameters, callbacks) {
         this._id = id;
         this._callbacks = callbacks;
         for (var key in parameters) {
             this[key] = parameters[key];
         }
-        this._element = this._createElementFromHTML(this._template());
-        this._element.id = id;
-        this._inDom = false;
     }
 
     // overload this method to handle the subclasse's template
     _template() {
         return `
             <div>
-                <p>Overload the _template method in subclass. Param : ${this.param} </p>
-                <button id="button-${this._id}">Click me</button>
+                <p>Overload the _template method in subclass.</p>
             </div>
             `
+    }
+
+    _init() {
+        this._element = this._createElementFromHTML(this._template());
+        this._element.id = this._id;
+        this._inDom = false;
     }
 
     _createElementFromHTML(htmlString) {
@@ -33,11 +35,19 @@ class Component {
             throw "Component not in DOM";
         }
         for (var key in this._callbacks) {
-            var element = document.getElementById(key+"-"+this._id);
+            var element = document.getElementById(key);
             for (var event in this._callbacks[key]) {
                 element.addEventListener(event, this._callbacks[key][event]);
             }
         }
+    }
+
+    render() {
+        var newElement = this._createElementFromHTML(this._template());
+        this._element.parentNode.replaceChild(newElement, this._element);
+        this._element = newElement;
+        this._element.id = this._id;
+        this._addCallbacks();
     }
 
     appendToDom(parent) {
@@ -80,6 +90,3 @@ const EventBus = {
 };
 
 export { Component, EventBus };
-
-//c = new Component("testid", {"param":"test"}, {"button":{"click":() => alert("Working")}});
-

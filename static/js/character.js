@@ -1,4 +1,5 @@
 import { CharacterComponent } from "./character-component.js"
+import { EventBus } from "./framework.js";
 
 document.getElementById("upload-button").addEventListener("click", function(event) {
     event.preventDefault();
@@ -30,12 +31,26 @@ document.getElementById("upload-button").addEventListener("click", function(even
     });
 });
 
+function handleEye(event) {
+    EventBus.dispatch("eye-click", {id: this.id});
+}
+
+function createCharacter(character) {
+    let id = "char-" + character.id;
+    let eyeId = "eye-" + character.id;
+    let callbacks = {
+        [eyeId]:
+        {"click":handleEye}
+    }
+    let characterComponent = new CharacterComponent(id, character, callbacks);
+    characterComponent.prependToDom("container");
+}
+
 function fetchLast() {
     fetch("/api" + window.location.pathname + "0")
     .then(response => response.json())
     .then(character => {
-        var characterComponent = new CharacterComponent("char" + character.id, character);
-        characterComponent.prependToDom("container");
+        createCharacter(character);
     });
 }
 
@@ -47,8 +62,7 @@ function fetchAll() {
             return
         }
         data.forEach(character => {
-            var characterComponent = new CharacterComponent("char" + character.id, character);
-            characterComponent.prependToDom("container");
+            createCharacter(character);
         });
     });
 }
