@@ -17,8 +17,11 @@ class DWComponent extends Component {
     _handleOpen(event) {
         if (event.id === "open-"+this.id) {
             this._displayed = !this._displayed;
-            if (this._edition === true) {
+            if (this._displayed === false) {
                 this._edition = false;
+            }
+            if (this.id === 0) {
+                this._edition = this._displayed;
             }
             this.render();
         }
@@ -27,6 +30,12 @@ class DWComponent extends Component {
     _handleEdit(event) {
         if (event.id === "edit-"+this.id) {
             this._edition = !this._edition;
+            if (this._edition === true) {
+                this._displayed = true;
+            }
+            if (this.id === 0) {
+                this._displayed = this._edition;
+            }
             this.render();
             if (this._edition === true) {
                 const formElement = document.getElementById("form-"+this.id);
