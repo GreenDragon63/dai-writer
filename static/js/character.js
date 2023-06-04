@@ -31,67 +31,35 @@ function upload(event) {
     });
 }
 
-function save(event) {
-    event.preventDefault();
-    var id = event.target.id.split("-")[1];
-    var form = document.getElementById("edit-"+id);
-    var formData = new FormData(form);
-
-    var jsonData = {};
-    formData.forEach(function(value, key) {
-        if (key === "id") {
-            jsonData[key] = parseInt(value);
-        } else {
-            jsonData[key] = value;
-        }
-    });
-
-    fetch('/api/character/' + id, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(jsonData)
-    })
-    .then(function(response) {
-        if (response.ok) {
-            EventBus.dispatch("saved", {id: id});
-            return response.json();
-        } else {
-            alert("Save failed.");
-        }
-    })
-    .catch(error => {
-        alert("An error occurred. Please try again.");
-    });
-}
-
-
 function handleopen(event) {
     EventBus.dispatch("open-click", {id: this.id});
 }
 
-function handlePen(event) {
-    EventBus.dispatch("pen-click", {id: this.id});
+function handleEdit(event) {
+    EventBus.dispatch("edit-click", {id: this.id});
+}
+
+function save(event) {
+    event.preventDefault();
+    EventBus.dispatch("save-click", {id: this.id});
 }
 
 function cancel(event) {
     event.preventDefault();
-    var id = event.target.id.split("-")[1];
-    EventBus.dispatch("canceled", {id: id});
+    EventBus.dispatch("cancel-click", {id: this.id});
 }
 
 function createCharacter(character) {
     let id = "char-" + character.id;
     let openId = "open-" + character.id;
-    let penId = "pen-" + character.id;
+    let editId = "edit-" + character.id;
     let saveId = "save-" + character.id;
     let cancelId = "cancel-" + character.id;
     let callbacks = {
         [openId]:
         {"click":handleopen},
-        [penId]:
-        {"click":handlePen},
+        [editId]:
+        {"click":handleEdit},
         [saveId]:
         {"click":save},
         [cancelId]:

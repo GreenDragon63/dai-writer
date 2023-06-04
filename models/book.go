@@ -11,7 +11,7 @@ type Book struct {
 	Id          int    `json:"id"`
 	Name        string `json:"name" binding:"required"`
 	Description string `json:"description"`
-	First_scene int    `json:"first_scene"`
+	Scenes      []int  `json:"scenes" binding:"dive"`
 }
 
 func (b Book) setId(id int) {
