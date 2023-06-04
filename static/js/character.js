@@ -49,7 +49,7 @@ function cancel(event) {
     EventBus.dispatch("cancel-click", {id: this.id});
 }
 
-function createCharacter(character) {
+function createCharacter(character, node) {
     let id = "char-" + character.id;
     let openId = "open-" + character.id;
     let editId = "edit-" + character.id;
@@ -66,14 +66,14 @@ function createCharacter(character) {
         {"click":cancel}
     }
     let characterComponent = new CharacterComponent(id, character, callbacks);
-    characterComponent.prependToDom("container");
+    characterComponent.prependToDom(node);
 }
 
 function fetchLast() {
     fetch("/api" + window.location.pathname + "0")
     .then(response => response.json())
     .then(character => {
-        createCharacter(character);
+        createCharacter(character, "container");
     });
 }
 
@@ -85,10 +85,25 @@ function fetchAll() {
             return
         }
         data.forEach(character => {
-            createCharacter(character);
+            createCharacter(character, "container");
         });
     });
 }
 
+function addCharacter() {
+    let character = {
+        "id": 0,
+        "name": "",
+        "description": "",
+        "personality": "",
+        "scenario": "",
+        "mes_example": "",
+        "first_mes": ""
+    }
+    createCharacter(character, "add-new");
+}
+
 document.getElementById("upload-button").addEventListener("click", upload);
+EventBus.register("refresh", fetchLast);
+addCharacter();
 fetchAll();

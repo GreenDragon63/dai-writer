@@ -124,7 +124,7 @@ func saveJson[T Identifiable](prefix string, uid int, id int, data T) bool {
 		final_id = getId(prefix)
 	} else {
 		final_id = id
-		data.setId(final_id)
+
 	}
 
 	if final_id == 0 {
@@ -139,6 +139,7 @@ func saveJson[T Identifiable](prefix string, uid int, id int, data T) bool {
 	}
 	path = prefix + "/" + strconv.Itoa(final_id) + ".json"
 
+	data.setId(final_id)
 	jsonData, err := json.Marshal(data)
 	if err != nil {
 		log.Println(err.Error())

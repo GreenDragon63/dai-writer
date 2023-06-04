@@ -27,9 +27,6 @@ class DWComponent extends Component {
     _handleEdit(event) {
         if (event.id === "edit-"+this.id) {
             this._edition = !this._edition;
-            if (this._displayed === false) {
-                this._displayed = true;
-            }
             this.render();
             if (this._edition === true) {
                 const formElement = document.getElementById("form-"+this.id);
@@ -66,11 +63,14 @@ class DWComponent extends Component {
             })
             .then(function(response) {
                 if (response.ok) {
-                    self._refresh();
+                    if (self.id !== 0) {
+                        self._refresh();
+                    }
                     self._edition = false;
                     self._edited = false;
                     self._displayed = false;
                     self.render();
+                    EventBus.dispatch("refresh");
                     return response.json();
                 } else {
                     alert("Save failed.");

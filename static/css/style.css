@@ -69,7 +69,7 @@ label {
     font-size: 16px;
 }
 
-#container, #importer {
+#container, #importer, #add-new {
     max-width: 990px;
     width: 100%;
     margin: 0 auto;

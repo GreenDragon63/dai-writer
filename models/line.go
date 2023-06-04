@@ -15,23 +15,23 @@ type Line struct {
 	Next_Line     int    `json:"next_Line" binding:"required"`
 }
 
-func (l Line) setId(id int) {
+func (l *Line) setId(id int) {
 	l.Id = id
 }
 
-func ListLine(u *auth.User, book int, scene int) ([]Line, bool) {
+func ListLine(u *auth.User, book int, scene int) ([]*Line, bool) {
 	path := prefixLine + strconv.Itoa(u.Id) + "/" + strconv.Itoa(book) + "/" + strconv.Itoa(scene) + "/"
-	return listJson[Line](path, u.Id)
+	return listJson[*Line](path, u.Id)
 }
 
-func LoadLine(u *auth.User, book int, scene int, id int) (Line, bool) {
+func LoadLine(u *auth.User, book int, scene int, id int) (*Line, bool) {
 	path := prefixLine + strconv.Itoa(u.Id) + "/" + strconv.Itoa(book) + "/" + strconv.Itoa(scene) + "/"
-	return loadJson[Line](path, u.Id, id)
+	return loadJson[*Line](path, u.Id, id)
 }
 
 func SaveLine(u *auth.User, book int, scene int, id int, postData Line) bool {
 	path := prefixLine + strconv.Itoa(u.Id) + "/" + strconv.Itoa(book) + "/" + strconv.Itoa(scene) + "/"
-	return saveJson[Line](path, u.Id, id, postData)
+	return saveJson[*Line](path, u.Id, id, &postData)
 }
 
 func DeleteLine(u *auth.User, book int, scene int, id int) bool {

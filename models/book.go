@@ -14,23 +14,23 @@ type Book struct {
 	Scenes      []int  `json:"scenes" binding:"dive"`
 }
 
-func (b Book) setId(id int) {
+func (b *Book) setId(id int) {
 	b.Id = id
 }
 
-func ListBook(u *auth.User) ([]Book, bool) {
+func ListBook(u *auth.User) ([]*Book, bool) {
 	path := prefixBook + strconv.Itoa(u.Id) + "/"
-	return listJson[Book](path, u.Id)
+	return listJson[*Book](path, u.Id)
 }
 
-func LoadBook(u *auth.User, id int) (Book, bool) {
+func LoadBook(u *auth.User, id int) (*Book, bool) {
 	path := prefixBook + strconv.Itoa(u.Id) + "/"
-	return loadJson[Book](path, u.Id, id)
+	return loadJson[*Book](path, u.Id, id)
 }
 
 func SaveBook(u *auth.User, id int, postData Book) bool {
 	path := prefixBook + strconv.Itoa(u.Id) + "/"
-	return saveJson[Book](path, u.Id, id, postData)
+	return saveJson[*Book](path, u.Id, id, &postData)
 }
 
 func DeleteBook(u *auth.User, id int) bool {

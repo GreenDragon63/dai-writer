@@ -24,23 +24,23 @@ type Character struct {
 	Scenario    string `json:"scenario"`
 }
 
-func (c Character) setId(id int) {
+func (c *Character) setId(id int) {
 	c.Id = id
 }
 
-func ListCharacter(u *auth.User) ([]Character, bool) {
+func ListCharacter(u *auth.User) ([]*Character, bool) {
 	path := prefixCharacter + strconv.Itoa(u.Id) + "/"
-	return listJson[Character](path, u.Id)
+	return listJson[*Character](path, u.Id)
 }
 
-func LoadCharacter(u *auth.User, id int) (Character, bool) {
+func LoadCharacter(u *auth.User, id int) (*Character, bool) {
 	path := prefixCharacter + strconv.Itoa(u.Id) + "/"
-	return loadJson[Character](path, u.Id, id)
+	return loadJson[*Character](path, u.Id, id)
 }
 
 func SaveCharacter(u *auth.User, id int, postData Character) bool {
 	path := prefixCharacter + strconv.Itoa(u.Id) + "/"
-	return saveJson[Character](path, u.Id, id, postData)
+	return saveJson[*Character](path, u.Id, id, &postData)
 }
 
 func DeleteCharacter(u *auth.User, id int) bool {
