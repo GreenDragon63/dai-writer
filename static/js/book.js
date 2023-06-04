@@ -65,10 +65,6 @@ function addBook() {
         "id": 0,
         "name": "",
         "description": "",
-        "personality": "",
-        "scenario": "",
-        "mes_example": "",
-        "first_mes": ""
     }
     createBook(book, "add-new");
 }
