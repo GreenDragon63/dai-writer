@@ -1,6 +1,6 @@
-import { DaiComponent } from "./dai-component.js";
+import { DWComponent } from "./dw-component.js";
 
-class CharacterComponent extends DaiComponent {
+class CharacterComponent extends DWComponent {
     constructor(id, parameters, callbacks) {
         super(id, parameters, callbacks);
         this._uri = '/api/character/';

@@ -1,6 +1,11 @@
-import { Component } from "./framework.js" 
+import { DWComponent } from "./dw-component";
 
-class SceneComponent extends Component {
+class SceneComponent extends DWComponent {
+    constructor(id, parameters, callbacks) {
+        super(id, parameters, callbacks);
+        this._uri = '/api/scene/';
+    }
+
     _template() {
         return `
             <div class="element">

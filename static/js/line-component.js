@@ -1,6 +1,11 @@
-import { Component } from "./framework.js" 
+import { DWComponent } from "./dw-component";
 
-class LineComponent extends Component {
+class LineComponent extends DWComponent {
+    constructor(id, parameters, callbacks) {
+        super(id, parameters, callbacks);
+        this._uri = '/api/line/';
+    }
+
     _template() {
         return `
             <div class="element">

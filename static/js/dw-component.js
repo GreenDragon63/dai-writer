@@ -1,6 +1,6 @@
 import { Component, EventBus } from "./framework.js" 
 
-class DaiComponent extends Component {
+class DWComponent extends Component {
     constructor(id, parameters, callbacks) {
         super(id, parameters, callbacks);
         this._displayed = false;
@@ -115,4 +115,4 @@ class DaiComponent extends Component {
     }
 }
 
-export { DaiComponent }
+export { DWComponent }

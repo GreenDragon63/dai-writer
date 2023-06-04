@@ -1,6 +1,11 @@
-import { Component } from "./framework.js" 
+import { DWComponent } from "./dw-component";
 
-class BookComponent extends Component {
+class BookComponent extends DWComponent {
+    constructor(id, parameters, callbacks) {
+        super(id, parameters, callbacks);
+        this._uri = '/api/book/';
+    }
+
     _template() {
         return `
             <div class="element">
