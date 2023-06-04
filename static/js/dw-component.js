@@ -61,7 +61,7 @@ class DWComponent extends Component {
                     jsonData[key] = value;
                 }
             });
-
+            console.log(jsonData);
             self = this;
             fetch(this._uri + this.id, {
                 method: 'POST',

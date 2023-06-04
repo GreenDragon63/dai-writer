@@ -35,6 +35,10 @@ label {
     margin-right: 2%;
 }
 
+.w100 {
+    width: 100%;
+}
+
 #menu-container {
     display: flex;
     flex-wrap: wrap;
