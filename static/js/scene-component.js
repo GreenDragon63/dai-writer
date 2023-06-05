@@ -1,4 +1,4 @@
-import { DWComponent } from "./dw-component";
+import { DWComponent } from "./dw-component.js";
 
 class SceneComponent extends DWComponent {
     constructor(id, parameters, callbacks) {

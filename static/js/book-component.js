@@ -11,6 +11,11 @@ class BookComponent extends DWComponent {
     }
 
     _template() {
+        if (this.id === 0) {
+            this.linkScenes = "";
+        } else {
+            this.linkScenes = `<a href="/scene/${this.id}" class="custom-button button-link ml2 mt2">Edit scenes</a>`
+        }
         if (this._edition) {
             return `
             <div class="element">
@@ -27,6 +32,7 @@ class BookComponent extends DWComponent {
                         <button id="save-${this.id}" type="submit" class="custom-button ml2 mt2">Save</button>
                         <button id="cancel-${this.id}" type="button" class="custom-button mt2">Cancel</button>
                     </form>
+                    ${this.linkScenes}
                 </div>
                 <div class="buttons buttons-right">
                     <button id="edit-${this.id}"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
