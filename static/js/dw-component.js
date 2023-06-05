@@ -57,11 +57,14 @@ class DWComponent extends Component {
             formData.forEach(function(value, key) {
                 if (key === "id") {
                     jsonData[key] = parseInt(value);
+                } else if (key === "scenes") {
+                    jsonData[key] = value.split(",").map(function(num) {
+                        return parseInt(num);
+                    });
                 } else {
                     jsonData[key] = value;
                 }
             });
-            console.log(jsonData);
             self = this;
             fetch(this._uri + this.id, {
                 method: 'POST',
@@ -74,12 +77,13 @@ class DWComponent extends Component {
                 if (response.ok) {
                     if (self.id !== 0) {
                         self._refresh();
+                    } else {
+                        EventBus.dispatch("refresh");
                     }
                     self._edition = false;
                     self._edited = false;
                     self._displayed = false;
                     self.render();
-                    EventBus.dispatch("refresh");
                     return response.json();
                 } else {
                     alert("Save failed.");

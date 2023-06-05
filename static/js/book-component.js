@@ -23,6 +23,7 @@ class BookComponent extends DWComponent {
                         <div class="mt2">
                             <label>Description: </label><textarea name="description" class="custom-textarea">${this.description}</textarea>
                         </div>
+                        <input type="hidden" name="scenes" value="${this.scenes}">
                         <button id="save-${this.id}" type="submit" class="custom-button ml2 mt2">Save</button>
                         <button id="cancel-${this.id}" type="button" class="custom-button mt2">Cancel</button>
                     </form>

@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -64,7 +65,7 @@ func listJson[T Identifiable](prefix string, uid int) ([]T, bool) {
 		log.Println(err.Error())
 		return data, false
 	}
-
+	sort.Sort(Numeric(files))
 	for _, file := range files {
 		if filepath.Ext(file.Name()) == ".json" {
 			content, err := ioutil.ReadFile(path + file.Name())
