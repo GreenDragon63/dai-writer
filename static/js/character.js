@@ -31,41 +31,9 @@ function upload(event) {
     });
 }
 
-function handleopen(event) {
-    EventBus.dispatch("open-click", {id: this.id});
-}
-
-function handleEdit(event) {
-    EventBus.dispatch("edit-click", {id: this.id});
-}
-
-function save(event) {
-    event.preventDefault();
-    EventBus.dispatch("save-click", {id: this.id});
-}
-
-function cancel(event) {
-    event.preventDefault();
-    EventBus.dispatch("cancel-click", {id: this.id});
-}
-
 function createCharacter(character, node) {
     let id = "char-" + character.id;
-    let openId = "open-" + character.id;
-    let editId = "edit-" + character.id;
-    let saveId = "save-" + character.id;
-    let cancelId = "cancel-" + character.id;
-    let callbacks = {
-        [openId]:
-        {"click":handleopen},
-        [editId]:
-        {"click":handleEdit},
-        [saveId]:
-        {"click":save},
-        [cancelId]:
-        {"click":cancel}
-    }
-    let characterComponent = new CharacterComponent(id, character, callbacks);
+    let characterComponent = new CharacterComponent(id, character);
     characterComponent.prependToDom(node);
 }
 

@@ -1,9 +1,9 @@
 class Component {
     // parameters format : {"param":"value", ...}
     // bindings format : {"id" : {"event":function}, ...}
-    constructor(id, parameters, callbacks) {
+    constructor(id, parameters) {
         this._id = id;
-        this._callbacks = callbacks;
+        this._callbacks = {};
         for (var key in parameters) {
             this[key] = parameters[key];
         }
@@ -30,7 +30,11 @@ class Component {
         return div.firstChild;
     }
 
-    _addCallbacks() {
+    _addCallbacks(callbacks) {
+        this._callbacks = Object.assign({}, this._callbacks, callbacks);
+    }
+
+    _addListeners() {
         if (!this._inDom) {
             throw "Component not in DOM";
         }
@@ -50,7 +54,7 @@ class Component {
         this._element.parentNode.replaceChild(newElement, this._element);
         this._element = newElement;
         this._element.id = this._id;
-        this._addCallbacks();
+        this._addListeners();
     }
 
     appendToDom(parent) {
@@ -60,7 +64,7 @@ class Component {
         }
         this._inDom = true;
         parentElement.appendChild(this._element);
-        this._addCallbacks();
+        this._addListeners();
     }
 
     prependToDom(parent) {
@@ -70,7 +74,7 @@ class Component {
         }
         this._inDom = true;
         parentElement.insertBefore(this._element, parentElement.firstChild);
-        this._addCallbacks();
+        this._addListeners();
       }
 
     removeFromDom() {

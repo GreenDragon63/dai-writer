@@ -1,7 +1,7 @@
 import { DWComponent } from "./dw-component.js";
 
 class CharacterComponent extends DWComponent {
-    constructor(id, parameters, callbacks) {
+    constructor(id, parameters, callbacks = {}) {
         super(id, parameters, callbacks);
         this._uri = '/api/character/';
     }
