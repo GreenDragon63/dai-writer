@@ -14,7 +14,7 @@ class BookComponent extends DWComponent {
         if (this.id === 0) {
             this.linkScenes = "";
         } else {
-            this.linkScenes = `<a href="/scene/${this.id}" class="custom-button button-link ml2 mt2">Edit scenes</a>`
+            this.linkScenes = `<a href="/scene/${this.id}/" class="custom-button button-link ml2 mt2">Edit scenes</a>`
         }
         if (this._edition) {
             return `

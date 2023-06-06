@@ -184,7 +184,6 @@ label {
 }
 
 .custom-select {
-    appearance: none;
     padding: 10px;
     font-size: 20px;
     border: 1px solid var(--border-color);

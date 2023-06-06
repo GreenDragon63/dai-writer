@@ -24,8 +24,28 @@ type Character struct {
 	Scenario    string `json:"scenario"`
 }
 
+type CharacterName struct {
+	Id   int    `json:"id"`
+	Name string `json:"name" binding:"required"`
+}
+
 func (c *Character) setId(id int) {
 	c.Id = id
+}
+
+func ListCharacterName(u *auth.User) ([]*CharacterName, bool) {
+	var list []*Character
+	var result []*CharacterName
+	var ok bool
+	path := prefixCharacter + strconv.Itoa(u.Id) + "/"
+	list, ok = listJson[*Character](path, u.Id)
+	if !ok {
+		return result, false
+	}
+	for _, v := range list {
+		result = append(result, &CharacterName{Id: v.Id, Name: v.Name})
+	}
+	return result, true
 }
 
 func ListCharacter(u *auth.User) ([]*Character, bool) {

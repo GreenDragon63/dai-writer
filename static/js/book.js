@@ -19,12 +19,12 @@ function cancel(event) {
     EventBus.dispatch("cancel-click", {id: this.id});
 }
 
-function createBook(boook, node) {
-    let id = "book-" + boook.id;
-    let openId = "open-" + boook.id;
-    let editId = "edit-" + boook.id;
-    let saveId = "save-" + boook.id;
-    let cancelId = "cancel-" + boook.id;
+function createBook(book, node) {
+    let id = "book-" + book.id;
+    let openId = "open-" + book.id;
+    let editId = "edit-" + book.id;
+    let saveId = "save-" + book.id;
+    let cancelId = "cancel-" + book.id;
     let callbacks = {
         [openId]:
         {"click":handleopen},
@@ -35,7 +35,7 @@ function createBook(boook, node) {
         [cancelId]:
         {"click":cancel}
     }
-    let bookComponent = new BookComponent(id, boook, callbacks);
+    let bookComponent = new BookComponent(id, book, callbacks);
     bookComponent.prependToDom(node);
 }
 

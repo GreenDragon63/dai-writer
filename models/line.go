@@ -8,11 +8,12 @@ import (
 const prefixLine string = "Lines/"
 
 type Line struct {
-	Id            int    `json:"id"`
-	Character     int    `json:"character" binding:"required"`
-	Content       string `json:"content"`
-	Previous_Line int    `json:"previous_Line" binding:"required"`
-	Next_Line     int    `json:"next_Line" binding:"required"`
+	Id        int    `json:"id"`
+	Book      int    `json:"book"`
+	Scene     int    `json:"scene"`
+	Character int    `json:"character" binding:"required"`
+	Content   string `json:"content"`
+	Tokens    int    `json:"token" binding:"required"`
 }
 
 func (l *Line) setId(id int) {
