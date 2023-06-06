@@ -1,8 +1,8 @@
 class Component {
     // parameters format : {"param":"value", ...}
-    // bindings format : {"id" : {"event":function}, ...}
     constructor(id, parameters) {
         this._id = id;
+        // callbacks format : {"id" : {"event":function}, ...}
         this._callbacks = {};
         for (var key in parameters) {
             this[key] = parameters[key];
@@ -11,11 +11,7 @@ class Component {
 
     // overload this method to handle the subclasse's template
     _template() {
-        return `
-            <div>
-                <p>Overload the _template method in subclass.</p>
-            </div>
-            `
+        return "<div><p>Overload the _template method in subclass.</p></div>"
     }
 
     _init() {
@@ -32,6 +28,10 @@ class Component {
 
     _addCallbacks(callbacks) {
         this._callbacks = Object.assign({}, this._callbacks, callbacks);
+    }
+
+    _removeCallback(id) {
+        delete this._callbacks[id];
     }
 
     _addListeners() {

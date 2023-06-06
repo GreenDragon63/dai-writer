@@ -57,9 +57,13 @@ class DWComponent extends Component {
 
         var jsonData = {};
         formData.forEach(function(value, key) {
-            if (key === "id") {
+            if (key.endsWith("id")) {
                 jsonData[key] = parseInt(value);
             } else if (key === "scenes") {
+                jsonData[key] = value.split(",").map(function(num) {
+                    return parseInt(num);
+                });
+            } else if (key === "characters") {
                 jsonData[key] = value.split(",").map(function(num) {
                     return parseInt(num);
                 });
@@ -119,8 +123,16 @@ class DWComponent extends Component {
         var formData = new FormData(form);
         var self = this;
         formData.forEach(function(value, key) {
-            if (key === "id") {
+            if (key.endsWith("id")) {
                 self[key] = parseInt(value);
+            } else if (key === "scenes") {
+                self[key] = value.split(",").map(function(num) {
+                    return parseInt(num);
+                });
+            } else if (key === "characters") {
+                self[key] = value.split(",").map(function(num) {
+                    return parseInt(num);
+                });
             } else {
                 self[key] = value;
             }

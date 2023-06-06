@@ -18,6 +18,16 @@ class SelectCharacter {
     code(id) {
         return `<select id="${id}" class="custom-select">${this._options}</select>`
     }
+
+    name(id) {
+        var result = "";
+        this._characters.forEach(character => {
+            if (character.id === id) {
+                result = character.name;
+            }
+        });
+        return result
+    }
 }
 
 const selectCharacter = new SelectCharacter();

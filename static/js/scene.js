@@ -8,7 +8,7 @@ function createScene(scene, node) {
 }
 
 function fetchLast() {
-    fetch("/api" + window.location.pathname + "0")
+    fetch("/api" + window.location.pathname + "/0")
     .then(response => response.json())
     .then(scene => {
         createScene(scene, "container");
@@ -36,7 +36,7 @@ function addScene() {
     let book = decoded[2];
     let scene = {
         "id": 0,
-        "book": book,
+        "book_id": book,
         "name": "",
         "description": "",
     }
