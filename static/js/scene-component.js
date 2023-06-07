@@ -58,8 +58,7 @@ class SceneComponent extends DWMovableComponent {
         }
         let decoded = buttonId.split("-");
         if (decoded.length !== 3) {
-            console.log("Button id, wrong format")
-            return;
+            throw "Button id, wrong format"
         }
         let charaId = parseInt(decoded[2]);
         this.characters = this.characters.filter(item => item !== charaId);
