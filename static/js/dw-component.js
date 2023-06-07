@@ -17,6 +17,9 @@ class DWComponent extends Component {
         this._edition = false;
         this._edited = false;
         this._uri = "";
+        if (this.displayed) {
+            this._displayed = this.displayed;
+        }
         this._init();
     }
 
@@ -63,10 +66,16 @@ class DWComponent extends Component {
                 jsonData[key] = value.split(",").map(function(num) {
                     return parseInt(num);
                 });
+            } else if (key === "lines") {
+                jsonData[key] = value.split(",").map(function(num) {
+                    return parseInt(num);
+                });
             } else if (key === "characters") {
                 jsonData[key] = value.split(",").map(function(num) {
                     return parseInt(num);
                 });
+            } else if (key === "displayed") {
+                jsonData[key] = !!value;
             } else {
                 jsonData[key] = value;
             }
@@ -129,10 +138,16 @@ class DWComponent extends Component {
                 self[key] = value.split(",").map(function(num) {
                     return parseInt(num);
                 });
+            } else if (key === "lines") {
+                self[key] = value.split(",").map(function(num) {
+                    return parseInt(num);
+                });
             } else if (key === "characters") {
                 self[key] = value.split(",").map(function(num) {
                     return parseInt(num);
                 });
+            } else if (key === "displayed") {
+                self[key] = !!value;
             } else {
                 self[key] = value;
             }

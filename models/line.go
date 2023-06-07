@@ -9,8 +9,9 @@ const prefixLine string = "Lines/"
 
 type Line struct {
 	Id        int    `json:"id"`
-	Book      int    `json:"book"`
-	Scene     int    `json:"scene"`
+	BookId    int    `json:"book_id"  binding:"required"`
+	SceneId   int    `json:"scene_id"  binding:"required"`
+	Displayed bool   `json:"displayed"`
 	Character int    `json:"character" binding:"required"`
 	Content   string `json:"content"`
 	Tokens    int    `json:"token" binding:"required"`

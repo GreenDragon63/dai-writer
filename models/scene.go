@@ -9,7 +9,8 @@ const prefixScene string = "Scenes/"
 
 type Scene struct {
 	Id          int    `json:"id"`
-	BookId      int    `json:"book_id"`
+	BookId      int    `json:"book_id" binding:"required"`
+	Displayed   bool   `json:"displayed"`
 	Name        string `json:"name" binding:"required"`
 	Description string `json:"description"`
 	Characters  []int  `json:"characters" binding:"required,dive"`

@@ -19,6 +19,29 @@ class SceneComponent extends DWMovableComponent {
         this._genCharaList();
     }
 
+    _handleOpen(event) {
+        super._handleOpen(event);
+        if (this.id === 0) {
+            return
+        }
+        let scenes = {
+            "id": this.id,
+            "book_id": this.book_id,
+            "displayed": this._displayed,
+            "name": this.name,
+            "description": this.description,
+            "characters": this.characters,
+            "lines": this.lines,
+        };
+        fetch("/api/scene/"+ this.book_id + "/" + this.id, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(scenes)
+        });
+    }
+
     _saveOrder() {
         let sceneList = [];
         let container = document.getElementById("container");
@@ -67,11 +90,12 @@ class SceneComponent extends DWMovableComponent {
     _handleAdd(event) {
         event.preventDefault();
         let element = document.getElementById("character-"+this.id);
-        let charId = parseInt(element.value)
+        var charId = parseInt(element.value)
         if (!this.characters.includes(charId)) {
             this._edited = true;
             this.characters.push(charId);
             this._genCharaList();
+            this._refresh();
             this.render();
         }
     }
@@ -91,6 +115,7 @@ class SceneComponent extends DWMovableComponent {
         this._edited = true;
         this._removeCallback(buttonId);
         this._genCharaList();
+        this._refresh();
         this.render();
     }
 
@@ -107,6 +132,7 @@ class SceneComponent extends DWMovableComponent {
                     <form id="form-${this.id}" method="POST" action="/api/scene/${this.book_id}/${this.id}">
                         <input type="hidden" name="id" value="${this.id}">
                         <input type="hidden" name="book_id" value="${this.book_id}">
+                        <input type="hidden" name="displayed" value="${this._displayed}">
                         <div>
                             <p>Name : </p><input type="text" value="${this.name}" name="name" class="custom-input w100">
                         </div>
