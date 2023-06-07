@@ -3,6 +3,7 @@
     --back-color: #333333;
     --border-color: #666666;
     --text-color: #cccccc;
+    --alert-color: #cf0000;
 }
 
 body {
@@ -17,6 +18,14 @@ textarea {
 
 label {
     margin-left: 2%;
+}
+
+.mb0 {
+    margin-bottom: 0;
+}
+
+.mt0 {
+    margin-top: 0;
 }
 
 .mt2 {
@@ -168,7 +177,6 @@ label {
     font-size: 20px;
 }
 
-
 .custom-button, .file-input-label {
     background-color: var(--back-color);
     border: 1px solid var(--border-color);
@@ -181,6 +189,19 @@ label {
 
 .custom-button:hover {
     color: var(--border-color);;
+}
+
+.button-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 5px;
+    color: var(--alert-color);
+    font-size: 20px;
+}
+
+.button-close:hover {
+    color: var(--border-color);
 }
 
 .custom-select {

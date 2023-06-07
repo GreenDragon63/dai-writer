@@ -16,6 +16,26 @@ class SceneComponent extends DWMovableComponent {
             this.lines = [];
         }
         this.numLines = this.lines.length;
+        this._genCharaList();
+    }
+
+    _genCharaList() {
+        this.charaList = "";
+        this.charaListB = "";
+        if (this.characters !== undefined) {
+            this.characters.forEach(character => {
+                let buttonId = "remove-"+this.id+"-"+character;
+                this.charaList += `<li>${selectCharacter.name(character)}</li>`;
+                this.charaListB += `<li>${selectCharacter.name(character)}<button id="${buttonId}" class="button-close"><i class="fa-regular fa-circle-xmark"></i></button></li>`;
+                if (!(buttonId in this._callbacks)) {
+                    this._addCallbacks({
+                        [buttonId]: {"click":this._handleRemove.bind(this)},
+                    });
+                }
+            });
+            this.charaList = `<ul class="mt0">${this.charaList}</ul>`;
+            this.charaListB = `<ul class="mt0">${this.charaListB}</ul>`;
+        }
     }
 
     _handleAdd(event) {
@@ -23,28 +43,37 @@ class SceneComponent extends DWMovableComponent {
         let element = document.getElementById("character-"+this.id);
         let charId = parseInt(element.value)
         if (!this.characters.includes(charId)) {
+            this._edited = true;
             this.characters.push(charId);
+            this._genCharaList();
+            this.render();
         }
-        this.render();
-        console.log(this.characters)
     }
 
     _handleRemove(event) {
         event.preventDefault();
+        let buttonId = event.target.parentNode.id;
+        if (buttonId.length === 0) {
+            buttonId = event.target.id;
+        }
+        let decoded = buttonId.split("-");
+        if (decoded.length !== 3) {
+            console.log("Button id, wrong format")
+            return;
+        }
+        let charaId = parseInt(decoded[2]);
+        this.characters = this.characters.filter(item => item !== charaId);
+        this._edited = true;
+        this._removeCallback(buttonId);
+        this._genCharaList();
+        this.render();
     }
 
     _template() {
         if (this.id === 0) {
             var linkLines = "";
         } else {
-            var linkLines = `<a href="/line/${this.book_id}/${this.id}/" class="custom-button button-link ml2 mt2">Edit scenes</a>`
-        }
-        var charaList = "";
-        if (this.characters !== undefined) {
-            this.characters.forEach(character => {
-                charaList += `<li>${selectCharacter.name(character)}</li>`;
-            });
-            charaList = `<ul>${charaList}</ul>`;
+            var linkLines = `<a href="/line/${this.book_id}/${this.id}/" class="custom-button button-link ml2 mt2">Generate content</a>`
         }
         if (this._edition) {
             return `
@@ -58,7 +87,7 @@ class SceneComponent extends DWMovableComponent {
                         </div>
                         <div class="mt2">
                             <label>Description: </label><textarea name="description" class="custom-textarea">${this.description}</textarea>
-                            ${charaList}
+                            <label>Characters : </label>${this.charaListB}
                             <label>Add a character to the scene: </label>${selectCharacter.code("character-"+this.id)}
                             <button id="add-${this.id}" class="custom-button">Add</button>
                         </div>
@@ -104,6 +133,8 @@ class SceneComponent extends DWMovableComponent {
                             </div>
                             <div>
                                 <p>Description : ${this.description}</p>
+                                <p class="mb0">Characters : </p>
+                                ${this.charaList}
                                 <p>Lines : ${this.numLines}</p>
                             </div>
                         </div>
