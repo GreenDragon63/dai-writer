@@ -4,7 +4,7 @@ import { EventBus } from "./framework.js";
 function createScene(scene, node) {
     let id = "scene-" + scene.id;
     let sceneComponent = new SceneComponent(id, scene);
-    sceneComponent.prependToDom(node);
+    sceneComponent.appendToDom(node);
 }
 
 function fetchLast() {
@@ -33,7 +33,7 @@ function fetchAll() {
         if (data === null) {
             return
         }
-        order.slice().reverse().forEach(id => {
+        order.forEach(id => {
             createScene(data[id-1], "container");
         });
     });
