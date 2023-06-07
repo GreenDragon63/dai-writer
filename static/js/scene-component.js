@@ -41,14 +41,6 @@ class SceneComponent extends DWMovableComponent {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(book)
-            })
-            .then(function(response) {
-                if (!response.ok) {
-                    alert("Save failed.");
-                }
-            })
-            .catch(error => {
-                alert("An error occurred. Please try again."+error);
             });
         });
     }

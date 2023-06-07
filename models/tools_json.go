@@ -50,9 +50,6 @@ func getId(prefix string) int {
 func listJson[T Identifiable](prefix string, uid int) ([]T, bool) {
 	var data []T
 
-	um.lock(uid)
-	defer um.unlock(uid)
-
 	path := prefix
 	err := os.MkdirAll(path, 0755)
 	if err != nil {
@@ -89,9 +86,6 @@ func listJson[T Identifiable](prefix string, uid int) ([]T, bool) {
 
 func loadJson[T Identifiable](prefix string, uid int, id int) (T, bool) {
 	var data T
-
-	um.lock(uid)
-	defer um.unlock(uid)
 
 	if id == 0 {
 		id = getId(prefix) - 1
