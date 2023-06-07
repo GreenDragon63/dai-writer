@@ -19,6 +19,40 @@ class SceneComponent extends DWMovableComponent {
         this._genCharaList();
     }
 
+    _saveOrder() {
+        let sceneList = [];
+        let container = document.getElementById("container");
+        let scenes = container.children;
+        for (var i = 0; i < scenes.length; i++) {
+            var scene = scenes[i];
+            let decoded = scene.id.split("-");
+            if (decoded.length !== 2) {
+                throw "Scene id, wrong format"
+            }
+            sceneList.push(parseInt(decoded[1]));
+        }
+        fetch("/api/book/"+ this.book_id)
+        .then(response => response.json())
+        .then(book => {
+            book.scenes = sceneList;
+            fetch("/api/book/"+ this.book_id, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(book)
+            })
+            .then(function(response) {
+                if (!response.ok) {
+                    alert("Save failed.");
+                }
+            })
+            .catch(error => {
+                alert("An error occurred. Please try again."+error);
+            });
+        });
+    }
+
     _genCharaList() {
         this.charaList = "";
         this.charaListB = "";
@@ -135,6 +169,10 @@ class SceneComponent extends DWMovableComponent {
                                 <p class="mb0">Characters : </p>
                                 ${this.charaList}
                                 <p>Lines : ${this.numLines}</p>
+                            </div>
+                            <div class="buttons buttons-center">
+                                <button id="up-${this.id}"><i class="fa-solid fa-chevron-up"></i></button>
+                                <button id="down-${this.id}"><i class="fa-solid fa-chevron-down"></i></button>
                             </div>
                         </div>
                         <div class="buttons buttons-right">

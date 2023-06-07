@@ -16,6 +16,7 @@ class DWMovableComponent extends DWComponent {
         let previousElement = this._element.previousElementSibling;
         if (previousElement) {
             this._element.parentNode.insertBefore(this._element, previousElement);
+            this._saveOrder();
         }
     }
 
@@ -23,6 +24,7 @@ class DWMovableComponent extends DWComponent {
         let nextElement = this._element.nextElementSibling;
         if (nextElement) {
             this._element.parentNode.insertBefore(nextElement, this._element);
+            this._saveOrder();
         }
     }
 
