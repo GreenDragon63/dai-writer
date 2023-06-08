@@ -97,7 +97,11 @@ class DWComponent extends Component {
                 }
                 self._edition = false;
                 self._edited = false;
-                self._displayed = false;
+                if (typeof self.displayed !== 'undefined') {
+                    self._displayed = self.displayed;
+                } else {
+                    self._displayed = false;
+                }
                 self.render();
                 return response.json();
             } else {

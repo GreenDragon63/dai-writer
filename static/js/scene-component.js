@@ -91,11 +91,14 @@ class SceneComponent extends DWMovableComponent {
         event.preventDefault();
         let element = document.getElementById("character-"+this.id);
         var charId = parseInt(element.value)
-        if (!this.characters.includes(charId)) {
+        if (this.characters.indexOf(charId) === -1) {
             this._edited = true;
             this.characters.push(charId);
             this._genCharaList();
-            this._refresh();
+            var form = document.getElementById("form-"+this.id);
+            var formData = new FormData(form);
+            this["name"] = formData.get("name");
+            this["description"] = formData.get("description");
             this.render();
         }
     }
@@ -115,15 +118,24 @@ class SceneComponent extends DWMovableComponent {
         this._edited = true;
         this._removeCallback(buttonId);
         this._genCharaList();
-        this._refresh();
+        var form = document.getElementById("form-"+this.id);
+        var formData = new FormData(form);
+        this["name"] = formData.get("name");
+        this["description"] = formData.get("description");
         this.render();
     }
 
     _template() {
         if (this.id === 0) {
             var linkLines = "";
+            var arrows = "";
         } else {
-            var linkLines = `<a href="/line/${this.book_id}/${this.id}/" class="custom-button button-link ml2 mt2">Generate content</a>`
+            var linkLines = `<a href="/line/${this.book_id}/${this.id}/" class="custom-button button-link ml2 mt2">Generate content</a>`;
+            var arrows = `
+            <div class="buttons buttons-center">
+                <button id="up-${this.id}"><i class="fa-solid fa-chevron-up"></i></button>
+                <button id="down-${this.id}"><i class="fa-solid fa-chevron-down"></i></button>
+            </div>`;
         }
         if (this._edition) {
             return `
@@ -147,10 +159,7 @@ class SceneComponent extends DWMovableComponent {
                         <button id="save-${this.id}" type="submit" class="custom-button ml2 mt2">Save</button>
                         <button id="cancel-${this.id}" type="button" class="custom-button mt2">Cancel</button>
                     </form>
-                    <div class="buttons buttons-center">
-                        <button id="up-${this.id}"><i class="fa-solid fa-chevron-up"></i></button>
-                        <button id="down-${this.id}"><i class="fa-solid fa-chevron-down"></i></button>
-                    </div>
+                    ${arrows}
                     ${linkLines}
                 </div>
                 <div class="buttons buttons-right">
