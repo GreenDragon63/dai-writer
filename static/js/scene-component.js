@@ -1,4 +1,5 @@
 import { DWMovableComponent } from "./dw-movable-component.js";
+import { EventBus } from "./framework.js";
 import selectCharacter from "./select-character.js";
 
 class SceneComponent extends DWMovableComponent {
@@ -17,6 +18,7 @@ class SceneComponent extends DWMovableComponent {
         }
         this.numLines = this.lines.length;
         this._genCharaList();
+        EventBus.register("refresh-order", this._saveOrder.bind(this));
     }
 
     _handleOpen(event) {

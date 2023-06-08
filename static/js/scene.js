@@ -12,6 +12,7 @@ function fetchLast() {
     .then(response => response.json())
     .then(scene => {
         createScene(scene, "container");
+        EventBus.dispatch("refresh-order");
     });
 }
 
