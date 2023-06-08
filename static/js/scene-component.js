@@ -44,7 +44,10 @@ class SceneComponent extends DWMovableComponent {
         });
     }
 
-    _saveOrder() {
+    _saveOrder(event) {
+        if ((typeof event !== "undefined") && (this.id !==0)) {
+            return;
+        }
         let sceneList = [];
         let container = document.getElementById("container");
         let scenes = container.children;
