@@ -18,6 +18,7 @@ class SceneComponent extends DWMovableComponent {
         }
         this.numLines = this.lines.length;
         this._genCharaList();
+        this._init();
         EventBus.register("refresh-order", this._saveOrder.bind(this));
     }
 
@@ -45,8 +46,15 @@ class SceneComponent extends DWMovableComponent {
     }
 
     _saveOrder(event) {
-        if ((typeof event !== "undefined") && (this.id !==0)) {
-            return;
+        if (typeof event !== "undefined") {
+            if (this.id !==0) {
+                return;
+            } else {
+                this["name"] = "";
+                this["description"] = "";
+                this["characters"] = [];
+                this._genCharaList();
+            }
         }
         let sceneList = [];
         let container = document.getElementById("container");
