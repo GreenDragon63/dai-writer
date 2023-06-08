@@ -117,18 +117,24 @@ class DWComponent extends Component {
         event.preventDefault();
         this._edition = false;
         this._edited = false;
-        this._displayed = false;
+        if (this.displayed) {
+            this._displayed = this.displayed;
+        } else {
+            this._displayed = false;
+        }
+        if (typeof this.backupChar !== "undefined") {
+            this.characters = this.backupChar;
+            this._genCharaList();
+        }
         this.render();
     }
 
     _handleInput(event) {
-        if (this._edited === false) {
-            this._edited = true;
-            const openButton = document.getElementById("open-"+this.id);
-            openButton.disabled = true;
-            const editButton = document.getElementById("edit-"+this.id);
-            editButton.disabled = true;
-        }
+        this._edited = true;
+        const openButton = document.getElementById("open-"+this.id);
+        openButton.disabled = true;
+        const editButton = document.getElementById("edit-"+this.id);
+        editButton.disabled = true;
     }
 
     _refresh() {

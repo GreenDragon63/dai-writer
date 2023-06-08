@@ -19,6 +19,7 @@ class SceneComponent extends DWMovableComponent {
         this.numLines = this.lines.length;
         this._genCharaList();
         this._init();
+        this.backupChar = this.characters;
         EventBus.register("refresh-order", this._saveOrder.bind(this));
     }
 
@@ -105,7 +106,6 @@ class SceneComponent extends DWMovableComponent {
         let element = document.getElementById("character-"+this.id);
         var charId = parseInt(element.value)
         if (this.characters.indexOf(charId) === -1) {
-            this._edited = true;
             this.characters.push(charId);
             this._genCharaList();
             var form = document.getElementById("form-"+this.id);
@@ -113,6 +113,7 @@ class SceneComponent extends DWMovableComponent {
             this["name"] = formData.get("name");
             this["description"] = formData.get("description");
             this.render();
+            this._handleInput();
         }
     }
 
@@ -128,7 +129,6 @@ class SceneComponent extends DWMovableComponent {
         }
         let charaId = parseInt(decoded[2]);
         this.characters = this.characters.filter(item => item !== charaId);
-        this._edited = true;
         this._removeCallback(buttonId);
         this._genCharaList();
         var form = document.getElementById("form-"+this.id);
@@ -136,6 +136,7 @@ class SceneComponent extends DWMovableComponent {
         this["name"] = formData.get("name");
         this["description"] = formData.get("description");
         this.render();
+        this._handleInput();
     }
 
     _template() {
