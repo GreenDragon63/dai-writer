@@ -28,7 +28,7 @@ class SceneComponent extends DWMovableComponent {
         if (this.id === 0) {
             return
         }
-        let scenes = {
+        let scene = {
             "id": this.id,
             "book_id": this.book_id,
             "displayed": this._displayed,
@@ -37,12 +37,12 @@ class SceneComponent extends DWMovableComponent {
             "characters": this.characters,
             "lines": this.lines,
         };
-        fetch("/api/scene/"+ this.book_id + "/" + this.id, {
+        fetch(this._uri + this.id, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(scenes)
+            body: JSON.stringify(scene)
         });
     }
 

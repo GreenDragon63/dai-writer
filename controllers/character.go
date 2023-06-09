@@ -5,6 +5,7 @@ import (
 	"dai-writer/models"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -170,9 +171,10 @@ func AvatarCharacter(c *gin.Context) {
 	}
 	user = u.(auth.User)
 	pngFile = models.AvatarCharacterPath(&user, id)
-	if ok != true {
-		c.JSON(http.StatusNotFound, gin.H{"message": "Avatar not found"})
-		return
+	if _, err := os.Stat(pngFile); err == nil {
+		log.Println(pngFile)
+		c.File(pngFile)
+	} else {
+		c.File("static/img/placeholder.svg")
 	}
-	c.File(pngFile)
 }
