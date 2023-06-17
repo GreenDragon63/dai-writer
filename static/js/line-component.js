@@ -9,6 +9,12 @@ class LineComponent extends DWMovableComponent {
         if ((this.lines === undefined) || (this.lines === null)) {
             this.lines = [];
         }
+        let left = "left-" + parameters.id;
+        let right = "right-" + parameters.id;
+        this._addCallbacks({
+            [left]: {"click":this._handleLeft.bind(this)},
+            [right]: {"click":this._handleRight.bind(this)}
+        });
         this._init();
         EventBus.register("refresh-order", this._saveOrder.bind(this));
     }
@@ -31,6 +37,24 @@ class LineComponent extends DWMovableComponent {
             },
             body: JSON.stringify(line)
         });
+    }
+
+    _handleLeft(event) {
+        event.preventDefault();
+        if (this.current > 0) {
+            this.current--;
+            this.current_content = this.content[this.current];
+            this.render();
+        }
+    }
+
+    _handleRight(event) {
+        event.preventDefault();
+        if (this.current < this.content.length - 1) {
+            this.current++;
+            this.current_content = this.content[this.current];
+            this.render();
+        }
     }
 
     _handleOpen(event) {
@@ -102,7 +126,13 @@ class LineComponent extends DWMovableComponent {
                             <p>Character : ${character}</p>
                         </div>
                         <div class="mt2">
-                            <label>Content: </label><textarea name="current_content" class="custom-textarea">${this.content[this.current]}</textarea>
+                            <label>Content: </label>
+                            <div class="buttons">
+                                <button id="left-${this.id}"><i class="fa-regular fa-square-caret-left"></i></button>
+                                &nbsp;&nbsp;${this.current+1}/${this.content.length}
+                                <button id="right-${this.id}"><i class="fa-regular fa-square-caret-right"></i></button>
+                            </div>
+                            <textarea name="current_content" class="custom-textarea">${this.content[this.current]}</textarea>
                         </div>
                         <button id="save-${this.id}" type="submit" class="custom-button ml2 mt2">Save</button>
                         <button id="cancel-${this.id}" type="button" class="custom-button mt2">Cancel</button>
