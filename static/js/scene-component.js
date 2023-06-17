@@ -23,11 +23,7 @@ class SceneComponent extends DWMovableComponent {
         EventBus.register("refresh-order", this._saveOrder.bind(this));
     }
 
-    _handleOpen(event) {
-        super._handleOpen(event);
-        if (this.id === 0) {
-            return
-        }
+    _save() {
         let scene = {
             "id": this.id,
             "book_id": this.book_id,
@@ -44,6 +40,22 @@ class SceneComponent extends DWMovableComponent {
             },
             body: JSON.stringify(scene)
         });
+    }
+
+    _handleOpen(event) {
+        super._handleOpen(event);
+        if (this.id === 0) {
+            return
+        }
+        this._save();
+    }
+
+    _handleEdit(event) {
+        super._handleEdit(event);
+        if (this.id === 0) {
+            return
+        }
+        this._save();
     }
 
     _saveOrder(event) {
@@ -165,7 +177,7 @@ class SceneComponent extends DWMovableComponent {
                         <div class="mt2">
                             <label>Description: </label><textarea name="description" class="custom-textarea">${this.description}</textarea>
                             <label>Characters : </label>${this.charaListB}
-                            <label>Add a character to the scene: </label>${selectCharacter.code("character-"+this.id)}
+                            <label>Add a character to the scene: </label>${selectCharacter.all("character-"+this.id)}
                             <button id="add-${this.id}" class="custom-button">Add</button>
                         </div>
                         <input type="hidden" name="characters" value="${this.characters}">
@@ -232,7 +244,7 @@ class SceneComponent extends DWMovableComponent {
                 </div>
                 <div class="buttons buttons-right">
                     <button id="edit-${this.id}"><i class="fa-solid fa-pen-to-square"></i></button>
-                    <button  id="open-${this.id}"><i class="fa-regular fa-eye"></i></button>
+                    <button  id="open-${this.id}"><i class="fa-regular fa-eye-slash"></i></button>
                 </div>
             </div>
             `

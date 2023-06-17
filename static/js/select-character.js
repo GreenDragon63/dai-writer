@@ -1,6 +1,7 @@
 class SelectCharacter {
     constructor() {
         this._characters = [];
+        this._sceneCharacters = [];
         self = this;
         fetch("/api/character/name/")
         .then(response => response.json())
@@ -15,8 +16,28 @@ class SelectCharacter {
         });
     }
 
-    code(id) {
+    all(id) {
         return `<select id="${id}" class="custom-select">${this._options}</select>`
+    }
+
+    scene(id, book_id, scene_id) {
+        if (this._sceneCharacters.length === 0) {
+            self = this;
+            fetch("/api/scene/"+book_id+"/"+scene_id)
+            .then(response => response.json())
+            .then(scene => {
+                if (scene === null) {
+                    return
+                }
+                self._sceneCharacters = scene.characters;
+                self._sceneOptions = "";
+                self._sceneCharacters.forEach(character => {
+                    self._sceneOptions += `<option value="${character}">${self.name(character)}</option>`
+                });
+                return `<select id="${id}" class="custom-select" name="character_id">${this._sceneOptions}</select>`
+            });
+        }
+        return `<select id="${id}" class="custom-select" name="character_id">${this._sceneOptions}</select>`
     }
 
     name(id) {
@@ -28,6 +49,7 @@ class SelectCharacter {
         });
         return result
     }
+
 }
 
 const selectCharacter = new SelectCharacter();

@@ -14,7 +14,7 @@ type Scene struct {
 	Name        string `json:"name" binding:"required"`
 	Description string `json:"description"`
 	Characters  []int  `json:"characters" binding:"required,dive"`
-	Lines       []int  `json:"line" binding:"dive"`
+	Lines       []int  `json:"lines" binding:"dive"`
 }
 
 func (s *Scene) setId(id int) {

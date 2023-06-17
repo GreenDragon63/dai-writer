@@ -59,6 +59,7 @@ class DWComponent extends Component {
         var formData = new FormData(form);
 
         var jsonData = {};
+        self = this;
         formData.forEach(function(value, key) {
             if (key.endsWith("id")) {
                 jsonData[key] = parseInt(value);
@@ -74,13 +75,18 @@ class DWComponent extends Component {
                 jsonData[key] = value.split(",").map(function(num) {
                     return parseInt(num);
                 });
+            } else if (key === "current") {
+                jsonData[key] = parseInt(value);
+            } else if (key === "content") {
+                jsonData[key] = JSON.parse(atob(value));
+            } else if (key === "current_content") {
+                jsonData["content"][self.current] = value;
             } else if (key === "displayed") {
                 jsonData[key] = !!value;
             } else {
                 jsonData[key] = value;
             }
         });
-        self = this;
         fetch(this._uri + this.id, {
             method: 'POST',
             headers: {
@@ -156,6 +162,12 @@ class DWComponent extends Component {
                 self[key] = value.split(",").map(function(num) {
                     return parseInt(num);
                 });
+            } else if (key === "current") {
+                self[key] = parseInt(value);
+            } else if (key === "content") {
+                self[key] = JSON.parse(atob(value));
+            } else if (key === "current_content") {
+                self.content[self.current] = value;
             } else if (key === "displayed") {
                 self[key] = !!value;
             } else {

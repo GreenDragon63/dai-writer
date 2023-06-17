@@ -28,15 +28,15 @@ function fetchAll() {
     .then(response => response.json())
     .then(scene => {
         order = scene.lines;
-    });
-    fetch("/api" + window.location.pathname)
-    .then(response => response.json())
-    .then(data => {
-        if (data === null) {
-            return
-        }
-        order.forEach(id => {
-            createLine(data[id-1], "container");
+        fetch("/api" + window.location.pathname)
+        .then(response => response.json())
+        .then(data => {
+            if (data === null) {
+                return
+            }
+            order.forEach(id => {
+                createLine(data[id-1], "container");
+            });
         });
     });
 }
@@ -52,8 +52,9 @@ function addLine() {
         "id": 0,
         "book_id": book,
         "scene_id": scene,
-        "character": null,
-        "content": "",
+        "character_id": null,
+        "content": [""],
+        "current": 0,
         "token": 0,
     }
     createLine(line, "add-new");
