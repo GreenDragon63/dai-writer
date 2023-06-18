@@ -52,7 +52,7 @@ function addLine() {
         "id": 0,
         "book_id": book,
         "scene_id": scene,
-        "character_id": null,
+        "character_id": 0,
         "content": [""],
         "current": 0,
         "token": 0,

@@ -30,12 +30,12 @@ func ListScene(c *gin.Context) {
 		return
 	}
 	user = u.(auth.User)
-	chara, ok := models.ListScene(&user, book)
+	scene, ok := models.ListScene(&user, book)
 	if ok != true {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Scene not found"})
 		return
 	}
-	c.JSON(http.StatusOK, chara)
+	c.JSON(http.StatusOK, scene)
 }
 
 func GetScene(c *gin.Context) {
@@ -58,12 +58,12 @@ func GetScene(c *gin.Context) {
 		return
 	}
 	user = u.(auth.User)
-	chara, ok := models.LoadScene(&user, book, id)
+	scene, ok := models.LoadScene(&user, book, id)
 	if ok != true {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Scene not found"})
 		return
 	}
-	c.JSON(http.StatusOK, chara)
+	c.JSON(http.StatusOK, scene)
 }
 
 func PostScene(c *gin.Context) {

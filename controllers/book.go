@@ -25,12 +25,12 @@ func ListBook(c *gin.Context) {
 		return
 	}
 	user = u.(auth.User)
-	chara, ok := models.ListBook(&user)
+	book, ok := models.ListBook(&user)
 	if ok != true {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Book not found"})
 		return
 	}
-	c.JSON(http.StatusOK, chara)
+	c.JSON(http.StatusOK, book)
 }
 
 func GetBook(c *gin.Context) {
@@ -48,12 +48,12 @@ func GetBook(c *gin.Context) {
 		return
 	}
 	user = u.(auth.User)
-	chara, ok := models.LoadBook(&user, id)
+	book, ok := models.LoadBook(&user, id)
 	if ok != true {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Book not found"})
 		return
 	}
-	c.JSON(http.StatusOK, chara)
+	c.JSON(http.StatusOK, book)
 }
 
 func PostBook(c *gin.Context) {
