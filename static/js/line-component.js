@@ -11,9 +11,11 @@ class LineComponent extends DWMovableComponent {
         }
         let left = "left-" + parameters.id;
         let right = "right-" + parameters.id;
+        let generate = "generate-" + parameters.id;
         this._addCallbacks({
             [left]: {"click":this._handleLeft.bind(this)},
-            [right]: {"click":this._handleRight.bind(this)}
+            [right]: {"click":this._handleRight.bind(this)},
+            [generate]: {"click":this._handleGenerate.bind(this)}
         });
         this._init();
         EventBus.register("refresh-order", this._saveOrder.bind(this));
@@ -36,6 +38,18 @@ class LineComponent extends DWMovableComponent {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(line)
+        });
+    }
+
+    _handleGenerate(event) {
+        event.preventDefault();
+        self = this;
+        fetch("/api/generate/" + this.book_id + "/" + this.scene_id + "/" + this.id)
+        .then(response => response.json())
+        .then(text => {
+            self.content.push(text);
+            self.current = self.content.length - 1;
+            self.render();
         });
     }
 
@@ -140,7 +154,7 @@ class LineComponent extends DWMovableComponent {
                     ${arrows}
                 </div>
                 <div class="buttons buttons-right">
-                    <button><i class="fa-solid fa-rotate"></i></button>
+                    <button id="generate-${this.id}"><i class="fa-solid fa-rotate"></i></button>
                     <button id="edit-${this.id}"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
                     <button  id="open-${this.id}"><i class="fa-regular fa-eye"></i></button>
                 </div>
@@ -156,7 +170,7 @@ class LineComponent extends DWMovableComponent {
                         </div>
                     </div>
                     <div class="buttons buttons-right">
-                        <button><i class="fa-solid fa-rotate"></i></button>
+                        <button id="generate-${this.id}"><i class="fa-solid fa-rotate"></i></button>
                         <button id="edit-${this.id}"><i class="fa-solid fa-pen-to-square"></i></button>
                         <button  id="open-${this.id}"><i class="fa-regular fa-eye"></i></button>
                     </div>
@@ -183,7 +197,7 @@ class LineComponent extends DWMovableComponent {
                             </div>
                         </div>
                         <div class="buttons buttons-right">
-                            <button><i class="fa-solid fa-rotate"></i></button>
+                            <button id="generate-${this.id}"><i class="fa-solid fa-rotate"></i></button>
                             <button id="edit-${this.id}"><i class="fa-solid fa-pen-to-square"></i></button>
                             <button  id="open-${this.id}"><i class="fa-regular fa-eye"></i></button>
                         </div>
