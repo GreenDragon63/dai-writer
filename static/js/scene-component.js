@@ -172,7 +172,7 @@ class SceneComponent extends DWMovableComponent {
                         <input type="hidden" name="book_id" value="${this.book_id}">
                         <input type="hidden" name="displayed" value="${this._displayed}">
                         <div>
-                            <p>Name : </p><input type="text" value="${this.name}" name="name" class="custom-input w100">
+                            <p>Title : </p><input type="text" value="${this.name}" name="name" class="custom-input w100">
                         </div>
                         <div class="mt2">
                             <label>Description: </label><textarea name="description" class="custom-textarea">${this.description}</textarea>
@@ -215,7 +215,7 @@ class SceneComponent extends DWMovableComponent {
                     <div class="element">
                         <div class="content">
                             <div>
-                                <p>Name : ${this.name}</p>
+                                <p>Title : ${this.name}</p>
                             </div>
                             <div>
                                 <p>Description : ${this.description}</p>
@@ -239,7 +239,7 @@ class SceneComponent extends DWMovableComponent {
             <div class="element">
                 <div class="content">
                     <div>
-                        <p>Name : ${this.name}</p>
+                        <p>Title : ${this.name}</p>
                     </div>
                 </div>
                 <div class="buttons buttons-right">

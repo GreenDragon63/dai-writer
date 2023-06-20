@@ -23,7 +23,7 @@ class BookComponent extends DWComponent {
                     <form id="form-${this.id}" method="POST" action="/api/boook/${this.id}">
                         <input type="hidden" name="id" value="${this.id}">
                         <div>
-                            <p>Name : </p><input type="text" value="${this.name}" name="name" class="custom-input w100">
+                            <p>Title : </p><input type="text" value="${this.name}" name="name" class="custom-input w100">
                         </div>
                         <div class="mt2">
                             <label>Description: </label><textarea name="description" class="custom-textarea">${this.description}</textarea>
@@ -61,7 +61,7 @@ class BookComponent extends DWComponent {
                     <div class="element">
                         <div class="content">
                             <div>
-                                <p>Name : ${this.name}</p>
+                                <p>Title : ${this.name}</p>
                             </div>
                             <div>
                                 <p>Description : ${this.description}</p>
@@ -79,7 +79,7 @@ class BookComponent extends DWComponent {
             <div class="element">
                 <div class="content">
                     <div>
-                        <p>Name : ${this.name}</p>
+                        <p>Title : ${this.name}</p>
                     </div>
                 </div>
                 <div class="buttons buttons-right">

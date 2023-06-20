@@ -166,7 +166,7 @@ class LineComponent extends DWMovableComponent {
                 <div class="element">
                     <div class="content">
                         <div>
-                            <p>Create a new line</p>
+                            <p>Character : ${character}</p>
                         </div>
                     </div>
                     <div class="buttons buttons-right">
@@ -185,11 +185,10 @@ class LineComponent extends DWMovableComponent {
                         </div>
                         <div class="content">
                             <div>
-                                <p>Character : ${selectCharacter.name(this.character_id)}</p>
+                                <p><b>${selectCharacter.name(this.character_id)}</b></p>
                             </div>
                             <div>
-                                <p>Content :${this.content[this.current]}</p>
-                                <p>Tokens : ${this.tokens}</p>
+                                <p>${this.content[this.current]}</p>
                             </div>
                             <div class="buttons buttons-center">
                                 <button id="up-${this.id}"><i class="fa-solid fa-chevron-up"></i></button>
@@ -208,7 +207,7 @@ class LineComponent extends DWMovableComponent {
             <div class="element">
                 <div class="content">
                     <div>
-                        <p>Character : ${selectCharacter.name(this.character_id)}</p>
+                        <p><b>${selectCharacter.name(this.character_id)}: </b> ${this.content[this.current].substring(0,50)}...</p>
                     </div>
                 </div>
                 <div class="buttons buttons-right">
