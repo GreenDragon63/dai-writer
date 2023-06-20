@@ -45,7 +45,13 @@ class LineComponent extends DWMovableComponent {
     _handleGenerate(event) {
         event.preventDefault();
         self = this;
-        fetch("/api/generate/" + this.book_id + "/" + this.scene_id + "/" + this.id)
+        if (this.id === 0) {
+            var charaSelect = document.getElementById("character-"+this.id);
+            var character = charaSelect.value;
+        } else {
+            var character = this.character_id
+        }
+        fetch("/api/generate/" + this.book_id + "/" + this.scene_id + "/" + + character + "/" + this.id)
         .then(response => response.json())
         .then(text => {
             self.content.push(text);

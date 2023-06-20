@@ -175,9 +175,14 @@ func GenerateLine(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Bad parameter"})
 		return
 	}
+	character, err := strconv.Atoi(c.Param("character"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Bad parameter"})
+		return
+	}
 	user = u.(auth.User)
 
-	result := llm.Generate(&user, book, scene, id)
+	result := llm.Generate(&user, book, scene, character, id)
 
 	c.JSON(http.StatusOK, result)
 }
