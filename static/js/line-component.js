@@ -19,6 +19,7 @@ class LineComponent extends DWMovableComponent {
         });
         this._init();
         EventBus.register("refresh-order", this._saveOrder.bind(this));
+        EventBus.register("chara-list", this.render.bind(this));
     }
 
     _save() {

@@ -27,15 +27,15 @@ function fetchAll() {
     .then(response => response.json())
     .then(book => {
         order = book.scenes;
-    });
-    fetch("/api" + window.location.pathname)
-    .then(response => response.json())
-    .then(data => {
-        if (data === null) {
-            return
-        }
-        order.forEach(id => {
-            createScene(data[id-1], "container");
+        fetch("/api" + window.location.pathname)
+        .then(response => response.json())
+        .then(data => {
+            if (data === null) {
+                return
+            }
+            order.forEach(id => {
+                createScene(data[id-1], "container");
+            });
         });
     });
 }

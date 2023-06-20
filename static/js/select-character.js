@@ -1,3 +1,5 @@
+import { EventBus } from "./framework.js";
+
 class SelectCharacter {
     constructor() {
         this._characters = [];
@@ -34,6 +36,7 @@ class SelectCharacter {
                 self._sceneCharacters.forEach(character => {
                     self._sceneOptions += `<option value="${character}">${self.name(character)}</option>`
                 });
+                EventBus.dispatch("chara-list");
                 return `<select id="${id}" class="custom-select" name="character_id">${this._sceneOptions}</select>`
             });
         }
