@@ -218,7 +218,6 @@ class LineComponent extends DWMovableComponent {
                     </div>
                 </div>
                 <div class="buttons buttons-right">
-                    <button><i class="fa-solid fa-rotate"></i></button>
                     <button id="edit-${this.id}"><i class="fa-solid fa-pen-to-square"></i></button>
                     <button  id="open-${this.id}"><i class="fa-regular fa-eye-slash"></i></button>
                 </div>
