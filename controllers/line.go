@@ -154,6 +154,7 @@ func DeleteLine(c *gin.Context) {
 func GenerateLine(c *gin.Context) {
 	var user auth.User
 	var id int
+	var Line *models.Line
 
 	u, ok := c.Get("current_user")
 	if ok != true {
@@ -183,6 +184,15 @@ func GenerateLine(c *gin.Context) {
 	user = u.(auth.User)
 
 	result := llm.Generate(&user, book, scene, character, id)
+
+	Line, ok = models.LoadLine(&user, book, scene, id)
+	if ok != true {
+		c.JSON(http.StatusNotFound, gin.H{"message": "Line not found"})
+		return
+	}
+	Line.Content = append(Line.Content, result)
+	Line.Current = len(Line.Content) - 1
+	models.SaveLine(&user, book, scene, id, *Line)
 
 	c.JSON(http.StatusOK, result)
 }

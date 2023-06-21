@@ -8,14 +8,10 @@ import (
 	"strings"
 )
 
-func Generate(u *auth.User, book_id, scene_id, character_id, line_id int) string {
-	var memory string
-	var size int
-
-	size = 2048 - 300
-	memory = botMemory(u, book_id, scene_id, character_id, line_id, size)
-	return memory
-}
+const (
+	MODEL_CTX = 2048
+	RESPONSE  = 300
+)
 
 func replacePlaceholders(s, name string) string {
 	replaced := strings.ReplaceAll(s, "{{user}}", "You")
@@ -23,6 +19,61 @@ func replacePlaceholders(s, name string) string {
 	replaced = strings.ReplaceAll(replaced, "You is", "You are")
 	replaced = strings.ReplaceAll(replaced, "{{char}}", name)
 	return replaced
+}
+
+func cleanOutput(s, name string) string {
+	replaced := strings.ReplaceAll(s, "<START>", "")
+	replaced = strings.ReplaceAll(replaced, "<END>", "")
+	replaced = strings.ReplaceAll(replaced, name+":", "")
+	replaced = strings.ReplaceAll(replaced, "\\", "")
+	return replaced
+}
+
+func Generate(u *auth.User, book_id, scene_id, character_id, line_id int) string {
+	var words []string
+	var memory, new_text, streamed_text string
+	var memory_size, free_size, response_size int
+	var finished bool
+
+	finished = false
+	new_text = ""
+	chara, ok := models.LoadCharacter(u, character_id)
+	if ok != true {
+		log.Printf("Cannot find character %d\n", character_id)
+		return ""
+	}
+
+	response_size = RESPONSE
+	for finished == false {
+		memory_size = MODEL_CTX - response_size
+		free_size = response_size
+		memory = botMemory(u, book_id, scene_id, character_id, line_id, memory_size)
+		for free_size > 0 {
+			if new_text != "" {
+				words = strings.Split(new_text, " ")
+				new_text = strings.Join(words[:len(words)-1], " ")
+			}
+			streamed_text, finished = GetCompletion(memory + new_text)
+			new_text += streamed_text
+			free_size -= 50
+			if strings.Contains(new_text, "You:") {
+				new_text = strings.Split(new_text, "You:")[0]
+				finished = true
+				break
+			}
+			if strings.Contains(new_text, "You :") {
+				new_text = strings.Split(new_text, "You :")[0]
+				finished = true
+				break
+			}
+			log.Println(new_text)
+			if finished == true {
+				break
+			}
+		}
+		response_size += 100
+	}
+	return cleanOutput(new_text, chara.Name)
 }
 
 func botMemory(u *auth.User, book_id, scene_id, character_id, line_id, size int) string {
@@ -56,12 +107,16 @@ func botMemory(u *auth.User, book_id, scene_id, character_id, line_id, size int)
 			return ""
 		}
 		if line.Displayed && line.Id != line_id {
-			current_line = line.Content[line.Current]
+			if line.CharacterId == character_id {
+				current_line = chara.Name + ": " + line.Content[line.Current]
+			} else {
+				current_line = "You: " + line.Content[line.Current]
+			}
 			line_length = GetTokens(current_line)
 			if (current_length + line_length) > stm_length {
 				break
 			}
-			current_length += line_length // TODO handle character name
+			current_length += line_length
 			stm = current_line + "\n" + stm
 		}
 	}
@@ -72,5 +127,5 @@ func botMemory(u *auth.User, book_id, scene_id, character_id, line_id, size int)
 		stm = "<START>\n" + stm
 	}
 	stm = replacePlaceholders(stm, chara.Name)
-	return ltm + stm
+	return ltm + stm + chara.Name + ": "
 }

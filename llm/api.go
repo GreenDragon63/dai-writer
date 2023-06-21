@@ -119,8 +119,9 @@ func GetTokens(text string) int {
 	return data.Results[0].Tokens
 }
 
-func GetCompletion(text string) string {
+func GetCompletion(text string) (string, bool) {
 	var url string
+	var tokens int
 	var requestData CompletionRequest
 
 	requestData = CompletionRequest{
@@ -148,13 +149,13 @@ func GetCompletion(text string) string {
 	jsonData, err := json.Marshal(requestData)
 	if err != nil {
 		log.Printf("Failed to convert JSON data : %s\n", err.Error())
-		return ""
+		return "", true
 	}
 
 	response, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
 		log.Printf("Can't connect to backend : %s\n", err.Error())
-		return ""
+		return "", true
 	}
 
 	defer response.Body.Close()
@@ -162,15 +163,21 @@ func GetCompletion(text string) string {
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		log.Printf("Can't read the response : %s\n", err.Error())
-		return ""
+		return "", true
 	}
 
 	var data CompletionResponse
 	err = json.Unmarshal(body, &data)
 	if err != nil {
 		log.Printf("can't decode JSON : %s\n", err.Error())
-		return ""
+		return "", true
 	}
 
-	return data.Results[0].Text
+	tokens = GetTokens(data.Results[0].Text)
+	log.Printf("Tokens : %d\n", tokens)
+	if tokens < 50 {
+		return data.Results[0].Text, true
+	} else {
+		return data.Results[0].Text, false
+	}
 }
