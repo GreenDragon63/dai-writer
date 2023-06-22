@@ -32,7 +32,6 @@ class BookComponent extends DWComponent {
                         <button id="save-${this.id}" type="submit" class="custom-button ml2 mt2">Save</button>
                         <button id="cancel-${this.id}" type="button" class="custom-button mt2">Cancel</button>
                     </form>
-                    ${this.linkScenes}
                 </div>
                 <div class="buttons buttons-right">
                     <button id="edit-${this.id}"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
@@ -67,6 +66,7 @@ class BookComponent extends DWComponent {
                                 <p>Description : ${this.description}</p>
                                 <p>Scenes : ${this.numScenes}</p>
                             </div>
+                            ${this.linkScenes}
                         </div>
                         <div class="buttons buttons-right">
                             <button id="edit-${this.id}"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -81,6 +81,7 @@ class BookComponent extends DWComponent {
                     <div>
                         <p>Title : ${this.name}</p>
                     </div>
+                    ${this.linkScenes}
                 </div>
                 <div class="buttons buttons-right">
                     <button id="edit-${this.id}"><i class="fa-solid fa-pen-to-square"></i></button>

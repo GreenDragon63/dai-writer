@@ -156,7 +156,7 @@ class SceneComponent extends DWMovableComponent {
             var linkLines = "";
             var arrows = "";
         } else {
-            var linkLines = `<a href="/line/${this.book_id}/${this.id}/" class="custom-button button-link ml2 mt2">Generate content</a>`;
+            var linkLines = `<a href="/line/${this.book_id}/${this.id}/" class="custom-button button-link ml2 mt2 mb2">Generate content</a>`;
             var arrows = `
             <div class="buttons buttons-center">
                 <button id="up-${this.id}"><i class="fa-solid fa-chevron-up"></i></button>
@@ -186,7 +186,6 @@ class SceneComponent extends DWMovableComponent {
                         <button id="cancel-${this.id}" type="button" class="custom-button mt2">Cancel</button>
                     </form>
                     ${arrows}
-                    ${linkLines}
                 </div>
                 <div class="buttons buttons-right">
                     <button id="edit-${this.id}"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
@@ -223,6 +222,7 @@ class SceneComponent extends DWMovableComponent {
                                 ${this.charaList}
                                 <p>Lines : ${this.numLines}</p>
                             </div>
+                            ${linkLines}
                             <div class="buttons buttons-center">
                                 <button id="up-${this.id}"><i class="fa-solid fa-chevron-up"></i></button>
                                 <button id="down-${this.id}"><i class="fa-solid fa-chevron-down"></i></button>
