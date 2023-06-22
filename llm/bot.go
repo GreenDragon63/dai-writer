@@ -42,6 +42,15 @@ func Generate(u *auth.User, book_id, scene_id, character_id, line_id int) string
 		log.Printf("Cannot find character %d\n", character_id)
 		return ""
 	}
+	scene, ok := models.LoadScene(u, book_id, scene_id)
+	if ok != true {
+		log.Printf("Cannot find scene %d\n", scene_id)
+		return ""
+	}
+
+	if (len(scene.Lines) == 1) && (scene.Lines[0] == 0) {
+		return cleanOutput(chara.First_mes, chara.Name)
+	}
 
 	response_size = RESPONSE
 	for finished == false {
