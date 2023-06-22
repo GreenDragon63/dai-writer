@@ -48,7 +48,7 @@ func Generate(u *auth.User, book_id, scene_id, character_id, line_id int) string
 		return ""
 	}
 
-	if (len(scene.Lines) == 1) && (scene.Lines[0] == 0) {
+	if len(scene.Lines) == 1 {
 		return cleanOutput(chara.First_mes, chara.Name)
 	}
 

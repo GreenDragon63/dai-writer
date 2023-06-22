@@ -190,8 +190,12 @@ func GenerateLine(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Line not found"})
 		return
 	}
-	Line.Content = append(Line.Content, result)
-	Line.Current = len(Line.Content) - 1
+	if (len(Line.Content) == 1) && (Line.Content[0] == "") {
+		Line.Content[0] = result
+	} else {
+		Line.Content = append(Line.Content, result)
+		Line.Current = len(Line.Content) - 1
+	}
 	models.SaveLine(&user, book, scene, id, *Line)
 
 	c.JSON(http.StatusOK, result)

@@ -56,8 +56,12 @@ class LineComponent extends DWMovableComponent {
         fetch("/api/generate/" + this.book_id + "/" + this.scene_id + "/" + + character + "/" + this.id)
         .then(response => response.json())
         .then(text => {
-            self.content.push(text);
-            self.current = self.content.length - 1;
+            if ((self.content.length == 1) && (self.content[0] == "")) {
+                self.content[0] = text;
+            } else {
+                self.content.push(text);
+                self.current = self.content.length - 1;
+            }
             self.render();
             modal.style.display = "none";
         });
