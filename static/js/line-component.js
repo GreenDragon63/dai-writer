@@ -44,6 +44,8 @@ class LineComponent extends DWMovableComponent {
 
     _handleGenerate(event) {
         event.preventDefault();
+        var modal = document.getElementById("modal");
+        modal.style.display = "flex";
         self = this;
         if (this.id === 0) {
             var charaSelect = document.getElementById("character-"+this.id);
@@ -57,6 +59,7 @@ class LineComponent extends DWMovableComponent {
             self.content.push(text);
             self.current = self.content.length - 1;
             self.render();
+            modal.style.display = "none";
         });
     }
 
@@ -161,7 +164,6 @@ class LineComponent extends DWMovableComponent {
                     ${arrows}
                 </div>
                 <div class="buttons buttons-right">
-                    <button id="generate-${this.id}"><i class="fa-solid fa-rotate"></i></button>
                     <button id="edit-${this.id}"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
                     <button  id="open-${this.id}"><i class="fa-regular fa-eye"></i></button>
                 </div>
