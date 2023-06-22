@@ -132,6 +132,28 @@ class LineComponent extends DWMovableComponent {
             </div>`;
             var character = `<input type="hidden" name="character_id" value="${this.character_id}">`+selectCharacter.name(this.character_id)
         }
+        if (this.id === 0) {
+            return `
+                <div class="element">
+                    <div class="content">
+                        <div>
+                            <form id="form-${this.id}" method="POST" action="/api/scene/${this.book_id}/${this.id}">
+                                <input type="hidden" name="id" value="${this.id}">
+                                <input type="hidden" name="book_id" value="${this.book_id}">
+                                <input type="hidden" name="scene_id" value="${this.scene_id}">
+                                <input type="hidden" name="displayed" value="${this._displayed}">
+                                <input type="hidden" name="current" value="${this.current}">
+                                <input type="hidden" name="content" value="${btoa(JSON.stringify(this.content))}">
+                                <input type="hidden" name="current_content" value="">
+                                <p>Character : ${character}
+                                <button id="save-${this.id}" type="submit" class="custom-button ml2 mt2">Create a new line of dialogue</button>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                `
+        }
         if (this._edition) {
             return `
             <div class="element">
@@ -169,22 +191,6 @@ class LineComponent extends DWMovableComponent {
                 </div>
             </div>
             `
-        }
-        if (this.id === 0) {
-            return `
-                <div class="element">
-                    <div class="content">
-                        <div>
-                            <p>Character : ${character}</p>
-                        </div>
-                    </div>
-                    <div class="buttons buttons-right">
-                        <button id="generate-${this.id}"><i class="fa-solid fa-rotate"></i></button>
-                        <button id="edit-${this.id}"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button  id="open-${this.id}"><i class="fa-regular fa-eye"></i></button>
-                    </div>
-                </div>
-                `
         }
         if (this._displayed) {
                 return `
