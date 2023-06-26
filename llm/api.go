@@ -2,6 +2,7 @@ package llm
 
 import (
 	"bytes"
+	"dai-writer/aes"
 	"encoding/json"
 	"io/ioutil"
 	"log"
@@ -120,12 +121,19 @@ func GetTokens(text string) int {
 }
 
 func GetCompletion(text string) (string, bool) {
-	var url string
+	var url, message, key, result string
 	var tokens int
 	var requestData CompletionRequest
 
+	key = os.Getenv("PSK")
+	if key != "" {
+		message = aes.StrEncrypt(text, key)
+	} else {
+		message = text
+	}
+
 	requestData = CompletionRequest{
-		Prompt:           text,
+		Prompt:           message,
 		UseStory:         false,
 		UseMemory:        false,
 		UseAuthorsNote:   false,
@@ -144,7 +152,11 @@ func GetCompletion(text string) (string, bool) {
 		SamplerOrder:     []int{6, 0, 1, 2, 3, 4, 5},
 	}
 
-	url = ApiUrl() + "api/v1/generate"
+	if key != "" {
+		url = ApiUrl() + "api/v1.1/generate"
+	} else {
+		url = ApiUrl() + "api/v1/generate"
+	}
 
 	jsonData, err := json.Marshal(requestData)
 	if err != nil {
@@ -173,11 +185,17 @@ func GetCompletion(text string) (string, bool) {
 		return "", true
 	}
 
-	tokens = GetTokens(data.Results[0].Text)
+	if key != "" {
+		result = aes.StrDecrypt(data.Results[0].Text, key)
+	} else {
+		result = data.Results[0].Text
+	}
+
+	tokens = GetTokens(result)
 	log.Printf("Tokens : %d\n", tokens)
 	if tokens < 50 {
-		return data.Results[0].Text, true
+		return result, true
 	} else {
-		return data.Results[0].Text, false
+		return result, false
 	}
 }
