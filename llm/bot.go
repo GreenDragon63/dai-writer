@@ -22,10 +22,13 @@ func replacePlaceholders(s, name string) string {
 }
 
 func cleanOutput(s, name string) string {
-	replaced := strings.ReplaceAll(s, "<START>", "")
+	replaced := strings.ReplaceAll(s, "\r", "")
+	replaced = strings.ReplaceAll(replaced, "<START>", "")
 	replaced = strings.ReplaceAll(replaced, "<END>", "")
 	replaced = strings.ReplaceAll(replaced, name+":", "")
 	replaced = strings.ReplaceAll(replaced, "\\", "")
+	replaced = strings.TrimLeft(replaced, "\n")
+	replaced = strings.TrimRight(replaced, "\n")
 	return replaced
 }
 
@@ -57,6 +60,7 @@ func Generate(u *auth.User, book_id, scene_id, character_id, line_id int) string
 		memory_size = MODEL_CTX - response_size
 		free_size = response_size
 		memory = botMemory(u, book_id, scene_id, character_id, line_id, memory_size)
+		log.Println(memory)
 		for free_size > 0 {
 			if new_text != "" {
 				words = strings.Split(new_text, " ")
@@ -86,7 +90,7 @@ func Generate(u *auth.User, book_id, scene_id, character_id, line_id int) string
 }
 
 func botMemory(u *auth.User, book_id, scene_id, character_id, line_id, size int) string {
-	var ltm, stm, current_line string
+	var name, ltm, stm, current_line string
 	var ltm_length, stm_length, current_length, line_length int
 
 	chara, ok := models.LoadCharacter(u, character_id)
@@ -94,6 +98,8 @@ func botMemory(u *auth.User, book_id, scene_id, character_id, line_id, size int)
 		log.Printf("Cannot find character %d\n", character_id)
 		return ""
 	}
+	name = strings.Split(chara.Name, "|")[0]
+	chara.Name = name
 	scene, ok := models.LoadScene(u, book_id, scene_id)
 	if ok != true {
 		log.Printf("Cannot find scene %d\n", scene_id)
