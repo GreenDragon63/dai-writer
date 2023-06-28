@@ -1,9 +1,29 @@
 import { DWComponent } from "./dw-component.js";
+import { EventBus } from "./framework.js";
 
 class CharacterComponent extends DWComponent {
     constructor(id, parameters, callbacks = {}) {
         super(id, parameters, callbacks);
         this._uri = '/api/character/';
+        let clone = "clone-" + parameters.id;
+        this._addCallbacks({
+            [clone]: {"click":this._handleClone.bind(this)},
+        });
+    }
+
+    _handleClone(event) {
+        event.preventDefault();
+        fetch("/api/clone/" + this.id)
+        .then(function(response) {
+            if (response.ok) {
+                EventBus.dispatch("refresh");
+            } else {
+                alert("Save failed.");
+            }
+        })
+        .catch(error => {
+            alert("An error occurred. Please try again."+error);
+        });
     }
 
     _template() {
@@ -75,6 +95,7 @@ class CharacterComponent extends DWComponent {
                                 <p>Message examples : ${this.mes_example}</p>
                                 <p>First message : ${this.first_mes}</p>
                             </div>
+                            <button id="clone-${this.id}" class="custom-button ml2 mt2">Clone character</button>
                         </div>
                         <div class="buttons buttons-right">
                             <button id="edit-${this.id}"><i class="fa-solid fa-pen-to-square"></i></button>

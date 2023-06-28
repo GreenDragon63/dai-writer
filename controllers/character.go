@@ -153,6 +153,35 @@ func UploadCharacter(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "ok"})
 }
 
+func CloneCharacter(c *gin.Context) {
+	var user auth.User
+	var id int
+
+	u, ok := c.Get("current_user")
+	if ok != true {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+		return
+	}
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Bad parameter"})
+		return
+	}
+	user = u.(auth.User)
+	chara, ok := models.LoadCharacter(&user, id)
+	if ok != true {
+		c.JSON(http.StatusNotFound, gin.H{"message": "Character not found"})
+		return
+	}
+	chara.Name = chara.Name + "|cloned"
+	ok = models.SaveCharacter(&user, 0, *chara)
+	if ok != true {
+		c.JSON(http.StatusNotFound, gin.H{"message": "Cannot save character"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "ok"})
+}
+
 func AvatarCharacter(c *gin.Context) {
 	var user auth.User
 	var id int
