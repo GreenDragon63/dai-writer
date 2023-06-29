@@ -29,6 +29,7 @@ func AddPrivates(router *gin.Engine) {
 		privates.POST("/character/:id", controllers.PostCharacter)
 		privates.DELETE("/character/:id", controllers.DeleteCharacter)
 		privates.GET("/avatar/:id", controllers.AvatarCharacter)
+		privates.GET("/export/:id", controllers.ExportBook)
 		privates.GET("/book/", controllers.ListBook)
 		privates.GET("/book/:id", controllers.GetBook)
 		privates.POST("/book/:id", controllers.PostBook)
