@@ -71,7 +71,13 @@ function addCharacter() {
     createCharacter(character, "add-new");
 }
 
+function addBreadcrumb() {
+    const breadcrumb = document.getElementById("breadcrumb");
+    breadcrumb.innerHTML = '<a href="/">Home</a>';
+}
+
 document.getElementById("upload-button").addEventListener("click", upload);
 EventBus.register("refresh", fetchLast);
+addBreadcrumb();
 addCharacter();
 fetchAll();

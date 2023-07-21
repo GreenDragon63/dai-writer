@@ -55,7 +55,13 @@ function addScene() {
     createScene(scene, "add-new");
 }
 
+function addBreadcrumb() {
+    const breadcrumb = document.getElementById("breadcrumb");
+    breadcrumb.innerHTML = '<a href="/">Home</a>/<a href="/book">Edit books</a>';
+}
+
 EventBus.register("refresh", fetchLast);
+addBreadcrumb();
 addScene();
 fetchAll();
 

@@ -60,7 +60,18 @@ function addLine() {
     createLine(line, "add-new");
 }
 
+function addBreadcrumb() {
+    const breadcrumb = document.getElementById("breadcrumb");
+    let decoded = window.location.pathname.split('/');
+    if (decoded.length < 4) {
+        return
+    }
+    let book = decoded[2];
+    breadcrumb.innerHTML = '<a href="/">Home</a>/<a href="/book">Edit books</a>/<a href="/scene/'+book+'">Edit scenes</a>';
+}
+
 EventBus.register("refresh", fetchLast);
+addBreadcrumb();
 addLine();
 fetchAll();
 
