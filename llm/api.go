@@ -84,16 +84,26 @@ func GetModel() string {
 }
 
 func GetTokens(text string) int {
-	var url string
+	var url, key string
 	var requestData TokenRequest
 
-	url = ApiUrl() + "api/v1/token-count"
-	requestData.Prompt = text
+	key = os.Getenv("PSK")
+	if key != "" {
+		requestData.Prompt = aes.StrEncrypt(text, key)
+	} else {
+		requestData.Prompt = text
+	}
 
 	jsonData, err := json.Marshal(requestData)
 	if err != nil {
 		log.Printf("Failed to convert JSON data : %s\n", err.Error())
 		return 0
+	}
+
+	if key != "" {
+		url = ApiUrl() + "api/v2/token-count"
+	} else {
+		url = ApiUrl() + "api/v1/token-count"
 	}
 
 	response, err := http.Post(url, "application/json", bytes.NewBuffer(jsonData))
@@ -153,7 +163,7 @@ func GetCompletion(text string) (string, bool) {
 	}
 
 	if key != "" {
-		url = ApiUrl() + "api/v1.1/generate"
+		url = ApiUrl() + "api/v2/generate"
 	} else {
 		url = ApiUrl() + "api/v1/generate"
 	}
