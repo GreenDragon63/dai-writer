@@ -24,6 +24,10 @@ type Character struct {
 	Scenario    string `json:"scenario"`
 }
 
+type CharacterV2 struct {
+	Data Character `json:"data"`
+}
+
 type CharacterName struct {
 	Id   int    `json:"id"`
 	Name string `json:"name" binding:"required"`
@@ -85,6 +89,7 @@ func AvatarCharacterPath(u *auth.User, id int) string {
 
 func DecodeCharacter(fileName string) bool {
 	var chara Character
+	var charav2 CharacterV2
 
 	file, err := os.Open(fileName)
 	if err != nil {
@@ -156,6 +161,15 @@ func DecodeCharacter(fileName string) bool {
 				log.Println("chara chunk founded, but it is not with the good format: " + fileName)
 				os.Remove(fileName)
 				return false
+			}
+			if chara.Name == "" {
+				err = json.Unmarshal(decodedChara, &charav2)
+				if err != nil {
+					log.Println("chara chunk founded, but it is not with the good format: " + fileName)
+					os.Remove(fileName)
+					return false
+				}
+				chara = charav2.Data
 			}
 			id, err := strconv.Atoi(path.Base(fileName[:len(fileName)-len(".png")]))
 			if err != nil {
