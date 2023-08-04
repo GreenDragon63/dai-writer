@@ -147,7 +147,7 @@ class LineComponent extends DWMovableComponent {
                                 <input type="hidden" name="scene_id" value="${this.scene_id}">
                                 <input type="hidden" name="displayed" value="${this._displayed}">
                                 <input type="hidden" name="current" value="${this.current}">
-                                <input type="hidden" name="content" value="${btoa(JSON.stringify(this.content))}">
+                                <input type="hidden" name="content" value="${btoa(encodeURIComponent(JSON.stringify(this.content)))}">
                                 <input type="hidden" name="current_content" value="">
                                 <p>Character : ${character}
                                 <button id="save-${this.id}" type="submit" class="custom-button ml2 mt2">Create a new line of dialogue</button>
@@ -171,7 +171,7 @@ class LineComponent extends DWMovableComponent {
                         <input type="hidden" name="scene_id" value="${this.scene_id}">
                         <input type="hidden" name="displayed" value="${this._displayed}">
                         <input type="hidden" name="current" value="${this.current}">
-                        <input type="hidden" name="content" value="${btoa(JSON.stringify(this.content))}">
+                        <input type="hidden" name="content" value="${btoa(encodeURIComponent(JSON.stringify(this.content)))}">
                         <div>
                             <p>Character : ${character}</p>
                         </div>

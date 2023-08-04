@@ -78,7 +78,7 @@ class DWComponent extends Component {
             } else if (key === "current") {
                 jsonData[key] = parseInt(value);
             } else if (key === "content") {
-                jsonData[key] = JSON.parse(atob(value));
+                jsonData[key] = JSON.parse(decodeURIComponent(atob(value)));
             } else if (key === "current_content") {
                 jsonData["content"][self.current] = value;
             } else if (key === "displayed") {
@@ -165,7 +165,7 @@ class DWComponent extends Component {
             } else if (key === "current") {
                 self[key] = parseInt(value);
             } else if (key === "content") {
-                self[key] = JSON.parse(atob(value));
+                self[key] = JSON.parse(decodeURIComponent(atob(value)));
             } else if (key === "current_content") {
                 self.content[self.current] = value;
             } else if (key === "displayed") {
