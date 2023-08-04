@@ -32,6 +32,13 @@ func cleanOutput(s, name string) string {
 	return replaced
 }
 
+func formatContent(prefix, content string) string {
+	if len(content) == 0 {
+		return ""
+	}
+	return prefix + content + "\n"
+}
+
 func Generate(u *auth.User, book_id, scene_id, character_id, line_id int) string {
 	var words []string
 	var memory, new_text, streamed_text string
@@ -90,8 +97,9 @@ func Generate(u *auth.User, book_id, scene_id, character_id, line_id int) string
 }
 
 func botMemory(u *auth.User, book_id, scene_id, character_id, line_id, size int) string {
-	var name, ltm, stm, current_line string
+	var name, ltm, stm, current_line, model, chatSeparator, exampleSeparator string
 	var ltm_length, stm_length, current_length, line_length int
+	var is_pygmalion bool
 
 	chara, ok := models.LoadCharacter(u, character_id)
 	if ok != true {
@@ -105,10 +113,25 @@ func botMemory(u *auth.User, book_id, scene_id, character_id, line_id, size int)
 		log.Printf("Cannot find scene %d\n", scene_id)
 		return ""
 	}
-	if chara.Personality != "" {
-		ltm = fmt.Sprintf("%s's Persona: %s\nPersonality: %s\nScenario: %s\n", chara.Name, chara.Description, chara.Personality, chara.Scenario)
+	model = GetModel()
+	model = strings.ToLower(model)
+	if strings.Contains(model, "pygmalion") {
+		is_pygmalion = true
+		chatSeparator = "<START>\n"
+		exampleSeparator = "<START>\n"
 	} else {
-		ltm = fmt.Sprintf("%s's Persona: %s\nScenario: %s\n", chara.Name, chara.Description, chara.Scenario)
+		is_pygmalion = false
+		chatSeparator = fmt.Sprintf("\nThen the roleplay chat between you and %s begins.\n", chara.Name)
+		exampleSeparator = fmt.Sprintf("This is how %s should talk\n", chara.Name)
+	}
+	if (is_pygmalion) {
+		ltm = formatContent(fmt.Sprintf("%s's Persona: ", chara.Name), chara.Description)
+		ltm += formatContent("Personality: ", chara.Personality)
+		ltm += formatContent("Scenario: ", chara.Scenario)
+	} else {
+		ltm = formatContent("", chara.Description)
+		ltm += formatContent(fmt.Sprintf("%s's personality: ", chara.Name), chara.Personality)
+		ltm += formatContent("Circumstances and context of the dialogue: ", chara.Scenario)
 	}
 	ltm = replacePlaceholders(ltm, chara.Name)
 	ltm_length = GetTokens(ltm)
@@ -137,9 +160,9 @@ func botMemory(u *auth.User, book_id, scene_id, character_id, line_id, size int)
 	}
 	line_length = GetTokens(chara.Mes_example)
 	if (current_length + line_length) < stm_length {
-		stm = chara.Mes_example + "\n" + stm
+		stm = exampleSeparator + chara.Mes_example + chatSeparator + stm
 	} else {
-		stm = "<START>\n" + stm
+		stm = chatSeparator + stm
 	}
 	stm = replacePlaceholders(stm, chara.Name)
 	return ltm + stm + chara.Name + ": "
