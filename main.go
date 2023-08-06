@@ -20,5 +20,11 @@ func main() {
 	router.MaxMultipartMemory = 5 * 1024 * 1024
 	routes.AddPublics(router)
 	routes.AddPrivates(router)
-	router.Run(":5555")
+	server := os.Getenv("SERVER")
+	if server != "" {
+		router.Run(server)
+	} else {
+		router.Run("127.0.0.1:5555")
+	}
+
 }
