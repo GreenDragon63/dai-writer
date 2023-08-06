@@ -46,6 +46,7 @@ func Generate(u *auth.User, book_id, scene_id, character_id, line_id int) string
 	var memory_size, free_size, response_size int
 	var finished bool
 
+	debug := os.Getenv("DEBUG")
 	finished = false
 	new_text = ""
 	chara, ok := models.LoadCharacter(u, character_id)
@@ -68,7 +69,6 @@ func Generate(u *auth.User, book_id, scene_id, character_id, line_id int) string
 		memory_size = MODEL_CTX - response_size
 		free_size = response_size
 		memory = botMemory(u, book_id, scene_id, character_id, line_id, memory_size)
-		debug := os.Getenv("DEBUG")
 		if debug == "true" {
 			log.Println(memory)
 		}
@@ -90,7 +90,9 @@ func Generate(u *auth.User, book_id, scene_id, character_id, line_id int) string
 				finished = true
 				break
 			}
-			log.Println(new_text)
+			if debug == "true" {
+				log.Println(new_text)
+			}
 			if finished == true {
 				break
 			}
