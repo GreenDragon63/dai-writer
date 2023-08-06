@@ -59,7 +59,7 @@ func Generate(u *auth.User, book_id, scene_id, character_id, line_id int) string
 	}
 
 	if len(scene.Lines) == 1 {
-		return cleanOutput(chara.First_mes, chara.Name)
+		return replacePlaceholders(chara.First_mes, chara.Name)
 	}
 
 	response_size = RESPONSE
@@ -124,7 +124,7 @@ func botMemory(u *auth.User, book_id, scene_id, character_id, line_id, size int)
 		chatSeparator = fmt.Sprintf("\nThen the roleplay chat between you and %s begins.\n", chara.Name)
 		exampleSeparator = fmt.Sprintf("This is how %s should talk\n", chara.Name)
 	}
-	if (is_pygmalion) {
+	if is_pygmalion {
 		ltm = formatContent(fmt.Sprintf("%s's Persona: ", chara.Name), chara.Description)
 		ltm += formatContent("Personality: ", chara.Personality)
 		ltm += formatContent("Scenario: ", chara.Scenario)
