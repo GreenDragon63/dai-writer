@@ -5,6 +5,7 @@ import (
 	"dai-writer/models"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 )
 
@@ -67,7 +68,10 @@ func Generate(u *auth.User, book_id, scene_id, character_id, line_id int) string
 		memory_size = MODEL_CTX - response_size
 		free_size = response_size
 		memory = botMemory(u, book_id, scene_id, character_id, line_id, memory_size)
-		log.Println(memory)
+		debug := os.Getenv("DEBUG")
+		if debug == "true" {
+			log.Println(memory)
+		}
 		for free_size > 0 {
 			if new_text != "" {
 				words = strings.Split(new_text, " ")
