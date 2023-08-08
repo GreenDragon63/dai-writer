@@ -100,8 +100,8 @@ class SceneComponent extends DWMovableComponent {
         if (this.characters !== undefined) {
             this.characters.forEach(character => {
                 let buttonId = "remove-"+this.id+"-"+character;
-                this.charaList += `<li>${selectCharacter.name(character)}</li>`;
-                this.charaListB += `<li>${selectCharacter.name(character)}<button id="${buttonId}" class="button-close"><i class="fa-regular fa-circle-xmark"></i></button></li>`;
+                this.charaList += `<li title="${selectCharacter.infos(character)}">${selectCharacter.name(character)}</li>`;
+                this.charaListB += `<li title="${selectCharacter.infos(character)}">${selectCharacter.name(character)}<button id="${buttonId}" class="button-close"><i class="fa-regular fa-circle-xmark"></i></button></li>`;
                 if (!(buttonId in this._callbacks)) {
                     this._addCallbacks({
                         [buttonId]: {"click":this._handleRemove.bind(this)},

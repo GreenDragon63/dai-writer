@@ -17,7 +17,7 @@ func Character(c *gin.Context) {
 	})
 }
 
-func ListCharacterName(c *gin.Context) {
+func ListCharacterInfos(c *gin.Context) {
 	var user auth.User
 
 	u, ok := c.Get("current_user")
@@ -26,7 +26,7 @@ func ListCharacterName(c *gin.Context) {
 		return
 	}
 	user = u.(auth.User)
-	chara, ok := models.ListCharacterName(&user)
+	chara, ok := models.ListCharacterInfos(&user)
 	if ok != true {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Character not found"})
 		return

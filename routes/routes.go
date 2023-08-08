@@ -23,7 +23,7 @@ func AddPrivates(router *gin.Engine) {
 	{
 		privates.POST("/upload", controllers.UploadCharacter)
 		privates.GET("/clone/:id", controllers.CloneCharacter)
-		privates.GET("/character/name/", controllers.ListCharacterName)
+		privates.GET("/character/infos/", controllers.ListCharacterInfos)
 		privates.GET("/character/", controllers.ListCharacter)
 		privates.GET("/character/:id", controllers.GetCharacter)
 		privates.POST("/character/:id", controllers.PostCharacter)

@@ -5,7 +5,7 @@ class SelectCharacter {
         this._characters = [];
         this._sceneCharacters = [];
         self = this;
-        fetch("/api/character/name/")
+        fetch("/api/character/infos/")
         .then(response => response.json())
         .then(data => {
             if (data === null) {
@@ -51,6 +51,22 @@ class SelectCharacter {
             }
         });
         return result
+    }
+
+    infos(id) {
+        var result = "";
+        this._characters.forEach(character => {
+            if (character.id === id) {
+                result = "Description: " + self.escapeHtml(character.description) + "\nScenario: " + character.scenario;
+            }
+        });
+        return result
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML.replaceAll('"', '”');
     }
 
 }
