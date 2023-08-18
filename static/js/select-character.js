@@ -57,16 +57,10 @@ class SelectCharacter {
         var result = "";
         this._characters.forEach(character => {
             if (character.id === id) {
-                result = "Description: " + self.escapeHtml(character.description) + "\nScenario: " + character.scenario;
+                result = "Description: " + escapeHtml(character.description) + "\nScenario: " + character.scenario;
             }
         });
         return result
-    }
-
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML.replaceAll('"', '”');
     }
 
 }
