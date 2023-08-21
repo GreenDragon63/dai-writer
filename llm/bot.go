@@ -42,7 +42,7 @@ func formatContent(prefix, content string) string {
 
 func Generate(u *auth.User, book_id, scene_id, character_id, line_id int) string {
 	var words []string
-	var memory, new_text, streamed_text string
+	var name, memory, new_text, streamed_text string
 	var memory_size, free_size, response_size int
 	var finished bool
 
@@ -54,6 +54,8 @@ func Generate(u *auth.User, book_id, scene_id, character_id, line_id int) string
 		log.Printf("Cannot find character %d\n", character_id)
 		return ""
 	}
+	name = strings.Split(chara.Name, "|")[0]
+	chara.Name = name
 	scene, ok := models.LoadScene(u, book_id, scene_id)
 	if ok != true {
 		log.Printf("Cannot find scene %d\n", scene_id)
@@ -87,6 +89,16 @@ func Generate(u *auth.User, book_id, scene_id, character_id, line_id int) string
 			}
 			if strings.Contains(new_text, "You :") {
 				new_text = strings.Split(new_text, "You :")[0]
+				finished = true
+				break
+			}
+			if strings.Contains(new_text, "user:") {
+				new_text = strings.Split(new_text, "user:")[0]
+				finished = true
+				break
+			}
+			if strings.Contains(new_text, "USER:") {
+				new_text = strings.Split(new_text, "USER:")[0]
 				finished = true
 				break
 			}
