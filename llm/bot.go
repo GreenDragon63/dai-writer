@@ -150,7 +150,7 @@ func botMemory(u *auth.User, book_id, scene_id, character_id, line_id, size int)
 			log.Printf("Cannot find scene %d\n", scene_id)
 			return ""
 		}
-		if line.Displayed && line.Id != line_id {
+		if line.Displayed && line.Id < line_id {
 			if line.CharacterId == character_id {
 				current_line = chara.Name + ": " + line.Content[line.Current]
 			} else {
