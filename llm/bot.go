@@ -110,7 +110,7 @@ func botMemory(u *auth.User, book_id, scene_id, character_id, line_id, size int)
 	var chara *models.Character
 	var scene *models.Scene
 	var line *models.Line
-	var ok, isPygmalion bool
+	var ok, isPygmalion, insideStm bool
 	var err error
 
 	if promptConfig == nil {
@@ -141,7 +141,7 @@ func botMemory(u *auth.User, book_id, scene_id, character_id, line_id, size int)
 		ltm = formatContent(fmt.Sprintf("%s's Persona: ", chara.Name), chara.Description)
 		ltm += formatContent("Personality: ", chara.Personality)
 		ltm += formatContent("Scenario: ", chara.Scenario)
-		lastLen = GetTokens(promptConfig.OutputSequence + "\n" + chara.Name + ": ")
+		lastLen = GetTokens(chara.Name + ": ")
 	} else {
 		isPygmalion = false
 		chatSeparator = fmt.Sprintf("\nThen the roleplay chat between you and %s begins.\n", chara.Name)
@@ -149,7 +149,7 @@ func botMemory(u *auth.User, book_id, scene_id, character_id, line_id, size int)
 		ltm = formatContent(promptConfig.SystemPrompt+"\n", chara.Description)
 		ltm += formatContent(fmt.Sprintf("%s's personality: ", chara.Name), chara.Personality)
 		ltm += formatContent("Circumstances and context of the dialogue: ", chara.Scenario)
-		lastLen = GetTokens(chara.Name + ": ")
+		lastLen = GetTokens(promptConfig.OutputSequence + "\n" + chara.Name + ": ")
 	}
 	chatSepLen = GetTokens(chatSeparator)
 	exampleSepLen = GetTokens(exampleSeparator)
@@ -159,13 +159,20 @@ func botMemory(u *auth.User, book_id, scene_id, character_id, line_id, size int)
 	stmLength = size - (ltm_length + chatSepLen + lastLen)
 	currentLength = 0
 	stm = ""
+	insideStm = false
 	for i := len(scene.Lines) - 1; i >= 0; i-- {
+		if insideStm == false {
+			if scene.Lines[i] == line_id {
+				insideStm = true
+			}
+			continue
+		}
 		line, ok = models.LoadLine(u, book_id, scene_id, scene.Lines[i])
 		if ok != true {
 			log.Printf("Cannot find scene %d\n", scene_id)
 			return ""
 		}
-		if line.Displayed && line.Id < line_id {
+		if line.Displayed {
 			if line.CharacterId == character_id {
 				if isPygmalion {
 					currentLine = ""
