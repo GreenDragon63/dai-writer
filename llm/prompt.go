@@ -1,6 +1,7 @@
 package llm
 
 import (
+	"bufio"
 	"encoding/json"
 	"io"
 	"os"
@@ -39,4 +40,25 @@ func loadPrompt(filename string) (*Prompt, error) {
 		return prompt, err
 	}
 	return prompt, nil
+}
+
+func loadStopStrings(filename string) ([]string, error) {
+	var stopStrings []string
+	var file *os.File
+	var err error
+	var scanner *bufio.Scanner
+
+	file, err = os.Open(filename)
+	if err != nil {
+		return stopStrings, err
+	}
+	defer file.Close()
+	scanner = bufio.NewScanner(file)
+	for scanner.Scan() {
+		stopStrings = append(stopStrings, scanner.Text())
+	}
+	if err := scanner.Err(); err != nil {
+		return stopStrings, err
+	}
+	return stopStrings, nil
 }

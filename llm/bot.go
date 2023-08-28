@@ -9,8 +9,6 @@ import (
 	"strings"
 )
 
-var promptConfig *Prompt = nil
-
 const (
 	MODEL_CTX = 2048
 	RESPONSE  = 300
@@ -44,12 +42,23 @@ func formatContent(prefix, content string) string {
 
 func Generate(u *auth.User, book_id, scene_id, character_id, line_id int) string {
 	var stopStrings, words []string
-	var stopString, name, memory, new_text, streamed_text string
+	var debug, stopString, name, memory, new_text, streamed_text string
 	var memory_size, free_size, response_size int
 	var finished bool
+	var err error
 
-	stopStrings = []string{"You:", "You :", "user:", "USER:"}
-	debug := os.Getenv("DEBUG")
+	debug = os.Getenv("DEBUG")
+	stopStrings, err = loadStopStrings(os.Getenv("STOP_STRINGS"))
+	if err != nil {
+		log.Println(err.Error())
+		return ""
+	}
+	if debug == "true" {
+		log.Println("Stop Strings:")
+		for _, stopString = range stopStrings {
+			log.Println("|" + stopString + "|")
+		}
+	}
 	finished = false
 	new_text = ""
 	chara, ok := models.LoadCharacter(u, character_id)
@@ -105,20 +114,23 @@ func Generate(u *auth.User, book_id, scene_id, character_id, line_id int) string
 }
 
 func botMemory(u *auth.User, book_id, scene_id, character_id, line_id, size int) string {
-	var name, ltm, stm, currentLine, model, chatSeparator, exampleSeparator string
+	var debug, name, ltm, stm, currentLine, model, chatSeparator, exampleSeparator string
 	var ltm_length, stmLength, currentLength, lineLength, chatSepLen, exampleSepLen, lastLen int
 	var chara *models.Character
 	var scene *models.Scene
 	var line *models.Line
 	var ok, isPygmalion, insideStm bool
 	var err error
+	var promptConfig *Prompt
 
-	if promptConfig == nil {
-		promptConfig, err = loadPrompt(os.Getenv("PROMPT"))
-		if err != nil {
-			log.Println(err.Error())
-			return ""
-		}
+	debug = os.Getenv("DEBUG")
+	promptConfig, err = loadPrompt(os.Getenv("PROMPT"))
+	if err != nil {
+		log.Println(err.Error())
+		return ""
+	}
+	if debug == "true" {
+		log.Println("Prompt Config: " + promptConfig.Name)
 	}
 	chara, ok = models.LoadCharacter(u, character_id)
 	if ok != true {
