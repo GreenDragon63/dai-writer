@@ -16,11 +16,12 @@ const prefixCharacter string = "Characters/"
 
 type Character struct {
 	Id          int    `json:"id"`
+	IsHuman     bool   `json:"is_human"`
 	Name        string `json:"name" binding:"required"`
 	Description string `json:"description"`
 	Personality string `json:"personality"`
-	First_mes   string `json:"first_mes"`
-	Mes_example string `json:"mes_example"`
+	FirstMes    string `json:"first_mes"`
+	MesExample  string `json:"mes_example"`
 	Scenario    string `json:"scenario"`
 }
 

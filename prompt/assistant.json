@@ -1,0 +1,12 @@
+{
+    "input_sequence": "### Instruction:",
+    "macro": true,
+    "name": "Assistant",
+    "names": false,
+    "output_sequence": "### Response:",
+    "separator_sequence": "",
+    "stop_sequence": "",
+    "system_prompt": "Below is an instruction that describes a task. Write a response that appropriately completes the request.",
+    "system_sequence": "",
+    "wrap": true
+}

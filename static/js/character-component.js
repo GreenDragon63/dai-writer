@@ -38,6 +38,7 @@ class CharacterComponent extends DWComponent {
                         <input type="hidden" name="id" value="${this.id}">
                         <div>
                             <p>Name : </p><input type="text" value="${this.name}" name="name" class="custom-input">
+                            <label>Is human: </label><input type="checkbox" id="is_human-${this.id}" name="is_human" ${this.is_human ? "checked" : ""}>
                         </div>
                         <div class="mt2">
                             <p>Permanent tokens (long term memory) :</p>
@@ -85,6 +86,7 @@ class CharacterComponent extends DWComponent {
                         <div class="content">
                             <div>
                                 <p>Name : ${this.name}</p>
+                                <p>Is human : ${this.is_human ? "Yes" : "No"}</p>
                             </div>
                             <div>
                                 <p>Permanent tokens (long term memory) :</p>

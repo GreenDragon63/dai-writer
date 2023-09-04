@@ -186,7 +186,7 @@ func AvatarCharacter(c *gin.Context) {
 	var user auth.User
 	var id int
 	var ok bool
-	var pngFile string
+	var pngFile, sfw string
 
 	u, ok := c.Get("current_user")
 	if ok != true {
@@ -196,6 +196,11 @@ func AvatarCharacter(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Bad parameter"})
+		return
+	}
+	sfw = os.Getenv("SFW")
+	if sfw == "true" {
+		c.File("static/img/placeholder.svg")
 		return
 	}
 	user = u.(auth.User)

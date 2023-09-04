@@ -83,6 +83,12 @@ class DWComponent extends Component {
                 jsonData["content"][self.current] = value;
             } else if (key === "displayed") {
                 jsonData[key] = !!value;
+            } else if (key === "is_human") {
+                if (value === "on") {
+                    jsonData[key] = true;
+                } else {
+                    jsonData[key] = false;
+                }
             } else {
                 jsonData[key] = value;
             }
@@ -170,6 +176,12 @@ class DWComponent extends Component {
                 self.content[self.current] = value;
             } else if (key === "displayed") {
                 self[key] = !!value;
+            } else if (key === "is_human") {
+                if (value === "on") {
+                    self[key] = true;
+                } else {
+                    self[key] = false;
+                }
             } else {
                 self[key] = value;
             }
