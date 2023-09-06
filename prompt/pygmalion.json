@@ -1,0 +1,14 @@
+{
+    "name": "Pygmalion",
+    "system_input_sequence": "<|system|>",
+    "system_prompt": "",
+    "system_output_sequence": "",
+    "descripton": "Enter RP mode. Pretend to be {{char}} whose persona follows: ",
+    "personality": "Personality: ",
+    "scenario": "Scenario: ",
+    "example_separator": "<START>\n",
+    "chat_separator": "<START>\n",
+    "input_sequence": "<|user|>",
+    "output_sequence": "<|model|>",
+    "stop_sequence": "\n"
+}

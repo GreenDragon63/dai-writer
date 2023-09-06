@@ -8,16 +8,18 @@ import (
 )
 
 type Prompt struct {
-	InputSequence     string `json:"input_sequence"`
-	Macro             bool   `json:"macro"`
-	Name              string `json:"name"`
-	Names             bool   `json:"names"`
-	OutputSequence    string `json:"output_sequence"`
-	SeparatorSequence string `json:"separator_sequence"`
-	StopSequence      string `json:"stop_sequence"`
-	SystemPrompt      string `json:"system_prompt"`
-	SystemSequence    string `json:"system_sequence"`
-	Wrap              bool   `json:"wrap"`
+	Name                 string `json:"name"`
+	SystemInputSequence  string `json:"system_input_sequence"`
+	SystemPrompt         string `json:"system_prompt"`
+	SystemOutputSequence string `json:"system_output_sequence"`
+	Description          string `json:"description"`
+	Personality          string `json:"personality"`
+	Scenario             string `json:"scenario"`
+	ExampleSeparator     string `json:"example_separator"`
+	ChatSeparator        string `json:"chat_separator"`
+	InputSequence        string `json:"input_sequence"`
+	OutputSequence       string `json:"output_sequence"`
+	StopSequence         string `json:"stop_sequence"`
 }
 
 func loadPrompt(filename string) (*Prompt, error) {

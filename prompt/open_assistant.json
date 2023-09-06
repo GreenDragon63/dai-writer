@@ -1,14 +1,14 @@
 {
-    "name": "Assistant",
-    "system_input_sequence": "",
+    "name": "OpenAssistant",
+    "system_input_sequence": "<|system|>",
     "system_prompt": "Below is an instruction that describes a task. Write a response that appropriately completes the request.\n",
-    "system_output_sequence": "",
+    "system_output_sequence": "</s>",
     "descripton": "",
     "personality": "",
     "scenario": "",
     "example_separator": "",
     "chat_separator": "",
-    "input_sequence": "### Instruction: ",
-    "output_sequence": "### Response: ",
-    "stop_sequence": "\n"
+    "input_sequence": "<|prompter|>",
+    "output_sequence": "<|assistant|>",
+    "stop_sequence": "</s>"
 }
