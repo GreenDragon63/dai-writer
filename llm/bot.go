@@ -44,7 +44,7 @@ func formatContent(prefix, content, separator string) string {
 
 func Generate(u *auth.User, bookId, sceneId, characterId, lineId int) string {
 	var stopStrings, words []string
-	var debug, stopString, name, user, memory, newText, streamedText string
+	var debug, stopString, user, memory, newText, streamedText string
 	var chara, ch *models.Character
 	var memorySize, freeSize, responseSize, cid int
 	var finished bool
@@ -69,8 +69,7 @@ func Generate(u *auth.User, bookId, sceneId, characterId, lineId int) string {
 		log.Printf("Cannot find character %d/%d\n", u.Id, characterId)
 		return ""
 	}
-	name = strings.Split(chara.Name, "|")[0]
-	chara.Name = name
+	chara.Name = strings.Split(chara.Name, "|")[0]
 	log.Println("Chara name " + chara.Name)
 	scene, ok := models.LoadScene(u, bookId, sceneId)
 	if ok != true {
