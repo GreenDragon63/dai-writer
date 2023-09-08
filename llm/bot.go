@@ -46,12 +46,13 @@ func Generate(u *auth.User, bookId, sceneId, characterId, lineId int) string {
 	var stopStrings, words []string
 	var debug, stopString, user, memory, newText, streamedText string
 	var chara, ch *models.Character
+	var scene *models.Scene
 	var memorySize, freeSize, responseSize, cid int
-	var finished bool
+	var finished, ok bool
 	var err error
 
 	debug = os.Getenv("DEBUG")
-	stopStrings, err = loadStopStrings(os.Getenv("STOP_STRINGS"))
+	stopStrings, err = loadStopStrings()
 	if err != nil {
 		log.Println(err.Error())
 		return ""
@@ -64,14 +65,13 @@ func Generate(u *auth.User, bookId, sceneId, characterId, lineId int) string {
 	}
 	finished = false
 	newText = ""
-	chara, ok := models.LoadCharacter(u, characterId)
+	chara, ok = models.LoadCharacter(u, characterId)
 	if ok != true {
 		log.Printf("Cannot find character %d/%d\n", u.Id, characterId)
 		return ""
 	}
 	chara.Name = strings.Split(chara.Name, "|")[0]
-	log.Println("Chara name " + chara.Name)
-	scene, ok := models.LoadScene(u, bookId, sceneId)
+	scene, ok = models.LoadScene(u, bookId, sceneId)
 	if ok != true {
 		log.Printf("Cannot find scene %d/%d/%d\n", u.Id, bookId, sceneId)
 		return ""
@@ -128,7 +128,7 @@ func Generate(u *auth.User, bookId, sceneId, characterId, lineId int) string {
 }
 
 func botMemory(u *auth.User, bookId, sceneId, characterId, lineId, size int) string {
-	var debug, user, ltm, stm, currentLine, chatSeparator, exampleSeparator string
+	var debug, model, user, ltm, stm, currentLine, chatSeparator, exampleSeparator string
 	var cid, ltmLength, stmLength, currentLength, lineLength, chatSeparatorLength, exampleSeparatorLength, lastLength int
 	var chara *models.Character
 	var scene *models.Scene
@@ -140,7 +140,8 @@ func botMemory(u *auth.User, bookId, sceneId, characterId, lineId, size int) str
 
 	characters = make(map[int]*models.Character)
 	debug = os.Getenv("DEBUG")
-	promptConfig, err = loadPrompt(os.Getenv("PROMPT"))
+	model = GetModel()
+	promptConfig, err = loadPromptFormat(model)
 	if err != nil {
 		log.Println(err.Error())
 		return ""

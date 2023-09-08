@@ -1,0 +1,8 @@
+[
+    {"expression": "nous-hermes", "prompt": "prompt_roleplay.json", "model": "model.json"},
+    {"expression": "airoboros", "prompt": "prompt_airoboros.json", "model": "model.json"},
+    {"expression": "openassistant", "prompt": "prompt_open_assistant.json", "model": "model.json"},
+    {"expression": "pygmalion", "prompt": "prompt_pygmalion.json", "model": "model.json"},
+    {"expression": "karen", "prompt": "prompt_karen.json", "model": "model.json"},
+    {"expression": "rachel", "prompt": "prompt_assistant.json", "model": "model.json"}
+]

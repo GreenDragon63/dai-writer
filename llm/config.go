@@ -4,8 +4,16 @@ import (
 	"bufio"
 	"encoding/json"
 	"io"
+	"log"
 	"os"
+	"strings"
 )
+
+type AutoConfig struct {
+	Expression string `json:"expression"`
+	Prompt     string `json:"prompt"`
+	Model      string `json:"model"`
+}
 
 type Prompt struct {
 	Name                 string `json:"name"`
@@ -22,36 +30,69 @@ type Prompt struct {
 	StopSequence         string `json:"stop_sequence"`
 }
 
-func loadPrompt(filename string) (*Prompt, error) {
+func loadPromptFormat(model string) (*Prompt, error) {
+	var autoConfig []AutoConfig
 	var prompt *Prompt
-	var jsonFile *os.File
+	var confFile, jsonFile *os.File
+	var filename string
 	var content []byte
 	var err error
 
-	jsonFile, err = os.Open(filename)
+	filename = ""
+	model = strings.ToLower(model)
+	confFile, err = os.Open("config/auto_config.json")
 	if err != nil {
+		log.Println(err.Error())
+		return prompt, err
+	}
+	defer confFile.Close()
+	content, err = io.ReadAll(confFile)
+	if err != nil {
+		log.Println(err.Error())
+		return prompt, err
+	}
+	err = json.Unmarshal(content, &autoConfig)
+	if err != nil {
+		log.Println(err.Error())
+		return prompt, err
+	}
+	for _, conf := range autoConfig {
+		if strings.Contains(model, conf.Expression) {
+			filename = conf.Prompt
+			break
+		}
+	}
+	if filename == "" {
+		filename = os.Getenv("DEFAULT_PROMPT_FORMAT")
+	}
+	jsonFile, err = os.Open("config/" + filename)
+	if err != nil {
+		log.Println(err.Error())
 		return prompt, err
 	}
 	defer jsonFile.Close()
 	content, err = io.ReadAll(jsonFile)
 	if err != nil {
+		log.Println(err.Error())
 		return prompt, err
 	}
 	err = json.Unmarshal(content, &prompt)
 	if err != nil {
+		log.Println(err.Error())
 		return prompt, err
 	}
 	return prompt, nil
 }
 
-func loadStopStrings(filename string) ([]string, error) {
+func loadStopStrings() ([]string, error) {
 	var stopStrings []string
 	var file *os.File
 	var err error
 	var scanner *bufio.Scanner
 
-	file, err = os.Open(filename)
+	file, err = os.Open("config/stop_strings.txt")
 	if err != nil {
+		log.Println(err.Error())
 		return stopStrings, err
 	}
 	defer file.Close()
@@ -60,6 +101,7 @@ func loadStopStrings(filename string) ([]string, error) {
 		stopStrings = append(stopStrings, scanner.Text())
 	}
 	if err := scanner.Err(); err != nil {
+		log.Println(err.Error())
 		return stopStrings, err
 	}
 	return stopStrings, nil
