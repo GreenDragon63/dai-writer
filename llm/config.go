@@ -15,6 +15,15 @@ type AutoConfig struct {
 	Model      string `json:"model"`
 }
 
+type Model struct {
+	Prompt       string  `json:"prompt"`
+	MaxNewTokens int     `json:"max_new_tokens"`
+	Temperature  float64 `json:"temperature"`
+	TopP         float64 `json:"top_p"`
+	TopK         int     `json:"top_k"`
+	RepPen       float64 `json:"repetition_penalty"`
+}
+
 type Prompt struct {
 	Name                 string `json:"name"`
 	SystemInputSequence  string `json:"system_input_sequence"`
@@ -28,6 +37,60 @@ type Prompt struct {
 	InputSequence        string `json:"input_sequence"`
 	OutputSequence       string `json:"output_sequence"`
 	StopSequence         string `json:"stop_sequence"`
+}
+
+func loadModelConfig(model string) (*Model, error) {
+	var autoConfig []AutoConfig
+	var modelConfig *Model
+	var confFile, jsonFile *os.File
+	var filename string
+	var content []byte
+	var err error
+
+	filename = ""
+	model = strings.ToLower(model)
+	confFile, err = os.Open("config/auto_config.json")
+	if err != nil {
+		log.Println(err.Error())
+		return modelConfig, err
+	}
+	defer confFile.Close()
+	content, err = io.ReadAll(confFile)
+	if err != nil {
+		log.Println(err.Error())
+		return modelConfig, err
+	}
+	err = json.Unmarshal(content, &autoConfig)
+	if err != nil {
+		log.Println(err.Error())
+		return modelConfig, err
+	}
+	for _, conf := range autoConfig {
+		if strings.Contains(model, conf.Expression) {
+			filename = conf.Model
+			break
+		}
+	}
+	if filename == "" {
+		filename = os.Getenv("DEFAULT_MODEL_PARAMETERS")
+	}
+	jsonFile, err = os.Open("config/" + filename)
+	if err != nil {
+		log.Println(err.Error())
+		return modelConfig, err
+	}
+	defer jsonFile.Close()
+	content, err = io.ReadAll(jsonFile)
+	if err != nil {
+		log.Println(err.Error())
+		return modelConfig, err
+	}
+	err = json.Unmarshal(content, &modelConfig)
+	if err != nil {
+		log.Println(err.Error())
+		return modelConfig, err
+	}
+	return modelConfig, nil
 }
 
 func loadPromptFormat(model string) (*Prompt, error) {

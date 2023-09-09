@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"dai-writer/aes"
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -22,26 +22,6 @@ type TokenResponse struct {
 	Results []struct {
 		Tokens int `json:"tokens"`
 	} `json:"results"`
-}
-
-type CompletionRequest struct {
-	Prompt           string  `json:"prompt"`
-	UseStory         bool    `json:"use_story"`
-	UseMemory        bool    `json:"use_memory"`
-	UseAuthorsNote   bool    `json:"use_authors_note"`
-	UseWorldInfo     bool    `json:"use_world_info"`
-	MaxContextLength int     `json:"max_context_length"`
-	MaxLength        int     `json:"max_length"`
-	RepPen           float64 `json:"rep_pen"`
-	RepPenRange      int     `json:"rep_pen_range"`
-	RepPenSlope      float64 `json:"rep_pen_slope"`
-	Temperature      float64 `json:"temperature"`
-	Tfs              float64 `json:"tfs"`
-	TopA             int     `json:"top_a"`
-	TopK             int     `json:"top_k"`
-	TopP             float64 `json:"top_p"`
-	Typical          int     `json:"typical"`
-	SamplerOrder     []int   `json:"sampler_order"`
 }
 
 type CompletionResponse struct {
@@ -67,7 +47,7 @@ func GetModel() string {
 
 	defer response.Body.Close()
 
-	body, err := ioutil.ReadAll(response.Body)
+	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		log.Printf("Can't read the response : %s\n", err.Error())
 		return ""
@@ -114,7 +94,7 @@ func GetTokens(text string) int {
 
 	defer response.Body.Close()
 
-	body, err := ioutil.ReadAll(response.Body)
+	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		log.Printf("Can't read the response : %s\n", err.Error())
 		return 0
@@ -130,10 +110,12 @@ func GetTokens(text string) int {
 	return data.Results[0].Tokens
 }
 
+// returned bool is true if the completion is finished
 func GetCompletion(text string) (string, bool) {
-	var url, message, key, result string
+	var model, url, message, key, result string
 	var tokens int
-	var requestData CompletionRequest
+	var requestData *Model
+	var err error
 
 	key = os.Getenv("PSK")
 	if key != "" {
@@ -142,25 +124,14 @@ func GetCompletion(text string) (string, bool) {
 		message = text
 	}
 
-	requestData = CompletionRequest{
-		Prompt:           message,
-		UseStory:         false,
-		UseMemory:        false,
-		UseAuthorsNote:   false,
-		UseWorldInfo:     false,
-		MaxContextLength: 2048,
-		MaxLength:        50,
-		RepPen:           1.1,
-		RepPenRange:      1024,
-		RepPenSlope:      0.9,
-		Temperature:      0.65,
-		Tfs:              0.9,
-		TopA:             0,
-		TopK:             0,
-		TopP:             0.9,
-		Typical:          1,
-		SamplerOrder:     []int{6, 0, 1, 2, 3, 4, 5},
+	model = GetModel()
+	requestData, err = loadModelConfig(model)
+	if err != nil {
+		log.Printf("Can't load model config : %s\n", err.Error())
+		return "", true
 	}
+	requestData.Prompt = message
+	requestData.MaxNewTokens = 50
 
 	if key != "" {
 		url = ApiUrl() + "api/v2/generate"
@@ -182,7 +153,7 @@ func GetCompletion(text string) (string, bool) {
 
 	defer response.Body.Close()
 
-	body, err := ioutil.ReadAll(response.Body)
+	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		log.Printf("Can't read the response : %s\n", err.Error())
 		return "", true
