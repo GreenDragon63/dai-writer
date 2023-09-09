@@ -51,7 +51,7 @@ func loadModelConfig(model string) (*Model, error) {
 	model = strings.ToLower(model)
 	confFile, err = os.Open("config/auto_config.json")
 	if err != nil {
-		log.Println(err.Error())
+		log.Println(err.Error() + " config/auto_config.json")
 		return modelConfig, err
 	}
 	defer confFile.Close()
@@ -76,7 +76,7 @@ func loadModelConfig(model string) (*Model, error) {
 	}
 	jsonFile, err = os.Open("config/" + filename)
 	if err != nil {
-		log.Println(err.Error())
+		log.Println(err.Error() + " config/" + filename)
 		return modelConfig, err
 	}
 	defer jsonFile.Close()
@@ -105,7 +105,7 @@ func loadPromptFormat(model string) (*Prompt, error) {
 	model = strings.ToLower(model)
 	confFile, err = os.Open("config/auto_config.json")
 	if err != nil {
-		log.Println(err.Error())
+		log.Println(err.Error() + " config/auto_config.json")
 		return prompt, err
 	}
 	defer confFile.Close()
@@ -130,7 +130,7 @@ func loadPromptFormat(model string) (*Prompt, error) {
 	}
 	jsonFile, err = os.Open("config/" + filename)
 	if err != nil {
-		log.Println(err.Error())
+		log.Println(err.Error() + " config/" + filename)
 		return prompt, err
 	}
 	defer jsonFile.Close()
