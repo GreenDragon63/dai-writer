@@ -15,7 +15,7 @@ func main() {
 	if os.Getenv("LOCAL_INSTALL") != "true" {
 		auth.InitUser()
 		gin.DisableConsoleColor()
-		f, _ := os.Create("log/server.log")
+		f, _ := os.Create("server.log")
 		gin.DefaultWriter = io.MultiWriter(f)
 	}
 	log.SetOutput(gin.DefaultWriter)
