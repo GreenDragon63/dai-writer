@@ -3,6 +3,7 @@ package controllers
 import (
 	"dai-writer/auth"
 	"dai-writer/models"
+
 	"log"
 	"net/http"
 	"os"
@@ -13,7 +14,9 @@ import (
 
 func Character(c *gin.Context) {
 	c.HTML(http.StatusOK, "character.tmpl", gin.H{
-		"title": "Character",
+		"title":  "Character",
+		"prefix": os.Getenv("URL_PREFIX"),
+		"js":     "character.js",
 	})
 }
 

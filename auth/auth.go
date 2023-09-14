@@ -43,7 +43,11 @@ func CheckUsername(username string) bool {
 }
 
 func GetLogin(c *gin.Context) {
-	c.HTML(http.StatusOK, "login.tmpl", gin.H{})
+	c.HTML(http.StatusOK, "login.tmpl", gin.H{
+		"title":  "Login",
+		"prefix": os.Getenv("URL_PREFIX"),
+		"js":     "login.js",
+	})
 }
 
 func PostLogin(c *gin.Context) {
@@ -95,7 +99,9 @@ func PostLogin(c *gin.Context) {
 		return
 	}
 	c.HTML(http.StatusOK, "index.tmpl", gin.H{
-		"title": "Title",
+		"title":  "Title",
+		"prefix": os.Getenv("URL_PREFIX"),
+		"js":     "index.js",
 	})
 }
 

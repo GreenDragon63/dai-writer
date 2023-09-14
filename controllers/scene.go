@@ -3,8 +3,10 @@ package controllers
 import (
 	"dai-writer/auth"
 	"dai-writer/models"
+
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -12,7 +14,9 @@ import (
 
 func Scene(c *gin.Context) {
 	c.HTML(http.StatusOK, "scene.tmpl", gin.H{
-		"title": "Scene",
+		"title":  "Scene",
+		"prefix": os.Getenv("URL_PREFIX"),
+		"js":     "scene.js",
 	})
 }
 

@@ -1,3 +1,4 @@
+import prefix from "./config.js"
 import { SceneComponent } from "./scene-component.js"
 import { EventBus } from "./framework.js";
 
@@ -8,7 +9,7 @@ function createScene(scene, node) {
 }
 
 function fetchLast() {
-    fetch("/api" + window.location.pathname + "/0")
+    fetch(prefix + "/api" + window.location.pathname.replace(prefix,"") + "/0")
     .then(response => response.json())
     .then(scene => {
         createScene(scene, "container");
@@ -17,17 +18,17 @@ function fetchLast() {
 }
 
 function fetchAll() {
-    let decoded = window.location.pathname.split('/');
+    let decoded = window.location.pathname.replace(prefix,"").split('/');
     if (decoded.length < 3) {
         return
     }
     let book = decoded[2];
     let order;
-    fetch("/api/book/"+book)
+    fetch(prefix + "/api/book/"+book)
     .then(response => response.json())
     .then(book => {
         order = book.scenes;
-        fetch("/api" + window.location.pathname)
+        fetch(prefix + "/api" + window.location.pathname.replace(prefix,""))
         .then(response => response.json())
         .then(data => {
             if (data === null) {
@@ -41,7 +42,7 @@ function fetchAll() {
 }
 
 function addScene() {
-    let decoded = window.location.pathname.split('/');
+    let decoded = window.location.pathname.replace(prefix,"").split('/');
     if (decoded.length < 3) {
         return
     }
@@ -57,7 +58,7 @@ function addScene() {
 
 function addBreadcrumb() {
     const breadcrumb = document.getElementById("breadcrumb");
-    breadcrumb.innerHTML = '<a href="/">Home</a>/<a href="/book">Edit books</a>';
+    breadcrumb.innerHTML = '<a href="'+prefix+'/">Home</a>/<a href="'+prefix+'/book">Edit books</a>';
 }
 
 EventBus.register("refresh", fetchLast);

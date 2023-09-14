@@ -1,3 +1,4 @@
+import prefix from "./config.js";
 import { DWMovableComponent } from "./dw-movable-component.js";
 import { EventBus } from "./framework.js";
 import selectCharacter from "./select-character.js";
@@ -5,7 +6,7 @@ import selectCharacter from "./select-character.js";
 class LineComponent extends DWMovableComponent {
     constructor(id, parameters, callbacks) {
         super(id, parameters, callbacks);
-        this._uri = '/api/line/' + this.book_id + '/' + this.scene_id + '/';
+        this._uri = prefix + '/api/line/' + this.book_id + '/' + this.scene_id + '/';
         if ((this.lines === undefined) || (this.lines === null)) {
             this.lines = [];
         }
@@ -53,7 +54,7 @@ class LineComponent extends DWMovableComponent {
         } else {
             var character = this.character_id
         }
-        fetch("/api/generate/" + this.book_id + "/" + this.scene_id + "/" + + character + "/" + this.id)
+        fetch(prefix + "/api/generate/" + this.book_id + "/" + this.scene_id + "/" + + character + "/" + this.id)
         .then(response => response.json())
         .then(text => {
             if ((self.content.length == 1) && (self.content[0] == "")) {
@@ -110,11 +111,11 @@ class LineComponent extends DWMovableComponent {
             }
             lineList.push(parseInt(decoded[1]));
         }
-        fetch("/api/scene/"+ this.book_id + "/" + this.scene_id)
+        fetch(prefix + "/api/scene/"+ this.book_id + "/" + this.scene_id)
         .then(response => response.json())
         .then(scene => {
             scene.lines = lineList;
-            fetch("/api/scene/"+ this.book_id + "/" + this.scene_id, {
+            fetch(prefix + "/api/scene/"+ this.book_id + "/" + this.scene_id, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -141,7 +142,7 @@ class LineComponent extends DWMovableComponent {
                 <div class="element">
                     <div class="content">
                         <div>
-                            <form id="form-${this.id}" method="POST" action="/api/scene/${this.book_id}/${this.id}">
+                            <form id="form-${this.id}" method="POST" action="${prefix}/api/scene/${this.book_id}/${this.id}">
                                 <input type="hidden" name="id" value="${this.id}">
                                 <input type="hidden" name="book_id" value="${this.book_id}">
                                 <input type="hidden" name="scene_id" value="${this.scene_id}">
@@ -162,10 +163,10 @@ class LineComponent extends DWMovableComponent {
             return `
             <div class="element">
                 <div class="image-container">
-                    <img src="/api/avatar/${this.character_id}" alt="Image">
+                    <img src="${prefix}/api/avatar/${this.character_id}" alt="Image">
                 </div>
                 <div class="content">
-                    <form id="form-${this.id}" method="POST" action="/api/scene/${this.book_id}/${this.id}">
+                    <form id="form-${this.id}" method="POST" action="${prefix}/api/scene/${this.book_id}/${this.id}">
                         <input type="hidden" name="id" value="${this.id}">
                         <input type="hidden" name="book_id" value="${this.book_id}">
                         <input type="hidden" name="scene_id" value="${this.scene_id}">
@@ -200,7 +201,7 @@ class LineComponent extends DWMovableComponent {
                 return `
                     <div class="element">
                         <div class="image-container">
-                            <img src="/api/avatar/${this.character_id}" alt="Image">
+                            <img src="${prefix}/api/avatar/${this.character_id}" alt="Image">
                         </div>
                         <div class="content">
                             <div>

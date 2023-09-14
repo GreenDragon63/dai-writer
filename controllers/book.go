@@ -3,8 +3,10 @@ package controllers
 import (
 	"dai-writer/auth"
 	"dai-writer/models"
+
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
@@ -13,7 +15,9 @@ import (
 
 func Book(c *gin.Context) {
 	c.HTML(http.StatusOK, "book.tmpl", gin.H{
-		"title": "Book",
+		"title":  "Book",
+		"prefix": os.Getenv("URL_PREFIX"),
+		"js":     "book.js",
 	})
 }
 

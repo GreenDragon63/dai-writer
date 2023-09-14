@@ -1,3 +1,4 @@
+import prefix from "./config.js"
 import { EventBus } from "./framework.js";
 
 class SelectCharacter {
@@ -5,7 +6,7 @@ class SelectCharacter {
         this._characters = [];
         this._sceneCharacters = [];
         self = this;
-        fetch("/api/character/infos/")
+        fetch(prefix + "/api/character/infos/")
         .then(response => response.json())
         .then(data => {
             if (data === null) {
@@ -25,7 +26,7 @@ class SelectCharacter {
     scene(id, book_id, scene_id) {
         if (this._sceneCharacters.length === 0) {
             self = this;
-            fetch("/api/scene/"+book_id+"/"+scene_id)
+            fetch(prefix + "/api/scene/"+book_id+"/"+scene_id)
             .then(response => response.json())
             .then(scene => {
                 if (scene === null) {

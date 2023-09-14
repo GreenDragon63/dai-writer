@@ -1,10 +1,11 @@
+import prefix from "./config.js"
 import { DWComponent } from "./dw-component.js";
 import { EventBus } from "./framework.js";
 
 class CharacterComponent extends DWComponent {
     constructor(id, parameters, callbacks = {}) {
         super(id, parameters, callbacks);
-        this._uri = '/api/character/';
+        this._uri = prefix + '/api/character/';
         let clone = "clone-" + parameters.id;
         this._addCallbacks({
             [clone]: {"click":this._handleClone.bind(this)},
@@ -13,7 +14,7 @@ class CharacterComponent extends DWComponent {
 
     _handleClone(event) {
         event.preventDefault();
-        fetch("/api/clone/" + this.id)
+        fetch(prefix  + "/api/clone/" + this.id)
         .then(function(response) {
             if (response.ok) {
                 EventBus.dispatch("refresh");
@@ -31,10 +32,10 @@ class CharacterComponent extends DWComponent {
             return `
             <div class="element">
                 <div class="image-container">
-                    <img src="/api/avatar/${this.id}" alt="Image">
+                    <img src="${prefix}/api/avatar/${this.id}" alt="Image">
                 </div>
                 <div class="content">
-                    <form id="form-${this.id}" method="POST" action="/api/character/${this.id}">
+                    <form id="form-${this.id}" method="POST" action="${prefix}/api/character/${this.id}">
                         <input type="hidden" name="id" value="${this.id}">
                         <div>
                             <p>Name : </p><input type="text" value="${this.name}" name="name" class="custom-input">
@@ -81,7 +82,7 @@ class CharacterComponent extends DWComponent {
                 return `
                     <div class="element">
                         <div class="image-container">
-                            <img src="/api/avatar/${this.id}" alt="Image">
+                            <img src="${prefix}/api/avatar/${this.id}" alt="Image">
                         </div>
                         <div class="content">
                             <div>

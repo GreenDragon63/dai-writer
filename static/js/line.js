@@ -1,3 +1,4 @@
+import prefix from "./config.js";
 import { LineComponent } from "./line-component.js"
 import { EventBus } from "./framework.js";
 
@@ -8,7 +9,7 @@ function createLine(line, node) {
 }
 
 function fetchLast() {
-    fetch("/api" + window.location.pathname + "/0")
+    fetch(prefix + "/api" + window.location.pathname.replace(prefix,"") + "/0")
     .then(response => response.json())
     .then(line => {
         createLine(line, "container");
@@ -17,18 +18,18 @@ function fetchLast() {
 }
 
 function fetchAll() {
-    let decoded = window.location.pathname.split('/');
+    let decoded = window.location.pathname.replace(prefix,"").split('/');
     if (decoded.length < 4) {
         return
     }
     let book = decoded[2];
     let scene = decoded[3];
     let order;
-    fetch("/api/scene/"+book+"/"+scene)
+    fetch(prefix + "/api/scene/"+book+"/"+scene)
     .then(response => response.json())
     .then(scene => {
         order = scene.lines;
-        fetch("/api" + window.location.pathname)
+        fetch(prefix + "/api" + window.location.pathname.replace(prefix,""))
         .then(response => response.json())
         .then(data => {
             if (data === null) {
@@ -42,7 +43,7 @@ function fetchAll() {
 }
 
 function addLine() {
-    let decoded = window.location.pathname.split('/');
+    let decoded = window.location.pathname.replace(prefix,"").split('/');
     if (decoded.length < 4) {
         return
     }
@@ -62,12 +63,12 @@ function addLine() {
 
 function addBreadcrumb() {
     const breadcrumb = document.getElementById("breadcrumb");
-    let decoded = window.location.pathname.split('/');
+    let decoded = window.location.pathname.replace(prefix,"").split('/');
     if (decoded.length < 4) {
         return
     }
     let book = decoded[2];
-    breadcrumb.innerHTML = '<a href="/">Home</a>/<a href="/book">Edit books</a>/<a href="/scene/'+book+'">Edit scenes</a>';
+    breadcrumb.innerHTML = '<a href="'+prefix+'/">Home</a>/<a href="'+prefix+'/book">Edit books</a>/<a href="'+prefix+'/scene/'+book+'">Edit scenes</a>';
 }
 
 EventBus.register("refresh", fetchLast);

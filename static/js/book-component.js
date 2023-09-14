@@ -1,9 +1,10 @@
+import prefix from "./config.js";
 import { DWComponent } from "./dw-component.js";
 
 class BookComponent extends DWComponent {
     constructor(id, parameters, callbacks) {
         super(id, parameters, callbacks);
-        this._uri = '/api/book/';
+        this._uri = prefix + '/api/book/';
         if ((this.scenes === undefined) || (this.scenes === null)) {
             this.scenes = [];
         }
@@ -15,7 +16,7 @@ class BookComponent extends DWComponent {
             return `
             <div class="element">
                 <div class="content">
-                    <form id="form-${this.id}" method="POST" action="/api/boook/${this.id}">
+                    <form id="form-${this.id}" method="POST" action="${prefix}/api/book/${this.id}">
                         <input type="hidden" name="id" value="${this.id}">
                         <div>
                             <p>Title : </p><input type="text" value="${this.name}" name="name" class="custom-input w100">
@@ -61,8 +62,8 @@ class BookComponent extends DWComponent {
                                 <p>Description : ${this.description}</p>
                                 <p>Scenes : ${this.numScenes}</p>
                             </div>
-                            <a href="/scene/${this.id}/" class="custom-button button-link ml2 mt2">Edit scenes</a>
-                            <a href="/api/export/${this.id}/" class="custom-button button-link ml2 mt2">Export book</a>
+                            <a href="${prefix}/scene/${this.id}/" class="custom-button button-link ml2 mt2">Edit scenes</a>
+                            <a href="${prefix}/api/export/${this.id}/" class="custom-button button-link ml2 mt2">Export book</a>
                         </div>
                         <div class="buttons buttons-right">
                             <button id="edit-${this.id}"><i class="fa-solid fa-pen-to-square"></i></button>
@@ -77,8 +78,8 @@ class BookComponent extends DWComponent {
                     <div>
                         <p>Title : ${this.name}</p>
                     </div>
-                    <a href="/scene/${this.id}/" class="custom-button button-link ml2 mt2">Edit scenes</a>
-                    <a href="/api/export/${this.id}/" class="custom-button button-link ml2 mt2">Export book</a>
+                    <a href="${prefix}/scene/${this.id}/" class="custom-button button-link ml2 mt2">Edit scenes</a>
+                    <a href="${prefix}/api/export/${this.id}/" class="custom-button button-link ml2 mt2">Export book</a>
                 </div>
                 <div class="buttons buttons-right">
                     <button id="edit-${this.id}"><i class="fa-solid fa-pen-to-square"></i></button>

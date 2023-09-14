@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"os"
+
 	"dai-writer/auth"
 	"dai-writer/controllers"
 
@@ -8,19 +10,25 @@ import (
 )
 
 func AddPublics(router *gin.Engine) {
-	router.Static("/static", "static/")
+	var prefix string
+
+	prefix = os.Getenv("URL_PREFIX")
+	router.Static(prefix+"/static", "static/")
 	router.LoadHTMLGlob("views/*")
-	router.GET("/", controllers.GetIndex)
-	router.GET("/login", auth.GetLogin)
-	router.POST("/login", auth.PostLogin)
-	router.GET("/character/", auth.GetCurrentUser(false), controllers.Character)
-	router.GET("/book/", auth.GetCurrentUser(false), controllers.Book)
-	router.GET("/scene/:book", auth.GetCurrentUser(false), controllers.Scene)
-	router.GET("/line/:book/:scene", auth.GetCurrentUser(false), controllers.Line)
+	router.GET(prefix+"/", controllers.GetIndex)
+	router.GET(prefix+"/login", auth.GetLogin)
+	router.POST(prefix+"/login", auth.PostLogin)
+	router.GET(prefix+"/character/", auth.GetCurrentUser(false), controllers.Character)
+	router.GET(prefix+"/book/", auth.GetCurrentUser(false), controllers.Book)
+	router.GET(prefix+"/scene/:book", auth.GetCurrentUser(false), controllers.Scene)
+	router.GET(prefix+"/line/:book/:scene", auth.GetCurrentUser(false), controllers.Line)
 }
 
 func AddPrivates(router *gin.Engine) {
-	privates := router.Group("/api", auth.GetCurrentUser(true))
+	var prefix string
+
+	prefix = os.Getenv("URL_PREFIX")
+	privates := router.Group(prefix+"/api", auth.GetCurrentUser(true))
 	{
 		privates.POST("/upload", controllers.UploadCharacter)
 		privates.GET("/clone/:id", controllers.CloneCharacter)

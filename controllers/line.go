@@ -4,8 +4,10 @@ import (
 	"dai-writer/auth"
 	"dai-writer/llm"
 	"dai-writer/models"
+
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -13,7 +15,9 @@ import (
 
 func Line(c *gin.Context) {
 	c.HTML(http.StatusOK, "line.tmpl", gin.H{
-		"title": "Line",
+		"title":  "Line",
+		"prefix": os.Getenv("URL_PREFIX"),
+		"js":     "line.js",
 	})
 }
 

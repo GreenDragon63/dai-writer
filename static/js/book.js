@@ -1,3 +1,4 @@
+import prefix from "./config.js"
 import { BookComponent } from "./book-component.js"
 import { EventBus } from "./framework.js";
 
@@ -8,7 +9,7 @@ function createBook(book, node) {
 }
 
 function fetchLast() {
-    fetch("/api" + window.location.pathname + "0")
+    fetch(prefix + "/api" + window.location.pathname.replace(prefix,"") + "0")
     .then(response => response.json())
     .then(book => {
         createBook(book, "container");
@@ -16,7 +17,7 @@ function fetchLast() {
 }
 
 function fetchAll() {
-    fetch("/api" + window.location.pathname)
+    fetch(prefix + "/api" + window.location.pathname.replace(prefix,""))
     .then(response => response.json())
     .then(data => {
         if (data === null) {
@@ -39,7 +40,7 @@ function addBook() {
 
 function addBreadcrumb() {
     const breadcrumb = document.getElementById("breadcrumb");
-    breadcrumb.innerHTML = '<a href="/">Home</a>';
+    breadcrumb.innerHTML = '<a href="'+prefix+'/">Home</a>';
 }
 
 EventBus.register("refresh", fetchLast);

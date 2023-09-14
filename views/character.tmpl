@@ -3,7 +3,7 @@
     </div>
     <div id="importer">
         <div class="general">
-        <form action="/api/upload" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+        <form action="{{.prefix}}/api/upload" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
             <label>Upload a character card (PNG only) &nbsp; </label>
             <input type="file" id="upload-card" class="file-input" name="file" accept=".png" onchange="updateFileName(this)">
             <label for="upload-card" class="custom-button"><span id="fileName">Choose File</span></label>
@@ -33,4 +33,4 @@
     </div>
     <div id="container">
     </div>
-{{template "footer" ("character")}}
+{{template "footer" .}}

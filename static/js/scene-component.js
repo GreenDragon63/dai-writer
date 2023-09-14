@@ -1,3 +1,4 @@
+import prefix from "./config.js";
 import { DWMovableComponent } from "./dw-movable-component.js";
 import { EventBus } from "./framework.js";
 import selectCharacter from "./select-character.js";
@@ -12,7 +13,7 @@ class SceneComponent extends DWMovableComponent {
         this._addCallbacks({
             [addId]: {"click":this._handleAdd.bind(this)},
         });
-        this._uri = '/api/scene/' + this.book_id + '/';
+        this._uri = prefix + '/api/scene/' + this.book_id + '/';
         if ((this.lines === undefined) || (this.lines === null)) {
             this.lines = [];
         }
@@ -80,11 +81,11 @@ class SceneComponent extends DWMovableComponent {
             }
             sceneList.push(parseInt(decoded[1]));
         }
-        fetch("/api/book/"+ this.book_id)
+        fetch(prefix + "/api/book/"+ this.book_id)
         .then(response => response.json())
         .then(book => {
             book.scenes = sceneList;
-            fetch("/api/book/"+ this.book_id, {
+            fetch(prefix + "/api/book/"+ this.book_id, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -156,7 +157,7 @@ class SceneComponent extends DWMovableComponent {
             var linkLines = "";
             var arrows = "";
         } else {
-            var linkLines = `<a href="/line/${this.book_id}/${this.id}/" class="custom-button button-link ml2 mt2 mb2">Generate content</a>`;
+            var linkLines = `<a href="${prefix}/line/${this.book_id}/${this.id}/" class="custom-button button-link ml2 mt2 mb2">Generate content</a>`;
             var arrows = `
             <div class="buttons buttons-center">
                 <button id="up-${this.id}"><i class="fa-solid fa-chevron-up"></i></button>
@@ -167,7 +168,7 @@ class SceneComponent extends DWMovableComponent {
             return `
             <div class="element">
                 <div class="content">
-                    <form id="form-${this.id}" method="POST" action="/api/scene/${this.book_id}/${this.id}">
+                    <form id="form-${this.id}" method="POST" action="${prefix}/api/scene/${this.book_id}/${this.id}">
                         <input type="hidden" name="id" value="${this.id}">
                         <input type="hidden" name="book_id" value="${this.book_id}">
                         <input type="hidden" name="displayed" value="${this._displayed}">
