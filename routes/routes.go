@@ -13,14 +13,14 @@ func AddPublics(router *gin.Engine) {
 	router.GET("/", controllers.GetIndex)
 	router.GET("/login", auth.GetLogin)
 	router.POST("/login", auth.PostLogin)
-	router.GET("/character/", controllers.Character)
-	router.GET("/book/", controllers.Book)
-	router.GET("/scene/:book", controllers.Scene)
-	router.GET("/line/:book/:scene", controllers.Line)
+	router.GET("/character/", auth.GetCurrentUser(false), controllers.Character)
+	router.GET("/book/", auth.GetCurrentUser(false), controllers.Book)
+	router.GET("/scene/:book", auth.GetCurrentUser(false), controllers.Scene)
+	router.GET("/line/:book/:scene", auth.GetCurrentUser(false), controllers.Line)
 }
 
 func AddPrivates(router *gin.Engine) {
-	privates := router.Group("/api", auth.GetCurrentUser())
+	privates := router.Group("/api", auth.GetCurrentUser(true))
 	{
 		privates.POST("/upload", controllers.UploadCharacter)
 		privates.GET("/clone/:id", controllers.CloneCharacter)

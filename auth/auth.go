@@ -94,10 +94,12 @@ func PostLogin(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal error"})
 		return
 	}
-	c.JSON(http.StatusOK, u.Username)
+	c.HTML(http.StatusOK, "index.tmpl", gin.H{
+		"title": "Title",
+	})
 }
 
-func GetCurrentUser() gin.HandlerFunc {
+func GetCurrentUser(api bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var u User
 		var filename, cookie string
@@ -116,17 +118,31 @@ func GetCurrentUser() gin.HandlerFunc {
 			return
 		}
 
-		if cookie, err = c.Cookie("session"); err == nil {
+		cookie, err = c.Cookie("session")
+		if err == nil {
+			if !CheckUsername(cookie) {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal error"})
+				c.Abort()
+				return
+			}
 			filename = prefixSession + cookie + ".txt"
 			username, err = os.ReadFile(filename)
 			if err != nil {
-				log.Println(err.Error())
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal error"})
-				return
+				if api {
+					log.Println(err.Error())
+					c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal error"})
+					c.Abort()
+					return
+				} else {
+					c.Redirect(http.StatusFound, "/login")
+					c.Abort()
+					return
+				}
 			}
 			filename = prefixUser + string(username) + ".json"
 			if _, err = os.Stat(filename); os.IsNotExist(err) {
 				c.JSON(http.StatusUnauthorized, gin.H{"error": "Not authorized"})
+				c.Abort()
 				return
 			}
 			content, err = os.ReadFile(filename)
@@ -134,10 +150,16 @@ func GetCurrentUser() gin.HandlerFunc {
 			if err != nil {
 				log.Println(err.Error())
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal error"})
+				c.Abort()
 				return
 			}
 			c.Set("current_user", u)
 			c.Next()
+			return
+		}
+		if !api {
+			c.Redirect(http.StatusFound, "/login")
+			c.Abort()
 			return
 		}
 		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden with no session"})
