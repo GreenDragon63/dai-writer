@@ -140,7 +140,7 @@ func GetCurrentUser(api bool) gin.HandlerFunc {
 					c.Abort()
 					return
 				} else {
-					c.Redirect(http.StatusFound, "/login")
+					c.Redirect(http.StatusFound, os.Getenv("URL_PREFIX")+"/login")
 					c.Abort()
 					return
 				}
@@ -164,7 +164,7 @@ func GetCurrentUser(api bool) gin.HandlerFunc {
 			return
 		}
 		if !api {
-			c.Redirect(http.StatusFound, "/login")
+			c.Redirect(http.StatusFound, os.Getenv("URL_PREFIX")+"/login")
 			c.Abort()
 			return
 		}
