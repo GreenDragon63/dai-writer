@@ -25,8 +25,8 @@ type User struct {
 }
 
 type UserRequest struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `form:"username"`
+	Password string `form:"password"`
 }
 
 const prefixUser string = "Users/"
@@ -42,14 +42,18 @@ func CheckUsername(username string) bool {
 	return true
 }
 
-func Login(c *gin.Context) {
+func GetLogin(c *gin.Context) {
+	c.HTML(http.StatusOK, "login.tmpl", gin.H{})
+}
+
+func PostLogin(c *gin.Context) {
 	var userReq UserRequest
 	var u User
 	var filename, randomString string
 	var err, passwordOk error
 	var content []byte
 
-	if err = c.BindJSON(&userReq); err != nil {
+	if err = c.Bind(&userReq); err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
 		return
@@ -225,4 +229,6 @@ func CreateUser() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
+	fmt.Println("")
+	fmt.Println("User created")
 }
