@@ -1,14 +1,18 @@
 package auth
 
 import (
-	"database/sql"
+	"encoding/json"
+	"fmt"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"golang.org/x/crypto/bcrypt"
+	"golang.org/x/term"
 )
 
 type User struct {
@@ -25,75 +29,65 @@ type UserRequest struct {
 	Password string `json:"password"`
 }
 
+const prefixUser string = "Users/"
+const prefixSession string = "Sessions/"
+
+func CheckUsername(username string) bool {
+	var regex *regexp.Regexp
+
+	regex = regexp.MustCompile("^[a-zA-Z0-9]+$")
+	if !regex.MatchString(username) {
+		return false
+	}
+	return true
+}
+
 func Login(c *gin.Context) {
 	var userReq UserRequest
 	var u User
-	if err := c.BindJSON(&userReq); err != nil {
+	var filename, randomString string
+	var err, passwordOk error
+	var content []byte
+
+	if err = c.BindJSON(&userReq); err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
 		return
 	}
-
-	db, err := sql.Open("mysql", os.Getenv("DB_USER")+":"+os.Getenv("DB_PASSWORD")+"@tcp("+os.Getenv("DB_HOST")+":3306)/"+os.Getenv("DB_NAME"))
+	if !CheckUsername(userReq.Username) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid username"})
+		return
+	}
+	filename = prefixUser + userReq.Username + ".json"
+	if _, err = os.Stat(filename); os.IsNotExist(err) {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Not authorized"})
+		return
+	}
+	content, err = os.ReadFile(filename)
+	err = json.Unmarshal(content, &u)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal error"})
 		return
 	}
-	defer db.Close()
-
-	err = db.Ping()
-	if err != nil {
-		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error"})
+	passwordOk = bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(userReq.Password+u.Salt))
+	if passwordOk != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Not authorized"})
 		return
 	}
 
-	stmt, err := db.Prepare("SELECT id, username, password, salt FROM users where username=?")
-	if err != nil {
-		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error"})
-		return
-	}
-	defer stmt.Close()
-
-	rows, err := stmt.Query(userReq.Username)
-	if err != nil {
-		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error"})
-		return
-	}
-
-	var count = 0
-	for rows.Next() {
-		err := rows.Scan(&u.Id, &u.Username, &u.Password, &u.Salt)
-		if err != nil {
-			log.Println(err.Error())
-			continue
-		}
-		passwordOk := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(userReq.Password+u.Salt))
-		if passwordOk != nil {
-			log.Println(passwordOk.Error())
-		} else {
-			count++
-		}
-	}
-	if count == 0 {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
-		return
-	}
-
-	randomString, err := GenerateRandomString(64)
+	randomString, err = GenerateRandomString(64)
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Random error"})
 		return
 	}
 	c.SetCookie("session", randomString, 60*60*24*365, "", "", false, true)
-	_, err = db.Exec("UPDATE users SET session = ? WHERE id = ?", randomString, u.Id)
+	filename = prefixSession + randomString + ".txt"
+	err = os.WriteFile(filename, []byte(u.Username), 0644)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal error"})
 		return
 	}
 	c.JSON(http.StatusOK, u.Username)
@@ -101,8 +95,12 @@ func Login(c *gin.Context) {
 
 func GetCurrentUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		var u User
+		var filename, cookie string
+		var username, content []byte
+		var err error
+
 		if os.Getenv("LOCAL_INSTALL") == "true" {
-			var u User
 			u.Id = 0
 			u.Username = "admin"
 			u.Password = ""
@@ -113,51 +111,118 @@ func GetCurrentUser() gin.HandlerFunc {
 			c.Next()
 			return
 		}
-		if cookie, err := c.Cookie("session"); err == nil {
-			db, err := sql.Open("mysql", os.Getenv("DB_USER")+":"+os.Getenv("DB_PASSWORD")+"@tcp("+os.Getenv("DB_HOST")+":3306)/"+os.Getenv("DB_NAME"))
+
+		if cookie, err = c.Cookie("session"); err == nil {
+			filename = prefixSession + cookie + ".txt"
+			username, err = os.ReadFile(filename)
 			if err != nil {
 				log.Println(err.Error())
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error"})
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal error"})
 				return
 			}
-			defer db.Close()
-
-			err = db.Ping()
+			filename = prefixUser + string(username) + ".json"
+			if _, err = os.Stat(filename); os.IsNotExist(err) {
+				c.JSON(http.StatusUnauthorized, gin.H{"error": "Not authorized"})
+				return
+			}
+			content, err = os.ReadFile(filename)
+			err = json.Unmarshal(content, &u)
 			if err != nil {
 				log.Println(err.Error())
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error"})
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal error"})
 				return
 			}
-
-			stmt, err := db.Prepare("SELECT id, username, password, salt, level, credits FROM users where session = ?")
-			if err != nil {
-				log.Println(err.Error())
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error"})
-				return
-			}
-			defer stmt.Close()
-
-			rows, err := stmt.Query(cookie)
-			if err != nil {
-				log.Println(err.Error())
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error"})
-				return
-			}
-
-			for rows.Next() {
-				var u User
-				err := rows.Scan(&u.Id, &u.Username, &u.Password, &u.Salt, &u.Level, &u.Credits)
-				if err != nil {
-					log.Println(err.Error())
-					c.JSON(http.StatusInternalServerError, gin.H{"error": "DB error"})
-					return
-				}
-				c.Set("current_user", u)
-				c.Next()
-				return
-			}
+			c.Set("current_user", u)
+			c.Next()
+			return
 		}
 		c.JSON(http.StatusForbidden, gin.H{"error": "Forbidden with no session"})
 		c.Abort()
+	}
+}
+
+func InitUser() {
+	var err error
+
+	if os.Getenv("LOCAL_INSTALL") == "true" {
+		return
+	}
+
+	_, err = os.Stat(prefixUser)
+	if os.IsNotExist(err) {
+		err = os.Mkdir(prefixUser, 0755)
+		if err != nil {
+			log.Fatal(err.Error())
+			return
+		}
+		err = os.Mkdir(prefixSession, 0755)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+		CreateUser()
+	}
+}
+
+func CreateUser() {
+	var user User
+	var id int
+	var username, salt, filename string
+	var password, saltedPassword, hash []byte
+	var files []fs.DirEntry
+	var file fs.DirEntry
+	var content []byte
+	var err error
+
+	fmt.Print("User : ")
+	fmt.Scanln(&username)
+	fmt.Print("Password : ")
+	password, _ = term.ReadPassword(int(os.Stdin.Fd()))
+
+	salt, err = GenerateRandomString(16)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	saltedPassword = append(password, []byte(salt)...)
+	hash, err = bcrypt.GenerateFromPassword(saltedPassword, bcrypt.DefaultCost)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	id = 0
+	files, err = os.ReadDir(prefixUser)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	for _, file = range files {
+		content, err = os.ReadFile(prefixUser + file.Name())
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+		err = json.Unmarshal(content, &user)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+		if user.Id > id {
+			id = user.Id
+		}
+	}
+	id += 1
+
+	user.Id = id
+	user.Username = username
+	user.Password = string(hash)
+	user.Salt = string(salt)
+	user.Level = 1
+	user.Credits = -1
+
+	filename = prefixUser + username + ".json"
+	content, err = json.Marshal(user)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	err = os.WriteFile(filename, content, 0644)
+	if err != nil {
+		log.Fatal(err.Error())
 	}
 }

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"dai-writer/auth"
 	"dai-writer/routes"
+
 	"io"
 	"log"
 	"os"
@@ -11,6 +13,7 @@ import (
 
 func main() {
 	if os.Getenv("LOCAL_INSTALL") != "true" {
+		auth.InitUser()
 		gin.DisableConsoleColor()
 		f, _ := os.Create("log/server.log")
 		gin.DefaultWriter = io.MultiWriter(f)

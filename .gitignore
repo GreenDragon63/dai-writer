@@ -28,10 +28,8 @@ go.work
 /Books
 /Scenes
 /Lines
-/books
-/scenes
-/lines
-/chats
+/Users
+/Sessions
 dai-writer
 *~
 *.bak
