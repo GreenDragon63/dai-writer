@@ -125,6 +125,17 @@ class LineComponent extends DWMovableComponent {
         });
     }
 
+    _markdownParser(text) {
+        var toHTML = text
+            .replace(/\n/gim, '<br>')
+            .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+            .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+            .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+            .replace(/\*\*(.*)\*\*/gim, '<b>$1</b>')
+            .replace(/\*(.*)\*/gim, '<i>$1</i>');
+        return toHTML.trim();
+    }
+
     _template() {
         if (this.id === 0) {
             var arrows = "";
@@ -208,7 +219,7 @@ class LineComponent extends DWMovableComponent {
                                 <p><b>${selectCharacter.name(this.character_id)}</b></p>
                             </div>
                             <div>
-                                <p>${this.content[this.current]}</p>
+                                <p>${this._markdownParser(this.content[this.current])}</p>
                             </div>
                             <div class="buttons buttons-center">
                                 <button id="up-${this.id}"><i class="fa-solid fa-chevron-up"></i></button>
