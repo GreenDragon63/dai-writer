@@ -23,13 +23,13 @@ go.work
 .env
 /local
 /go
-/log
 /Characters
 /Books
 /Scenes
 /Lines
 /Users
 /Sessions
+server.log
 dai-writer
 *~
 *.bak
