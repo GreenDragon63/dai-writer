@@ -20,6 +20,8 @@ func main() {
 	}
 	log.SetOutput(gin.DefaultWriter)
 	router := gin.Default()
+	router.ForwardedByClientIP = true
+	router.SetTrustedProxies([]string{"127.0.0.1"})
 	router.MaxMultipartMemory = 5 * 1024 * 1024
 	routes.AddPublics(router)
 	routes.AddPrivates(router)
