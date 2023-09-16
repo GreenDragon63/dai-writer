@@ -1,4 +1,4 @@
-import prefix from "./config.js";
+import prefix from "../../config.js";;
 import { DWMovableComponent } from "./dw-movable-component.js";
 import { EventBus } from "./framework.js";
 import selectCharacter from "./select-character.js";

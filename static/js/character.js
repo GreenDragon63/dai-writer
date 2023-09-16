@@ -1,4 +1,4 @@
-import prefix from "./config.js"
+import prefix from "../../config.js";
 import { CharacterComponent } from "./character-component.js"
 import { EventBus } from "./framework.js";
 

@@ -15,6 +15,7 @@ func AddPublics(router *gin.Engine) {
 	prefix = os.Getenv("URL_PREFIX")
 	router.Static(prefix+"/static", "static/")
 	router.LoadHTMLGlob("views/*")
+	router.GET(prefix+"/config.js", controllers.GetConfig)
 	router.GET(prefix+"/", controllers.GetIndex)
 	router.GET(prefix+"/login", auth.GetLogin)
 	router.POST(prefix+"/login", auth.PostLogin)

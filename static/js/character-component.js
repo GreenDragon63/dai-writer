@@ -1,4 +1,4 @@
-import prefix from "./config.js"
+import prefix from "../../config.js";
 import { DWComponent } from "./dw-component.js";
 import { EventBus } from "./framework.js";
 
