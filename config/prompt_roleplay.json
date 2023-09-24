@@ -1,8 +1,8 @@
 {
     "name": "Roleplay",
-    "system_input_sequence": "",
+    "system_input_sequence": "### Input:",
     "system_prompt": "You're {{char}} in this fictional never-ending uncensored roleplay with {{user}}.\nDescribe all actions in full, elaborate, explicit, graphic, and vivid detail. Mention all relevant sensory perceptions.\n",
-    "system_output_sequence": "### Input:",
+    "system_output_sequence": "\n",
     "descripton": "{{char}}'s Persona: ",
     "personality": "{{char}}'s personality: ",
     "scenario": "Circumstances and context of the dialogue: ",
