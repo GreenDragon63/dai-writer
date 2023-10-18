@@ -176,7 +176,11 @@ func botMemory(u *auth.User, bookId, sceneId, characterId, lineId, size int, inp
 	ltm = promptConfig.SystemInputSequence + promptConfig.SystemPrompt + promptConfig.SystemOutputSequence
 	ltm += formatContent(promptConfig.Description, chara.Description, "\n")
 	ltm += formatContent(promptConfig.Personality, chara.Personality, "\n")
-	ltm += formatContent(promptConfig.Scenario, chara.Scenario, "\n")
+	if len(scene.Description) > 0 {
+		ltm += formatContent(promptConfig.Scenario, scene.Description, "\n")
+	} else {
+		ltm += formatContent(promptConfig.Scenario, chara.Scenario, "\n")
+	}
 	ltm = replacePlaceholders(ltm, chara.Name, user)
 	chatSeparator = replacePlaceholders(promptConfig.ChatSeparator, chara.Name, user)
 	exampleSeparator = replacePlaceholders(promptConfig.ExampleSeparator, chara.Name, user)

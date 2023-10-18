@@ -176,7 +176,7 @@ class SceneComponent extends DWMovableComponent {
                             <p>Title : </p><input type="text" value="${this.name}" name="name" class="custom-input w100">
                         </div>
                         <div class="mt2">
-                            <label>Description: </label><textarea name="description" class="custom-textarea">${this.description}</textarea>
+                            <label>Description: </label><textarea name="description" placeholder="Will replace character scenario if not empty" class="custom-textarea">${this.description}</textarea>
                             <label>Characters : </label>${this.charaListB}
                             <label>Add a character to the scene: </label>${selectCharacter.all("character-"+this.id)}
                             <button id="add-${this.id}" class="custom-button">Add</button>
