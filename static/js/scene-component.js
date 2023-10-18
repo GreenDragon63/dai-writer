@@ -189,7 +189,7 @@ class SceneComponent extends DWMovableComponent {
                     ${arrows}
                 </div>
                 <div class="buttons buttons-right">
-                    <button id="edit-${this.id}"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+                    <button id="edit-${this.id}"><i class="fa-regular fa-rectangle-xmark"></i></button>
                     <button  id="open-${this.id}"><i class="fa-regular fa-eye"></i></button>
                 </div>
             </div>

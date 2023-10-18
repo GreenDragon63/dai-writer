@@ -54,7 +54,13 @@ class LineComponent extends DWMovableComponent {
         } else {
             var character = this.character_id
         }
-        fetch(prefix + "/api/generate/" + this.book_id + "/" + this.scene_id + "/" + + character + "/" + this.id)
+        fetch(prefix + "/api/generate/" + this.book_id + "/" + this.scene_id + "/" + + character + "/" + this.id, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({input: document.getElementById("system-input-"+this.id).value})
+        })
         .then(response => response.json())
         .then(text => {
             if ((self.content.length == 1) && (self.content[0] == "")) {
@@ -202,37 +208,43 @@ class LineComponent extends DWMovableComponent {
                     ${arrows}
                 </div>
                 <div class="buttons buttons-right">
-                    <button id="edit-${this.id}"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+                    <button id="edit-${this.id}"><i class="fa-regular fa-rectangle-xmark"></i></button>
                     <button  id="open-${this.id}"><i class="fa-regular fa-eye"></i></button>
                 </div>
             </div>
             `
         }
         if (this._displayed) {
-                return `
-                    <div class="element">
-                        <div class="image-container">
-                            <img src="${prefix}/api/avatar/${this.character_id}" alt="Image">
+            if (document.getElementById("system-input-"+this.id) !== null) {
+                var systemInput = document.getElementById("system-input-"+this.id).value;
+            } else {
+                var systemInput = "";
+            }
+            return `
+                <div class="element">
+                    <div class="image-container">
+                        <img src="${prefix}/api/avatar/${this.character_id}" alt="Image">
+                    </div>
+                    <div class="content">
+                        <div>
+                            <p><b>${selectCharacter.name(this.character_id)}</b></p>
+                            <p><input type="text" class="w100 ml0 custom-input" id="system-input-${this.id}" value="${systemInput}" placeholder="Optional system input for generation"></p>
                         </div>
-                        <div class="content">
-                            <div>
-                                <p><b>${selectCharacter.name(this.character_id)}</b></p>
-                            </div>
-                            <div>
-                                <p>${this._markdownParser(this.content[this.current])}</p>
-                            </div>
-                            <div class="buttons buttons-center">
-                                <button id="up-${this.id}"><i class="fa-solid fa-chevron-up"></i></button>
-                                <button id="down-${this.id}"><i class="fa-solid fa-chevron-down"></i></button>
-                            </div>
+                        <div>
+                            <p>${this._markdownParser(this.content[this.current])}</p>
                         </div>
-                        <div class="buttons buttons-right">
-                            <button id="generate-${this.id}"><i class="fa-solid fa-rotate"></i></button>
-                            <button id="edit-${this.id}"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button  id="open-${this.id}"><i class="fa-regular fa-eye"></i></button>
+                        <div class="buttons buttons-center">
+                            <button id="up-${this.id}"><i class="fa-solid fa-chevron-up"></i></button>
+                            <button id="down-${this.id}"><i class="fa-solid fa-chevron-down"></i></button>
                         </div>
                     </div>
-                    `
+                    <div class="buttons buttons-right">
+                        <button id="generate-${this.id}"><i class="fa-solid fa-rotate"></i></button>
+                        <button id="edit-${this.id}"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button  id="open-${this.id}"><i class="fa-regular fa-eye"></i></button>
+                    </div>
+                </div>
+                `
         }
         return `
             <div class="element">

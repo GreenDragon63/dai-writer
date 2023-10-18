@@ -13,6 +13,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type input struct {
+	Input string `json:"input"`
+}
+
 func Line(c *gin.Context) {
 	c.HTML(http.StatusOK, "line.tmpl", gin.H{
 		"title":  "Line",
@@ -159,6 +163,7 @@ func GenerateLine(c *gin.Context) {
 	var user auth.User
 	var id int
 	var Line *models.Line
+	var input input
 
 	u, ok := c.Get("current_user")
 	if ok != true {
@@ -186,8 +191,13 @@ func GenerateLine(c *gin.Context) {
 		return
 	}
 	user = u.(auth.User)
+	if err := c.BindJSON(&input); err != nil {
+		log.Println(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Line format"})
+		return
+	}
 
-	result := llm.Generate(&user, book, scene, character, id)
+	result := llm.Generate(&user, book, scene, character, id, input.Input)
 
 	Line, ok = models.LoadLine(&user, book, scene, id)
 	if ok != true {

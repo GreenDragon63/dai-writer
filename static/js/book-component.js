@@ -30,7 +30,7 @@ class BookComponent extends DWComponent {
                     </form>
                 </div>
                 <div class="buttons buttons-right">
-                    <button id="edit-${this.id}"><i class="fa-solid fa-arrow-up-right-from-square"></i></button>
+                    <button id="edit-${this.id}"><i class="fa-regular fa-rectangle-xmark"></i></button>
                     <button id="open-${this.id}"><i class="fa-solid fa-folder-open"></i></button>
                 </div>
             </div>

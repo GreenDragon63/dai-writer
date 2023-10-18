@@ -42,7 +42,7 @@ func formatContent(prefix, content, separator string) string {
 	return prefix + content + separator
 }
 
-func Generate(u *auth.User, bookId, sceneId, characterId, lineId int) string {
+func Generate(u *auth.User, bookId, sceneId, characterId, lineId int, input string) string {
 	var stopStrings, words []string
 	var debug, stopString, user, memory, newText, streamedText string
 	var chara, ch *models.Character
@@ -96,7 +96,7 @@ func Generate(u *auth.User, bookId, sceneId, characterId, lineId int) string {
 	for finished == false {
 		memorySize = MODEL_CTX - responseSize
 		freeSize = responseSize
-		memory = botMemory(u, bookId, sceneId, characterId, lineId, memorySize)
+		memory = botMemory(u, bookId, sceneId, characterId, lineId, memorySize, input)
 		if debug == "true" {
 			log.Println(memory)
 		}
@@ -127,9 +127,9 @@ func Generate(u *auth.User, bookId, sceneId, characterId, lineId int) string {
 	return cleanOutput(newText, chara.Name)
 }
 
-func botMemory(u *auth.User, bookId, sceneId, characterId, lineId, size int) string {
-	var debug, model, user, ltm, stm, currentLine, chatSeparator, exampleSeparator string
-	var cid, ltmLength, stmLength, currentLength, lineLength, chatSeparatorLength, exampleSeparatorLength, lastLength int
+func botMemory(u *auth.User, bookId, sceneId, characterId, lineId, size int, input string) string {
+	var debug, model, user, ltm, stm, currentLine, chatSeparator, exampleSeparator, systemInput string
+	var cid, ltmLength, stmLength, currentLength, lineLength, chatSeparatorLength, exampleSeparatorLength, lastLength, systemInputLength int
 	var chara *models.Character
 	var scene *models.Scene
 	var line *models.Line
@@ -181,11 +181,18 @@ func botMemory(u *auth.User, bookId, sceneId, characterId, lineId, size int) str
 	chatSeparator = replacePlaceholders(promptConfig.ChatSeparator, chara.Name, user)
 	exampleSeparator = replacePlaceholders(promptConfig.ExampleSeparator, chara.Name, user)
 
+	systemInput = formatContent(promptConfig.SystemInputSequence, input, promptConfig.SystemOutputSequence)
+	if len(systemInput) > 0 {
+		systemInputLength = GetTokens(systemInput)
+	} else {
+		systemInputLength = 0
+	}
+
 	ltmLength = GetTokens(ltm)
 	chatSeparatorLength = GetTokens(chatSeparator)
 	exampleSeparatorLength = GetTokens(exampleSeparator)
 	lastLength = GetTokens(promptConfig.OutputSequence + chara.Name + ": ")
-	stmLength = size - (ltmLength + chatSeparatorLength + lastLength)
+	stmLength = size - (ltmLength + chatSeparatorLength + lastLength + systemInputLength)
 
 	currentLength = 0
 	stm = ""
@@ -230,5 +237,5 @@ func botMemory(u *auth.User, bookId, sceneId, characterId, lineId, size int) str
 		stm = formatContent(chatSeparator, stm, "")
 	}
 	stm = replacePlaceholders(stm, chara.Name, user)
-	return ltm + stm + promptConfig.OutputSequence + chara.Name + ": "
+	return ltm + stm + promptConfig.OutputSequence + systemInput + chara.Name + ": "
 }

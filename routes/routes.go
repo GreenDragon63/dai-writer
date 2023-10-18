@@ -52,6 +52,6 @@ func AddPrivates(router *gin.Engine) {
 		privates.GET("/line/:book/:scene/:id", controllers.GetLine)
 		privates.POST("/line/:book/:scene/:id", controllers.PostLine)
 		privates.DELETE("/line/:book/:scene/:id", controllers.DeleteLine)
-		privates.GET("/generate/:book/:scene/:character/:id", controllers.GenerateLine)
+		privates.POST("/generate/:book/:scene/:character/:id", controllers.GenerateLine)
 	}
 }
