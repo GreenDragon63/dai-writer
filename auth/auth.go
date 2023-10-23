@@ -50,6 +50,16 @@ func GetLogin(c *gin.Context) {
 	})
 }
 
+func getCookieName() string {
+	var cookieName string
+
+	cookieName = os.Getenv("COOKIE_NAME")
+	if len(cookieName) == 0 {
+		cookieName = "session"
+	}
+	return cookieName
+}
+
 func PostLogin(c *gin.Context) {
 	var userReq UserRequest
 	var u User
@@ -90,7 +100,7 @@ func PostLogin(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Random error"})
 		return
 	}
-	c.SetCookie("session", randomString, 60*60*24*365, "", "", false, true)
+	c.SetCookie(getCookieName(), randomString, 60*60*24*365, "", "", false, true)
 	filename = prefixSession + randomString + ".txt"
 	err = os.WriteFile(filename, []byte(u.Username), 0644)
 	if err != nil {
@@ -124,7 +134,7 @@ func GetCurrentUser(api bool) gin.HandlerFunc {
 			return
 		}
 
-		cookie, err = c.Cookie("session")
+		cookie, err = c.Cookie(getCookieName())
 		if err == nil {
 			if !CheckUsername(cookie) {
 				c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal error"})
