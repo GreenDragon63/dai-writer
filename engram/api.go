@@ -39,7 +39,7 @@ func ExportLine(u *auth.User, line *models.Line) bool {
 	}
 
 	api = os.Getenv("ENGRAM_API")
-	url = api + strconv.Itoa(u.Id) + "/" + strconv.Itoa(line.BookId) + "/" + strconv.Itoa(line.SceneId) + "/" + strconv.Itoa(line.Id)
+	url = api + "line/" + strconv.Itoa(u.Id) + "/" + strconv.Itoa(line.BookId) + "/" + strconv.Itoa(line.SceneId) + "/" + strconv.Itoa(line.Id)
 	request, err = http.NewRequest("POST", url, bytes.NewBuffer(jsonData))
 	if err != nil {
 		return false
@@ -65,7 +65,7 @@ func RemoveLine(u *auth.User, line *models.Line) bool {
 	var api, key, url string
 
 	api = os.Getenv("ENGRAM_API")
-	url = api + strconv.Itoa(u.Id) + "/" + strconv.Itoa(line.BookId) + "/" + strconv.Itoa(line.SceneId) + "/" + strconv.Itoa(line.Id)
+	url = api + "line/" + strconv.Itoa(u.Id) + "/" + strconv.Itoa(line.BookId) + "/" + strconv.Itoa(line.SceneId) + "/" + strconv.Itoa(line.Id)
 	request, err = http.NewRequest("DELETE", url, nil)
 	if err != nil {
 		return false
@@ -91,7 +91,7 @@ func Search(u *auth.User, bookId, sceneId, lineId, charId int) ([]string, bool) 
 	var result []string
 
 	api = os.Getenv("ENGRAM_API")
-	url = api + strconv.Itoa(u.Id) + "/" + strconv.Itoa(bookId) + "/" + strconv.Itoa(sceneId) + "/" + strconv.Itoa(lineId) + "/" + strconv.Itoa(charId)
+	url = api + "search/" + strconv.Itoa(u.Id) + "/" + strconv.Itoa(bookId) + "/" + strconv.Itoa(sceneId) + "/" + strconv.Itoa(lineId) + "/" + strconv.Itoa(charId)
 	request, err = http.NewRequest("GET", url, nil)
 	if err != nil {
 		return result, false
