@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"dai-writer/auth"
+	"dai-writer/engram"
 	"dai-writer/models"
 
 	"log"
@@ -128,6 +129,35 @@ func DeleteScene(c *gin.Context) {
 	}
 	user = u.(auth.User)
 	ok = models.DeleteScene(&user, book, id)
+	if ok != true {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal server error"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "ok"})
+}
+
+func ExportScene(c *gin.Context) {
+	var user auth.User
+	var id int
+	var ok bool
+
+	u, ok := c.Get("current_user")
+	if ok != true {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
+		return
+	}
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Bad parameter"})
+		return
+	}
+	book, err := strconv.Atoi(c.Param("book"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Bad parameter"})
+		return
+	}
+	user = u.(auth.User)
+	ok = engram.ExportScene(&user, book, id)
 	if ok != true {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Internal server error"})
 		return
