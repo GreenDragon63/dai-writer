@@ -3,9 +3,11 @@ package engram
 import (
 	"dai-writer/auth"
 	"dai-writer/models"
+	"io"
 
 	"bytes"
 	"encoding/json"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -83,12 +85,12 @@ func RemoveLine(u *auth.User, line *models.Line) bool {
 	return true
 }
 
-func Search(u *auth.User, bookId, sceneId, lineId, charId int) ([]string, bool) {
+func Search(u *auth.User, bookId, sceneId, lineId, charId int) ([]map[string]float64, bool) {
 	var request *http.Request
 	var response *http.Response
 	var err error
 	var api, key, url string
-	var result []string
+	var result []map[string]float64
 
 	api = os.Getenv("ENGRAM_API")
 	url = api + "search/" + strconv.Itoa(u.Id) + "/" + strconv.Itoa(bookId) + "/" + strconv.Itoa(sceneId) + "/" + strconv.Itoa(lineId) + "/" + strconv.Itoa(charId)
@@ -106,9 +108,20 @@ func Search(u *auth.User, bookId, sceneId, lineId, charId int) ([]string, bool) 
 	if response.StatusCode != 200 {
 		return result, false
 	}
-	err = json.NewDecoder(response.Body).Decode(&result)
+
+	defer response.Body.Close()
+
+	body, err := io.ReadAll(response.Body)
 	if err != nil {
+		log.Printf("Can't read the response : %s\n", err.Error())
 		return result, false
 	}
+
+	err = json.Unmarshal(body, &result)
+	if err != nil {
+		log.Printf("can't decode JSON : %s\n", err.Error())
+		return result, false
+	}
+
 	return result, true
 }

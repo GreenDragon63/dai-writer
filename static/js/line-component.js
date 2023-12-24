@@ -21,6 +21,14 @@ class LineComponent extends DWMovableComponent {
         this._init();
         EventBus.register("refresh-order", this._saveOrder.bind(this));
         EventBus.register("chara-list", this.render.bind(this));
+        if (parameters.id == 0) {
+            this._addCallbacks({"save-engram": {"click":this._saveEngram.bind(this)}});
+        }
+    }
+
+    _saveEngram(event) {
+        event.preventDefault();
+        fetch(prefix + "/api/engram/" + this.book_id + "/" + this.scene_id);
     }
 
     _save() {
@@ -169,6 +177,7 @@ class LineComponent extends DWMovableComponent {
                                 <input type="hidden" name="current_content" value="">
                                 <p>Character : ${character}
                                 <button id="save-${this.id}" type="submit" class="custom-button ml2 mt2">Create a new line of dialogue</button>
+                                <button id="save-engram" type="button" class="custom-button mt2">Save the engram</button>
                                 </p>
                             </form>
                         </div>

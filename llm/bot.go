@@ -2,15 +2,20 @@ package llm
 
 import (
 	"dai-writer/auth"
+	"dai-writer/engram"
 	"dai-writer/models"
+
 	"log"
 	"os"
+	"strconv"
 	"strings"
 )
 
 const (
-	MODEL_CTX = 2048
-	RESPONSE  = 300
+	MODEL_CTX   = 8192
+	STM_SIZE    = 1024
+	ENGRAN_SIZE = 1024
+	RESPONSE    = 1024
 )
 
 func replacePlaceholders(s, char, user string) string {
@@ -100,6 +105,7 @@ func Generate(u *auth.User, bookId, sceneId, characterId, lineId int, input stri
 		if debug == "true" {
 			log.Println(memory)
 		}
+		log.Println("Memory size: " + strconv.Itoa(GetTokens(memory)))
 		for freeSize > 0 {
 			if newText != "" {
 				words = strings.Split(newText, " ")
@@ -128,15 +134,16 @@ func Generate(u *auth.User, bookId, sceneId, characterId, lineId int, input stri
 }
 
 func botMemory(u *auth.User, bookId, sceneId, characterId, lineId, size int, input string) string {
-	var debug, model, user, ltm, stm, currentLine, chatSeparator, exampleSeparator, systemInput string
-	var cid, ltmLength, stmLength, currentLength, lineLength, chatSeparatorLength, exampleSeparatorLength, lastLength, systemInputLength int
+	var debug, model, user, ltm, engrm, stm, currentLine, chatSeparator, exampleSeparator, systemInput string
+	var i, bId, sId, lId, cid, ltmLength, engramLength, stmLength, currentLength, lineLength, chatSeparatorLength, exampleSeparatorLength, lastLength, systemInputLength int
 	var chara *models.Character
 	var scene *models.Scene
 	var line *models.Line
 	var characters map[int]*models.Character
-	var ok, insideStm bool
+	var ok, insideStm, engramFull bool
 	var err error
 	var promptConfig *Prompt
+	var answer []map[string]float64
 
 	characters = make(map[int]*models.Character)
 	debug = os.Getenv("DEBUG")
@@ -196,12 +203,89 @@ func botMemory(u *auth.User, bookId, sceneId, characterId, lineId, size int, inp
 	chatSeparatorLength = GetTokens(chatSeparator)
 	exampleSeparatorLength = GetTokens(exampleSeparator)
 	lastLength = GetTokens(promptConfig.OutputSequence + chara.Name + ": ")
-	stmLength = size - (ltmLength + chatSeparatorLength + lastLength + systemInputLength)
+	stmLength = size - (ltmLength + chatSeparatorLength + lastLength + systemInputLength) // TODO refactor
+	engramLength = ENGRAN_SIZE
+	stmLength = STM_SIZE
 
+	// Create engram
+	currentLength = 0
+	engrm = ""
+	insideStm = false
+	engramFull = false
+	for i = len(scene.Lines) - 1; i >= 0; i-- {
+		if insideStm == false {
+			if scene.Lines[i] == lineId {
+				insideStm = true
+			}
+			continue
+		}
+		answer, ok = engram.Search(u, bookId, sceneId, scene.Lines[i], chara.Id)
+		for _, match := range answer {
+			for ubsl, score := range match {
+				if score > 0.7 { // TODO: make this configurable
+					ubslDecoded := strings.Split(ubsl, "-")
+					if len(ubslDecoded) != 4 {
+						log.Printf("Invalid UBSL: %s\n", ubsl)
+						return ""
+					}
+					bId, err = strconv.Atoi(ubslDecoded[1])
+					if err != nil {
+						log.Printf("Invalid book id: %s\n", ubslDecoded[1])
+						return ""
+					}
+					sId, err = strconv.Atoi(ubslDecoded[2])
+					if err != nil {
+						log.Printf("Invalid scene id: %s\n", ubslDecoded[2])
+						return ""
+					}
+					lId, err = strconv.Atoi(ubslDecoded[3])
+					if err != nil {
+						log.Printf("Invalid line id: %s\n", ubslDecoded[3])
+						return ""
+					}
+					line, ok = models.LoadLine(u, bId, sId, lId)
+					if ok != true {
+						log.Printf("Cannot find line %d/%d/%d/%d\n", u.Id, bookId, sceneId, scene.Lines[i])
+						return ""
+					}
+					if line.Displayed {
+						if line.CharacterId == characterId {
+							currentLine = chara.Name + ": " + line.Content[line.Current] + promptConfig.StopSequence
+						} else {
+							if characters[line.CharacterId] == nil {
+								characters[line.CharacterId], ok = models.LoadCharacter(u, line.CharacterId)
+								if ok != true {
+									log.Printf("Cannot find character %d/%d\n", u.Id, line.CharacterId)
+									return ""
+								}
+							}
+							currentLine = strings.Split(characters[line.CharacterId].Name, "|")[0] + ": " + line.Content[line.Current] + promptConfig.StopSequence
+						}
+						lineLength = GetTokens(currentLine)
+						if (currentLength + lineLength) > engramLength {
+							engramFull = true
+							break
+						}
+						if strings.Contains(engrm, currentLine) {
+							continue
+						}
+						currentLength += lineLength
+						engrm = currentLine + engrm
+					}
+				}
+			}
+		}
+		if engramFull == true {
+			break
+		}
+	}
+	log.Println(engrm)
+
+	// Create STM
 	currentLength = 0
 	stm = ""
 	insideStm = false
-	for i := len(scene.Lines) - 1; i >= 0; i-- {
+	for i = len(scene.Lines) - 1; i >= 0; i-- {
 		if insideStm == false {
 			if scene.Lines[i] == lineId {
 				insideStm = true
