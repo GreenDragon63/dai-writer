@@ -1,7 +1,7 @@
 :root {
     --body-color: #111111;
-    --back-color: #333333;
-    --border-color: #666666;
+    --back-color: #2c2c2c;
+    --border-color: #444444;
     --text-color: #cccccc;
     --alert-color: #cf0000;
     --spinner-color: #3498db;
@@ -10,7 +10,7 @@
 body {
     background-color: var(--body-color);
     font-family: "Times New Roman", serif;
-    font-size: 20px;
+    font-size: 1.2rem;
 }
 
 textarea {
@@ -19,6 +19,14 @@ textarea {
 
 label {
     margin-left: 2%;
+}
+
+.darker {
+    filter: opacity(65%);
+}
+
+.grayscale {
+    filter: grayscale(100%);
 }
 
 .mb0 {
