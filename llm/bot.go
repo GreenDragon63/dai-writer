@@ -18,6 +18,12 @@ const (
 	RESPONSE    = 1024
 )
 
+func getTokens(s string) int {
+	// Fake token count for simplicity
+	// Assuming 4 characters per token
+	return len(s) / 4
+}
+
 func replacePlaceholders(s, char, user string) string {
 	var replaced string
 	replaced = strings.ReplaceAll(s, "{{user}}", user)
@@ -123,7 +129,7 @@ func botMemory(u *auth.User, bookId, sceneId, characterId, lineId, size int, inp
 
 	characters = make(map[int]*models.Character)
 	debug = os.Getenv("DEBUG")
-	model = GetModel()
+	model = ai.MODEL
 	promptConfig, err = loadPromptFormat(model)
 	if err != nil {
 		log.Println(err.Error())
@@ -170,15 +176,15 @@ func botMemory(u *auth.User, bookId, sceneId, characterId, lineId, size int, inp
 
 	systemInput = formatContent(promptConfig.SystemInputSequence, input, promptConfig.SystemOutputSequence)
 	if len(systemInput) > 0 {
-		systemInputLength = GetTokens(systemInput)
+		systemInputLength = getTokens(systemInput)
 	} else {
 		systemInputLength = 0
 	}
 
-	ltmLength = GetTokens(ltm)
-	chatSeparatorLength = GetTokens(chatSeparator)
-	exampleSeparatorLength = GetTokens(exampleSeparator)
-	lastLength = GetTokens(promptConfig.OutputSequence + chara.Name + ": ")
+	ltmLength = getTokens(ltm)
+	chatSeparatorLength = getTokens(chatSeparator)
+	exampleSeparatorLength = getTokens(exampleSeparator)
+	lastLength = getTokens(promptConfig.OutputSequence + chara.Name + ": ")
 	stmLength = size - (ltmLength + chatSeparatorLength + lastLength + systemInputLength) // TODO refactor
 	engramLength = ENGRAN_SIZE
 	stmLength = STM_SIZE
@@ -237,7 +243,7 @@ func botMemory(u *auth.User, bookId, sceneId, characterId, lineId, size int, inp
 							}
 							currentLine = strings.Split(characters[line.CharacterId].Name, "|")[0] + ": " + line.Content[line.Current] + promptConfig.StopSequence
 						}
-						lineLength = GetTokens(currentLine)
+						lineLength = getTokens(currentLine)
 						if (currentLength + lineLength) > engramLength {
 							engramFull = true
 							break
@@ -286,7 +292,7 @@ func botMemory(u *auth.User, bookId, sceneId, characterId, lineId, size int, inp
 				}
 				currentLine = promptConfig.InputSequence + strings.Split(characters[line.CharacterId].Name, "|")[0] + ": " + line.Content[line.Current] + promptConfig.StopSequence
 			}
-			lineLength = GetTokens(currentLine)
+			lineLength = getTokens(currentLine)
 			if (currentLength + lineLength) > stmLength {
 				break
 			}
@@ -294,7 +300,7 @@ func botMemory(u *auth.User, bookId, sceneId, characterId, lineId, size int, inp
 			stm = currentLine + stm
 		}
 	}
-	lineLength = GetTokens(chara.MesExample)
+	lineLength = getTokens(chara.MesExample)
 	if (currentLength + lineLength + exampleSeparatorLength) < stmLength {
 		stm = formatContent(exampleSeparator, chara.MesExample, "") + formatContent(chatSeparator, stm, "")
 	} else {
