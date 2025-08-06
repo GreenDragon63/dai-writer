@@ -1,6 +1,7 @@
 package llm
 
 import (
+	"dai-writer/ai"
 	"dai-writer/auth"
 	"dai-writer/engram"
 	"dai-writer/models"
@@ -12,7 +13,6 @@ import (
 )
 
 const (
-	MODEL_CTX   = 8192
 	STM_SIZE    = 1024
 	ENGRAN_SIZE = 1024
 	RESPONSE    = 1024
@@ -48,12 +48,13 @@ func formatContent(prefix, content, separator string) string {
 }
 
 func Generate(u *auth.User, bookId, sceneId, characterId, lineId int, input string) string {
-	var stopStrings, words []string
-	var debug, stopString, user, memory, newText, streamedText string
+	var response ai.CompletionResponse
+	var stopStrings []string
+	var debug, stopString, user, memory, newText string
 	var chara, ch *models.Character
 	var scene *models.Scene
-	var memorySize, freeSize, responseSize, cid int
-	var finished, ok bool
+	var memorySize, cid int
+	var ok bool
 	var err error
 
 	debug = os.Getenv("DEBUG")
@@ -68,7 +69,6 @@ func Generate(u *auth.User, bookId, sceneId, characterId, lineId int, input stri
 			log.Println("|" + stopString + "|")
 		}
 	}
-	finished = false
 	newText = ""
 	chara, ok = models.LoadCharacter(u, characterId)
 	if ok != true {
@@ -97,39 +97,15 @@ func Generate(u *auth.User, bookId, sceneId, characterId, lineId int, input stri
 		return replacePlaceholders(chara.FirstMes, chara.Name, user)
 	}
 
-	responseSize = RESPONSE
-	for finished == false {
-		memorySize = MODEL_CTX - responseSize
-		freeSize = responseSize
-		memory = botMemory(u, bookId, sceneId, characterId, lineId, memorySize, input)
-		if debug == "true" {
-			log.Println(memory)
-		}
-		log.Println("Memory size: " + strconv.Itoa(GetTokens(memory)))
-		for freeSize > 0 {
-			if newText != "" {
-				words = strings.Split(newText, " ")
-				newText = strings.Join(words[:len(words)-1], " ")
-			}
-			streamedText, finished = GetCompletion(memory + newText)
-			newText += streamedText
-			freeSize -= 50
-			for _, stopString = range stopStrings {
-				if strings.Contains(newText, stopString) {
-					newText = strings.Split(newText, stopString)[0]
-					finished = true
-					break
-				}
-			}
-			if debug == "true" {
-				log.Println(newText)
-			}
-			if finished == true {
-				break
-			}
-		}
-		responseSize += 100
+	memorySize = ai.MODEL_CTX - RESPONSE
+	memory = botMemory(u, bookId, sceneId, characterId, lineId, memorySize, input)
+	response, err = ai.CreateCompletion(memory, stopStrings)
+	if err != nil {
+		log.Println(err.Error())
+		return ""
 	}
+	newText = response.Choices[0].Text
+
 	return cleanOutput(newText, chara.Name)
 }
 
