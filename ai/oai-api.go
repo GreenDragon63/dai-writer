@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	CHAT_ENDPOINT = "https://untamed.ai/v1/chat/completions"
-	COMP_ENDPOINT = "https://untamed.ai/v1/completions"
-	MODEL         = "llama"
+	CHAT_ENDPOINT = "/v1/chat/completions"
+	COMP_ENDPOINT = "/v1/completions"
+	MODEL         = "pyg"
 	MODEL_CTX     = 8192
 	TEMPERATURE   = 1.0
 )
@@ -124,7 +124,7 @@ func (r CompletionRequest) MarshalJSON() ([]byte, error) {
 }
 
 func CreateChatCompletion(m []*Message) (ChatCompletionResponse, error) {
-	var key string
+	var api, key string
 	var requestData ChatCompletionRequest
 	var err error
 	var jsonData []byte
@@ -133,6 +133,7 @@ func CreateChatCompletion(m []*Message) (ChatCompletionResponse, error) {
 	var resp *http.Response
 	var response ChatCompletionResponse
 
+	api = os.Getenv("API")
 	key = os.Getenv("API_KEY")
 	requestData = ChatCompletionRequest{
 		Model:    MODEL,
@@ -148,7 +149,7 @@ func CreateChatCompletion(m []*Message) (ChatCompletionResponse, error) {
 		return response, err
 	}
 
-	req, err = http.NewRequest("POST", CHAT_ENDPOINT, bytes.NewBuffer(jsonData))
+	req, err = http.NewRequest("POST", api+CHAT_ENDPOINT, bytes.NewBuffer(jsonData))
 	if err != nil {
 		log.Printf("Error creating request: %v", err)
 		return response, err
@@ -175,7 +176,7 @@ func CreateChatCompletion(m []*Message) (ChatCompletionResponse, error) {
 }
 
 func CreateCompletion(prompt string, stop []string) (CompletionResponse, error) {
-	var key string
+	var api, key string
 	var requestData CompletionRequest
 	var err error
 	var jsonData []byte
@@ -184,6 +185,7 @@ func CreateCompletion(prompt string, stop []string) (CompletionResponse, error) 
 	var resp *http.Response
 	var response CompletionResponse
 
+	api = os.Getenv("API")
 	key = os.Getenv("API_KEY")
 	requestData = CompletionRequest{
 		Model:  MODEL,
@@ -200,7 +202,7 @@ func CreateCompletion(prompt string, stop []string) (CompletionResponse, error) 
 		return response, err
 	}
 
-	req, err = http.NewRequest("POST", COMP_ENDPOINT, bytes.NewBuffer(jsonData))
+	req, err = http.NewRequest("POST", api+COMP_ENDPOINT, bytes.NewBuffer(jsonData))
 	if err != nil {
 		log.Printf("Error creating request: %v", err)
 		return response, err
